@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:farmacapp/paginas/pantalla_agenda.dart';
 import 'package:flutter/material.dart';
 
 class PantallaInicioSesion extends StatefulWidget {
@@ -10,8 +11,17 @@ class PantallaInicioSesion extends StatefulWidget {
 }
 
 class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
-  // var imageLogo = File("assets/images/logo.png");
   
+  _loadPantallaAgenda () async{
+    final destino = MaterialPageRoute(builder:(_)=>PantallaAgenda());
+    final datoDevuelto = await Navigator.push(context, destino);
+    
+    //si el valor devuelto por await es nulo dejamos el valor que tenia configuracion
+    setState((){
+      // widget.configuracion = datoDevuelto ?? widget.configuracion;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     late String user = "";
@@ -112,8 +122,10 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                   ),
                   onPressed: (){
                     // DE MOMENTO SE HACE UNA PRUEBA DE INICIO DE SESION CON "admin/admin"
+                    // SE AÑADIRA EN UN FUTURO UNA LISTA DE MAPAS QUE GUARDE USUARIOS CON SUS DATOS??
                     if(user == "admin" && pass == "admin"){
                       print("Correcto");
+                      _loadPantallaAgenda();
                     }
                     // SI EL USUARIO Y/O CONTRASEÑA SON INCORRECTOS
                     else{
@@ -161,7 +173,7 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
         // BOTON FLOTANTE
         floatingActionButton: FloatingActionButton(
           onPressed:(){
-            //Pasamos la configuración al juego
+            // IR PANTALLA NUEVO USUARIO
             // final destino = MaterialPageRoute(builder: (_) => PaginaJuego(configuracion: widget.configuracion,));
             // Navigator.push(context, destino);
           },
