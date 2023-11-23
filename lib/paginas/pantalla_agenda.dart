@@ -48,33 +48,43 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
         ],
       ),
       // #################### DRAWER ####################
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
+      drawer: Container(
+        width: 200,
+        child: Drawer(
+          // Add a ListView to the drawer. This ensures the user can scroll
+          // through the options in the drawer if there isn't enough vertical
+          // space to fit everything.
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                ),
+                child: Icon(Icons.photo_camera, color: Colors.white,),
               ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Home'),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text('Business'),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text('School'),
-              onTap: () {},
-            ),
-          ],
+              const Text(
+                "Nombre Apellido1 Apellido2",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20
+                ),
+              ),
+              ListTile(
+                title: Row(children: [Icon(Icons.supervised_user_circle), Container(margin: EdgeInsets.only(left: 10), child: Text('Mi perfil'))],),
+                onTap: () {},
+              ),
+              ListTile(
+                title: Row(children: [Icon(Icons.add_box), Container(margin: EdgeInsets.only(left: 10), child: Text('Farmacias cercanas'))],),
+                onTap: () {},
+              ),
+              ListTile(
+                title: Row(children: [Icon(Icons.logout), Container(margin: EdgeInsets.only(left: 10), child: Text('Cerrar sesion'))],),
+                onTap: () {},
+              ),
+            ],
+          ),
         ),
       ),
       // ####################  BODY  ####################
@@ -89,11 +99,11 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
               color: Colors.white
             ),
             child: InkWell(
-              onTap: (){},
+              onTap: (){print("MEDICAMENTO PULSADO");},
               child: ListView(
                 padding: EdgeInsets.all(2),
                 children: [
-                  Text("ACITROMICINA",style: TextStyle(fontSize: 25),),
+                  Text("DIAZEPAM",style: TextStyle(fontSize: 25),),
                   Text("Ultima dosis: 17/08/2023 - 09:00",style: TextStyle(fontSize: 16),),
                   Text("Proxima dosis: 18/08/2023 - 09:00",style: TextStyle(fontSize: 16),),
                 ],
