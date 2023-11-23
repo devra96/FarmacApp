@@ -28,6 +28,7 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
     late String pass = "";
 
     return Scaffold(
+      // ####################  BODY  ####################
       body: ListView(
         children: [
           // LOGO
@@ -180,10 +181,12 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
       //   child: Icon(Icons.add),
       // ),
       // BOTON FLOTANTE NUEVO
+      // #############  BOTTOMNAVIGATIONBAR  ############
       floatingActionButton: Container(
-        width: 100,
-        height: 100,
+        width: 90,
+        height: 90,
         child: FloatingActionButton(
+          // backgroundColor: Color.fromARGB(255, 5, 133, 9),
           onPressed: (){
             // IR A PANTALLA NUEVO USUARIO
           },

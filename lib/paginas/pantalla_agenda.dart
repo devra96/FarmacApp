@@ -1,4 +1,5 @@
 import 'package:farmacapp/paginas/pantalla_add_medicamento.dart';
+import 'package:farmacapp/paginas/pantalla_detalle_medicamento.dart';
 import 'package:flutter/material.dart';
 
 class PantallaAgenda extends StatefulWidget {
@@ -12,6 +13,15 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
   
   _loadPantallaAddMedicamento () async{
     final destino = MaterialPageRoute(builder:(_)=>PantallaAddMedicamento());
+    final datoDevuelto = await Navigator.push(context, destino);
+    
+    setState((){
+      
+    });
+  }
+
+  _loadPantallaDetalleMedicamento () async{
+    final destino = MaterialPageRoute(builder:(_)=>PantallaDetalleMedicamento());
     final datoDevuelto = await Navigator.push(context, destino);
     
     setState((){
@@ -64,11 +74,14 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                 ),
                 child: Icon(Icons.photo_camera, color: Colors.white,),
               ),
-              const Text(
-                "Nombre Apellido1 Apellido2",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20
+              Container(
+                margin: EdgeInsets.only(bottom: 12),
+                child: const Text(
+                  "Nombre Apellido1 Apellido2",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20
+                  ),
                 ),
               ),
               ListTile(
@@ -99,7 +112,9 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
               color: Colors.white
             ),
             child: InkWell(
-              onTap: (){print("MEDICAMENTO PULSADO");},
+              onTap: (){
+                _loadPantallaDetalleMedicamento();
+              },
               child: ListView(
                 padding: EdgeInsets.all(2),
                 children: [
@@ -115,34 +130,34 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
       ),
       // #############  BOTTOMNAVIGATIONBAR  ############
       bottomNavigationBar: Container(
-          height: 80,
-          color: const Color.fromARGB(255, 5, 133, 9),
-          child: InkWell(
-            onTap: (){
-              _loadPantallaAddMedicamento();
-            },
-            child: Container(
-              padding: EdgeInsets.only(top: 8.0),
-              child: const Column(
-                children: [
-                  Icon(
-                    Icons.add,
-                    size: 35,
-                    color: Colors.white
-                  ),
-                  Text(
-                    "AÑADIR MEDICAMENTO",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20
-                    )
-                  ),
-                ],
-              ),
+        height: 80,
+        color: const Color.fromARGB(255, 5, 133, 9),
+        child: InkWell(
+          onTap: (){
+            _loadPantallaAddMedicamento();
+          },
+          child: Container(
+            padding: EdgeInsets.only(top: 8.0),
+            child: const Column(
+              children: [
+                Icon(
+                  Icons.add,
+                  size: 35,
+                  color: Colors.white
+                ),
+                Text(
+                  "AÑADIR MEDICAMENTO",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20
+                  )
+                ),
+              ],
             ),
           ),
         ),
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:farmacapp/paginas/pantalla_mas_opciones_medicamento.dart';
 import 'package:flutter/material.dart';
 
 class PantallaAddMedicamento extends StatefulWidget {
@@ -8,6 +9,17 @@ class PantallaAddMedicamento extends StatefulWidget {
 }
 
 class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
+  
+  _loadPantallaMasOpcionesMedicamento () async{
+    final destino = MaterialPageRoute(builder:(_)=>PantallaMasOpcionesMedicamento());
+    final datoDevuelto = await Navigator.push(context, destino);
+    
+    //si el valor devuelto por await es nulo dejamos el valor que tenia configuracion
+    setState((){
+      // widget.configuracion = datoDevuelto ?? widget.configuracion;
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -206,27 +218,28 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
           ),
           // BUTTON MAS OPCIONES
           Center(
-              child: Container(
-                width: 300,
-                margin: EdgeInsets.only(top: 30),
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.all(Radius.circular(8))
-                ),
-                child: TextButton(
-                  child: const Text(
-                    "MAS OPCIONES",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22
-                    ),
+            child: Container(
+              width: 300,
+              margin: EdgeInsets.only(top: 30),
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.all(Radius.circular(8))
+              ),
+              child: TextButton(
+                child: const Text(
+                  "MAS OPCIONES",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22
                   ),
-                  onPressed: (){
-                    // IR A PANTALLA "MAS OPCIONES"
-                  },
                 ),
+                onPressed: (){
+                  // IR A PANTALLA "MAS OPCIONES"
+                  _loadPantallaMasOpcionesMedicamento();
+                },
               ),
             ),
+          ),
         ],
       ),
       // #############  BOTTOMNAVIGATIONBAR  ############
