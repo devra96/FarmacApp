@@ -13,7 +13,6 @@ class _PantallaMasOpcionesMedicamentoState extends State<PantallaMasOpcionesMedi
     return Scaffold(
       // #################### APPBAR ####################
       appBar: AppBar(
-        // automaticallyImplyLeading: false, // HACE QUE NO SALGA EL BOTON DE VOLVER
         title: Text("MAS OPCIONES"),
       ),
       // ####################  BODY  ####################
@@ -22,21 +21,27 @@ class _PantallaMasOpcionesMedicamentoState extends State<PantallaMasOpcionesMedi
         children: [
           // CUADRO AÑADIR UNA FOTO
           Center(
-            child: Container(
-              width: 300,
-              height: 200,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                border: Border.all()
+            child: InkWell(
+              onTap: (){
+                // EL MOVIL PEDIRA INCLUIR UNA FOTO
+                print("EL MOVIL PEDIRA UNA FOTO");
+              },
+              child: Container(
+                width: 300,
+                height: 200,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  border: Border.all()
+                ),
+                child: const Column(
+                  children: [
+                    Padding(padding: EdgeInsets.only(top: 50)),
+                    Icon(Icons.photo_camera, size: 60, color: Colors.white,),
+                    Text("Añadir una foto", style: TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold))
+                  ]
+                ),
               ),
-              child: const Column(
-                children: [
-                  Padding(padding: EdgeInsets.only(top: 50)),
-                  Icon(Icons.photo_camera, size: 60, color: Colors.white,),
-                  Text("Añadir una foto", style: TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold))
-                ]
-              ),
-            ),
+            )
           ),
           // TEXTO "Gestionado por"
           Center(
@@ -132,6 +137,7 @@ class _PantallaMasOpcionesMedicamentoState extends State<PantallaMasOpcionesMedi
         child: InkWell(
           onTap: (){
             // GUARDAR OPCIONES DEL MEDICAMENTO
+            print("GUARDAR OPCIONES DEL MEDICAMENTO");
           },
           child: Container(
             padding: EdgeInsets.only(top: 8.0),

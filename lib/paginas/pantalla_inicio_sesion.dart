@@ -1,6 +1,7 @@
  import 'dart:io';
 
 import 'package:farmacapp/paginas/pantalla_agenda.dart';
+import 'package:farmacapp/paginas/pantalla_pass_olvidada.dart';
 import 'package:flutter/material.dart';
 
 class PantallaInicioSesion extends StatefulWidget {
@@ -14,6 +15,16 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
   
   _loadPantallaAgenda () async{
     final destino = MaterialPageRoute(builder:(_)=>PantallaAgenda());
+    final datoDevuelto = await Navigator.push(context, destino);
+    
+    //si el valor devuelto por await es nulo dejamos el valor que tenia configuracion
+    setState((){
+      // widget.configuracion = datoDevuelto ?? widget.configuracion;
+    });
+  }
+
+  _loadPantallaPassOlvidada () async{
+    final destino = MaterialPageRoute(builder:(_)=>PantallaPassOlvidada());
     final datoDevuelto = await Navigator.push(context, destino);
     
     //si el valor devuelto por await es nulo dejamos el valor que tenia configuracion
@@ -102,6 +113,7 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
               ),
               onTap: (){
                 print("IR A PANTALLA CONTRASEÑA OLVIDADA");
+                _loadPantallaPassOlvidada();
               },
             ),
           ),

@@ -9,6 +9,9 @@ class PantallaAddMedicamento extends StatefulWidget {
 }
 
 class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
+
+  String nombre = "", fecha = "", hora = "";
+  int dias = 0, dosis = 0;
   
   _loadPantallaMasOpcionesMedicamento () async{
     final destino = MaterialPageRoute(builder:(_)=>PantallaMasOpcionesMedicamento());
@@ -53,11 +56,11 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
               margin: EdgeInsets.only(bottom: 20),
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: "Nombre de usuario",
+                  hintText: "Nombre del medicamento",
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value){
-                  
+                  nombre = value;
                 },
               ),
             ),
@@ -81,12 +84,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                 width: 300,
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 16, left: 8),
-                  child: Text(
-                    "Pulse en el recuadro e indique un numero => ",
-                    style: TextStyle(
-                      
-                    ),
-                  ),
+                  child: Text("Pulse en el recuadro e indique un numero => "),
                 ),
               ),
               Container(
@@ -98,7 +96,9 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                     hintText: "0",
                     border: OutlineInputBorder()
                   ),
-                  onChanged: (value){},
+                  onChanged: (value){
+                    dias = int.parse(value);
+                  },
                 ),
               )
             ],
@@ -122,12 +122,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                 width: 300,
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 16, left: 8),
-                  child: Text(
-                    "Pulse en el recuadro e indique un numero => ",
-                    style: TextStyle(
-                      
-                    ),
-                  ),
+                  child: Text("Pulse en el recuadro e indique un numero => "),
                 ),
               ),
               Container(
@@ -139,7 +134,9 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                     hintText: "0",
                     border: OutlineInputBorder()
                   ),
-                  onChanged: (value){},
+                  onChanged: (value){
+                    dosis = int.parse(value);
+                  },
                 ),
               )
             ],
@@ -175,7 +172,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                     );
                   },
                   onChanged: (value){
-                    
+                    fecha = value;
                   },
                 )
               )
@@ -257,12 +254,48 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
         onTap: (value){
           switch(value){
             case 0:
-              // COMPROBAR QUE ESTAN RELLENADOS TODOS LOS CAMPOS
-              // GUARDAR MEDICAMENTO Y VOLVER A LA AGENDA
+              // COMPROBAR QUE ESTAN RELLENADOS LOS CAMPOS DE NOMBRE, DIAS Y DOSIS
+              if(nombre == "" || dias == 0 || dosis == 0){
+                showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: Center(child: const Text('ERROR')),
+                  content: const Text(
+                    'Por favor, rellena los campos de nombre, dias y dosis incluidas.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'OK'),
+                      child: const Text('ACEPTAR'),
+                    )
+                  ],
+                ),
+              );
+              }
+              else{
+                // GUARDAR MEDICAMENTO Y VOLVER A LA AGENDA
+                // SI NO SE HA INDICADO FECHA Y HORA DE LA PRIMERA DOSIS,
+                // EL SISTEMA PONGA LA FECHA Y HORA ACTUAL
+              }
             break;
             case 1:
-              // SHOWDIALOG DE SI ESTA SEGURO QUE QUIERE CANCELAR??
-              // NO GUARDAR MEDICAMENTO Y VOLVER A LA AGENDA
+              // SHOWDIALOG DE SI ESTA SEGURO QUE QUIERE CANCELAR
+              showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: Center(child: const Text('¡ATENCION!')),
+                  content: const Text('¿Estas seguro de que deseas cancelar y volver a la agenda?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('CANCELAR'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'OK'), // (CONFIRMAR) NO GUARDAR MEDICAMENTO Y VOLVER A LA AGENDA
+                      child: const Text('CONFIRMAR'),
+                    ),
+                  ],
+                ),
+              );
             break;
           }
         },

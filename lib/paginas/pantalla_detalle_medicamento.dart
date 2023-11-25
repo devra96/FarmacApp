@@ -13,10 +13,7 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
     return Scaffold(
       // #################### APPBAR ####################
       appBar: AppBar(
-        automaticallyImplyLeading: false, // HACE QUE NO SALGA EL BOTON DE VOLVER
-        title: Center(
-          child: Text("NOMBRE DEL MEDICAMENTO"),
-        ),
+        title: Text("NOMBRE DEL MEDICAMENTO"),
       ),
       // ####################  BODY  ####################
       body: ListView(
@@ -42,11 +39,11 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
           // TEXTO "Ultima dosis"
           Center(
             child: Container(
-              margin: EdgeInsets.only(top: 30),
+              margin: EdgeInsets.only(top: 20),
               child: Text(
                 "Ultima dosis: 12/12/2023 00:54",
                 style: TextStyle(
-                  fontSize: 24
+                  fontSize: 20
                 ),
               )
             ),
@@ -54,11 +51,11 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
           // TEXTO "Proxima dosis"
           Center(
             child: Container(
-              margin: EdgeInsets.only(top: 30),
+              margin: EdgeInsets.only(top: 20),
               child: Text(
                 "Proxima dosis: 12/12/2023 00:54",
                 style: TextStyle(
-                  fontSize: 24
+                  fontSize: 20
                 ),
               )
             ),
@@ -67,14 +64,14 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
           Center(
             child: Container(
               width: 300,
-              margin: EdgeInsets.only(top: 30),
+              margin: EdgeInsets.only(top: 20),
               decoration: const BoxDecoration(
                 color: Colors.red,
                 borderRadius: BorderRadius.all(Radius.circular(8))
               ),
               child: TextButton(
                 child: const Text(
-                  "YA ME LA HE TOMADO",
+                  "REGISTRAR DOSIS",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 22
@@ -87,11 +84,11 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
           // TEXTO "Dosis restantes"
           Center(
             child: Container(
-              margin: EdgeInsets.only(top: 30),
+              margin: EdgeInsets.only(top: 20),
               child: Text(
                 "Dosis restantes: 73",
                 style: TextStyle(
-                  fontSize: 24
+                  fontSize: 20
                 ),
               )
             ),
@@ -99,11 +96,63 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
           // TEXTO "Gestionado por"
           Center(
             child: Container(
-              margin: EdgeInsets.only(top: 30),
+              margin: EdgeInsets.only(top: 20),
               child: Text(
-                "Gestionado por: El pepe",
+                "Gestionado por: Administrador",
                 style: TextStyle(
-                  fontSize: 24
+                  fontSize: 20
+                ),
+              )
+            ),
+          ),
+          // TEXTO "Normas de consumo"
+          Center(
+            child: Container(
+              margin: EdgeInsets.only(top: 20),
+              child: Text(
+                "Normas de consumo",
+                
+                style: TextStyle(
+                  fontSize: 20,
+                  decoration: TextDecoration.underline
+                ),
+              )
+            ),
+          ),
+          // NORMAS DE CONSUMO
+          Center(
+            child: Container(
+              child: Text(
+                "Algunas normas de consumo de dicho medicamento",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20
+                ),
+              )
+            ),
+          ),
+          // TEXTO "Caracteristicas generales"
+          Center(
+            child: Container(
+              margin: EdgeInsets.only(top: 20),
+              child: Text(
+                "Caracteristicas generales",
+                
+                style: TextStyle(
+                  fontSize: 20,
+                  decoration: TextDecoration.underline
+                ),
+              )
+            ),
+          ),
+          // CARACTERISTICAS GENERALES
+          Center(
+            child: Container(
+              child: Text(
+                "Algunas caracteristicas generales de dicho medicamento",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20
                 ),
               )
             ),
@@ -114,12 +163,8 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.star),
-            label: "Informacion\nprincipal",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: "Informacion\nadicional"
+            icon: Icon(Icons.mode_edit),
+            label: "Modificar\nmedicamento"
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.delete_forever),
@@ -129,14 +174,11 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
         onTap: (value){
           switch (value){
             case 0:
-              // CARGAR INFORMACION PRINCIPAL
+              // IR A PANTALLA MAS OPCIONES MEDICAMENTO
+              // CARGANDO LOS DATOS DEL MEDICAMENTO ?????
               setState(() {});
             break;
             case 1:
-              // CARGAR INFORMACION ADICIONAL
-              setState(() {});
-            break;
-            case 2:
               showDialog<String>(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(

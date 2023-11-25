@@ -8,8 +8,75 @@ class PantallaFarmaciasCercanas extends StatefulWidget {
 }
 
 class _PantallaFarmaciasCercanasState extends State<PantallaFarmaciasCercanas> {
+  late String direccion;
+  
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("FARMACIAS CERCANAS"),
+      ),
+      body: Container(
+        // color: Colors.black,
+        child: ListView(
+          children: [
+            // ROW: BARRA BUSQUEDA Y BOTON BUSCAR
+            Row(
+              children: [
+                Container(
+                  width: 300,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Introduce tu direccion",
+                      // border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value){
+                      direccion = value;
+                    },
+                  ),
+                ),
+                Container(
+                  width: 92.7,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    border: Border.all(color: Colors.grey)
+                  ),
+                  child: TextButton(
+                    child: Text(
+                      "Buscar",
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Colors.white
+                      ),
+                    ),
+                    onPressed: (){
+                      
+                    },
+                  ),
+                ),
+              ],
+            ),
+            // LISTVIEWBUILDER QUE GENERARIA AL BUSCAR
+            // ListView.builder(
+            //   itemBuilder: (context, index){
+            //     return Container(
+            //       height: 80,
+            //       margin: EdgeInsets.all(5),
+            //       child: ListView(
+            //         children: [
+            //           Text("Farmacia tal y cual"),
+            //           Text("Calle TalyCual, nº17, 47001, Valladolid"),
+            //           Text("A 500 metros de ti")
+            //         ],
+            //       ),
+            //     );
+            //   },
+            //   itemCount: 3,
+            // )
+          ],
+        ),
+      ),
+    );
   }
 }
