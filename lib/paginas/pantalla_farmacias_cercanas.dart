@@ -13,9 +13,11 @@ class _PantallaFarmaciasCercanasState extends State<PantallaFarmaciasCercanas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // #################### APPBAR ####################
       appBar: AppBar(
         title: Text("FARMACIAS CERCANAS"),
       ),
+      // ####################  BODY  ####################
       body: Container(
         // color: Colors.black,
         child: ListView(
@@ -57,7 +59,7 @@ class _PantallaFarmaciasCercanasState extends State<PantallaFarmaciasCercanas> {
                 ),
               ],
             ),
-            // LISTVIEWBUILDER QUE GENERARIA AL BUSCAR
+            // LISTVIEWBUILDER QUE GENERARIA AL BUSCAR, PERO DA ERROR
             // ListView.builder(
             //   itemBuilder: (context, index){
             //     return Container(

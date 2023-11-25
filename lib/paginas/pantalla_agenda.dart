@@ -218,11 +218,14 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
             child: const Column(
               children: [
                 Icon(Icons.add, size: 35, color: Colors.white),
-                Text("AÑADIR MEDICAMENTO",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20)),
+                Text(
+                  "AÑADIR MEDICAMENTO",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20
+                  )
+                ),
               ],
             ),
           ),
@@ -231,36 +234,3 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
     );
   }
 }
-
-/**
-Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(16),
-            color: Colors.red,
-            child: const Row(
-              children: [
-                Text(
-                  "Dia:",
-                  style: TextStyle(
-                    fontSize: 20
-                  ),
-                ),
-                Text(
-                  "Mes:",
-                  style: TextStyle(
-                    fontSize: 20
-                  ),
-                ),
-                Text(
-                  "Año:",
-                  style: TextStyle(
-                    fontSize: 20
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-*/

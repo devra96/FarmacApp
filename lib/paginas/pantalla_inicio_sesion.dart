@@ -17,9 +17,8 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
     final destino = MaterialPageRoute(builder:(_)=>PantallaAgenda());
     final datoDevuelto = await Navigator.push(context, destino);
     
-    //si el valor devuelto por await es nulo dejamos el valor que tenia configuracion
     setState((){
-      // widget.configuracion = datoDevuelto ?? widget.configuracion;
+      
     });
   }
 
@@ -27,9 +26,8 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
     final destino = MaterialPageRoute(builder:(_)=>PantallaPassOlvidada());
     final datoDevuelto = await Navigator.push(context, destino);
     
-    //si el valor devuelto por await es nulo dejamos el valor que tenia configuracion
     setState((){
-      // widget.configuracion = datoDevuelto ?? widget.configuracion;
+
     });
   }
 
@@ -168,39 +166,15 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
               ),
             ),
           ),
-          // TEXTO SI NO TIENE USUARIO (ELIMINAR)
-          // Container(
-          //   padding: EdgeInsets.only(
-          //     left: 25,
-          //     top: 50
-          //   ),
-          //   child: Text(
-          //     "¿USUARIO NUEVO? HAZ CLICK AQUI =>",
-          //     style: TextStyle(
-          //       fontSize: 16
-          //     ),
-          //   ),
-          // )
         ],
       ),
       // BOTON FLOTANTE
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed:(){
-      //     // IR PANTALLA NUEVO USUARIO
-      //     // final destino = MaterialPageRoute(builder: (_) => PaginaJuego(configuracion: widget.configuracion,));
-      //     // Navigator.push(context, destino);
-      //   },
-      //   child: Icon(Icons.add),
-      // ),
-      // BOTON FLOTANTE NUEVO
-      // #############  BOTTOMNAVIGATIONBAR  ############
       floatingActionButton: Container(
         width: 90,
         height: 90,
         child: FloatingActionButton(
-          // backgroundColor: Color.fromARGB(255, 5, 133, 9),
           onPressed: (){
-            // IR A PANTALLA NUEVO USUARIO
+            // IR A PANTALLA NUEVO USUARIO (PENDIENTE DE CREAR)
           },
           child: Text(
             "¿Nuevo usuario? Haz click aqui.",

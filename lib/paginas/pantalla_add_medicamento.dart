@@ -10,16 +10,18 @@ class PantallaAddMedicamento extends StatefulWidget {
 
 class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
 
+  // VARIABLES QUE USAREMOS PARA CONTROLAR SI SE HA ESCRITO ALGO O NO
+  // CUANDO CREEMOS EL MEDICAMENTO-
   String nombre = "", fecha = "", hora = "";
   int dias = 0, dosis = 0;
   
+  // FUNCION PARA CARGAR LA PANTALLA DE AÑADIR MAS OPCIONES AL MEDICAMENTO
   _loadPantallaMasOpcionesMedicamento () async{
     final destino = MaterialPageRoute(builder:(_)=>PantallaMasOpcionesMedicamento());
     final datoDevuelto = await Navigator.push(context, destino);
     
-    //si el valor devuelto por await es nulo dejamos el valor que tenia configuracion
     setState((){
-      // widget.configuracion = datoDevuelto ?? widget.configuracion;
+      
     });
   }
   
@@ -80,6 +82,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
           // ROW DIAS
           Row(
             children: [
+              // TEXTO "Pulse en el recuadro e indique un numero =>"
               Container(
                 width: 300,
                 child: Padding(
@@ -87,6 +90,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                   child: Text("Pulse en el recuadro e indique un numero => "),
                 ),
               ),
+              // TEXTFIELD DIAS
               Container(
                 width: 45,
                 margin: EdgeInsets.only(bottom: 20),
@@ -118,6 +122,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
           // ROW NUMERO DOSIS
           Row(
             children: [
+              // TEXTO "Pulse en el recuadro e indique un numero =>"
               Container(
                 width: 300,
                 child: Padding(
@@ -125,6 +130,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                   child: Text("Pulse en el recuadro e indique un numero => "),
                 ),
               ),
+              // TEXTFIELD DOSIS
               Container(
                 width: 45,
                 margin: EdgeInsets.only(bottom: 20),
@@ -191,7 +197,6 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                 width: 70,
                 margin: EdgeInsets.only(top: 10),
                 decoration: BoxDecoration(
-                  // color: Colors.grey,
                   border: Border.all(),
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
@@ -206,9 +211,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                       initialTime: TimeOfDay.now()
                     );
                   },
-                  onChanged: (value){
-                    
-                  },
+                  onChanged: (value){},
                 )
               )
             ],
