@@ -14,6 +14,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
   // CUANDO CREEMOS EL MEDICAMENTO-
   String nombre = "", fecha = "", hora = "";
   int dias = 0, dosis = 0;
+  var txt = TextEditingController();
   
   // FUNCION PARA CARGAR LA PANTALLA DE AÑADIR MAS OPCIONES AL MEDICAMENTO
   _loadPantallaMasOpcionesMedicamento () async{
@@ -151,13 +152,13 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
           Row(
             children: [
               Container(
-                margin: EdgeInsets.only(left: 10, right: 30),
+                margin: EdgeInsets.only(left: 10, right: 70),
                 child: Text(
-                  "Introduzca la fecha de la primera dosis:"
+                  "Fecha de la primera dosis:"
                 ),
               ),
               Container(
-                width: 70,
+                width: 100,
                 margin: EdgeInsets.only(top: 10),
                 decoration: BoxDecoration(
                   // color: Colors.grey,
@@ -165,9 +166,11 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
                 child: TextField(
+                  controller: txt,
+                  textAlign: TextAlign.center,
                   decoration: InputDecoration(
                     hintText: "Fecha",
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder()
                   ),
                   onTap: (){
                     showDatePicker(
@@ -175,10 +178,12 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                       initialDate: DateTime.now(),
                       firstDate: DateTime(19701231),
                       lastDate: DateTime.now(),
+                      onDatePickerModeChange: (value) => fecha,
                     );
                   },
                   onChanged: (value){
                     fecha = value;
+                    txt.text = fecha; // NO FUNCIONA
                   },
                 )
               )
@@ -188,19 +193,20 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
           Row(
             children: [
               Container(
-                margin: EdgeInsets.only(left: 10, right: 37),
+                margin: EdgeInsets.only(left: 10, right: 78),
                 child: Text(
-                  "Introduzca la hora de la primera dosis:"
+                  "Hora de la primera dosis:"
                 ),
               ),
               Container(
-                width: 70,
+                width: 100,
                 margin: EdgeInsets.only(top: 10),
                 decoration: BoxDecoration(
                   border: Border.all(),
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
                 child: TextField(
+                  textAlign: TextAlign.center,
                   decoration: InputDecoration(
                     hintText: "Hora",
                     border: OutlineInputBorder(),
@@ -276,8 +282,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
               }
               else{
                 // GUARDAR MEDICAMENTO Y VOLVER A LA AGENDA
-                // SI NO SE HA INDICADO FECHA Y HORA DE LA PRIMERA DOSIS,
-                // EL SISTEMA PONGA LA FECHA Y HORA ACTUAL
+                // SI NO SE HA INDICADO FECHA Y HORA DE LA PRIMERA DOSIS, EL SISTEMA PONGA LA FECHA Y HORA ACTUAL
               }
             break;
             case 1:
@@ -289,11 +294,18 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                   content: const Text('¿Estas seguro de que deseas cancelar y volver a la agenda?'),
                   actions: <Widget>[
                     TextButton(
-                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      onPressed: (){
+                        Navigator.pop(context, 'Cancel'); // QUITA EL RECUADRO DE ALERTA
+                      },
                       child: const Text('CANCELAR'),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.pop(context, 'OK'), // (CONFIRMAR) NO GUARDAR MEDICAMENTO Y VOLVER A LA AGENDA
+                      onPressed: (){
+                        // (CONFIRMAR) NO GUARDAR MEDICAMENTO Y VOLVER A LA AGENDA
+                        Navigator.pop(context, 'OK'); // QUITA EL RECUADRO DE ALERTA
+                        Navigator.pop(context);       // VOLVEMOS A LA PANTALLA DE LA AGENDA
+                        // Navigator.of(context).pop();                     
+                      },
                       child: const Text('CONFIRMAR'),
                     ),
                   ],

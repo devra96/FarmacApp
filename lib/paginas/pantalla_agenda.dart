@@ -1,6 +1,7 @@
 import 'package:farmacapp/paginas/pantalla_add_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_detalle_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_farmacias_cercanas.dart';
+import 'package:farmacapp/paginas/pantalla_inicio_sesion.dart';
 import 'package:farmacapp/paginas/pantalla_reponer_medicamento.dart';
 import 'package:flutter/material.dart';
 
@@ -42,6 +43,13 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
     setState(() {});
   }
 
+  _loadPantallaInicioSesion() async {
+    final destino = MaterialPageRoute(builder: (_) => PantallaInicioSesion());
+    final datoDevuelto = await Navigator.push(context, destino);
+
+    setState(() {});
+  }
+
   // HABRIA QUE PROGRAMAR QUE LA FUNCION DEVUELVA UN VALOR U OTRO
   // EN BASE AL BOTON QUE SE HAYA PULSADO
   _cerrarSesion() {
@@ -57,7 +65,10 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
             child: const Text('CANCELAR'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, 'OK'),
+            onPressed: (){
+              Navigator.pop(context, 'OK');
+              _loadPantallaInicioSesion();
+            },
             child: const Text('CONFIRMAR'),
           ),
         ],
@@ -86,7 +97,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
       ),
       // #################### DRAWER ####################
       drawer: Container(
-        width: 220,
+        width: 260,
         child: Drawer(
           child: ListView(
             // IMPORTANTE ELIMINAR CUALQUIER PADDING DE LA LISTVIEW
@@ -127,8 +138,9 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                   children: [
                     Icon(Icons.add_box),
                     Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text('Farmacias cercanas'))
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text('Farmacias cercanas')
+                    ),
                   ],
                 ),
                 onTap: () {
