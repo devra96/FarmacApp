@@ -1,6 +1,7 @@
  import 'dart:io';
 
 import 'package:farmacapp/paginas/pantalla_agenda.dart';
+import 'package:farmacapp/paginas/pantalla_nuevo_usuario.dart';
 import 'package:farmacapp/paginas/pantalla_pass_olvidada.dart';
 import 'package:flutter/material.dart';
 
@@ -29,6 +30,15 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
     setState((){
 
     });
+  }
+
+  _loadPantallaNuevoUsuario () async{
+    final destino = MaterialPageRoute(builder:(_)=>PantallaNuevoUsuario());
+    final datoDevuelto = await Navigator.push(context, destino);
+    
+    // setState((){
+
+    // });
   }
 
   @override
@@ -171,10 +181,11 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
       // BOTON FLOTANTE
       floatingActionButton: Container(
         width: 90,
-        height: 90,
+        height: 70,
         child: FloatingActionButton(
           onPressed: (){
-            // IR A PANTALLA NUEVO USUARIO (PENDIENTE DE CREAR)
+            // IR A PANTALLA NUEVO USUARIO
+            _loadPantallaNuevoUsuario();
           },
           child: Text(
             "¿Nuevo usuario? Haz click aqui.",

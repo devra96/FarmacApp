@@ -196,26 +196,35 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                   // SELECCIONADO A LA PANTALLA QUE LLAMAMOS EN EL METODO
                   _loadPantallaDetalleMedicamento();
                 },
-                child: ListView(
-                  padding: EdgeInsets.all(2),
-                  children: [
-                    Text(
-                      "DIAZEPAM",
-                      style: TextStyle(fontSize: 25),
+                // child: ListView(
+                //   padding: EdgeInsets.all(2),
+                //   children: [
+                //     Text(
+                //       "DIAZEPAM",
+                //       style: TextStyle(fontSize: 25),
+                //     ),
+                //     Text(
+                //       "Ultima dosis: 17/08/2023 - 09:00",
+                //       style: TextStyle(fontSize: 16),
+                //     ),
+                //     Text(
+                //       "Ultima dosis: 17/08/2023 - 09:00",
+                //       style: TextStyle(fontSize: 16),
+                //     ),
+                //   ],
+                // ),
+                child: Container(
+                  padding: EdgeInsets.all(4),
+                  child: const Text(
+                    "DIAZEPAM\nUltima dosis: 17/08/2023 - 09:00\nUltima dosis: 17/08/2023 - 09:00",
+                    style: TextStyle(
+                      fontSize: 16
                     ),
-                    Text(
-                      "Ultima dosis: 17/08/2023 - 09:00",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Text(
-                      "Proxima dosis: 18/08/2023 - 09:00",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
+                  ),
                 ),
               ));
         },
-        itemCount: 3,
+        itemCount: 10,
       ),
       // #############  BOTTOMNAVIGATIONBAR  ############
       bottomNavigationBar: Container(
