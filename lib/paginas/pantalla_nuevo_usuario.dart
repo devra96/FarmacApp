@@ -19,6 +19,7 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
     late String correo = "";
     late String pass = "";
     late String confirmarpass = "";
+    BDHelper bdHelper = BDHelper();
     
     return Scaffold(
       // #################### APPBAR ####################
@@ -219,8 +220,8 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                   // INSERCION DEL USUARIO EN LA BASE DE DATOS Y VOLVEMOS ATRAS
                   else{
                     // Usuario u = new Usuario(id: 1, nombre: nombre, correo: correo, password: pass);
-                    // DB.insert(u);
-                    // print("USUARIO CREADO.");
+                    bdHelper.insertarBD("usuarios",{'nombre':nombre, 'correo':correo, 'password':pass});
+                    print("USUARIO CREADO.");
                     Navigator.pop(context);
                   }
                 },
