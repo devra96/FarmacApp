@@ -1,12 +1,12 @@
-// import 'package:farmacapp/database/usuario.dart';
+import 'package:farmacapp/database/usuario.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class BDHelper{
   static Database? _baseDatos;
-  static const String nombreBD = "misusuarios.db";
+  static const String nombreBD = "farmacapp.db";
 
-  //iniciar la base de datos
+  // INICIAMOS LA BASE DE DATOS
   Future<Database?> get baseDatos async{
     if(_baseDatos != null){
       return _baseDatos;
@@ -15,55 +15,50 @@ class BDHelper{
     return _baseDatos;
   }
 
-    _inicializarBD() async{
+  _inicializarBD() async{
     var directorio = await getDatabasesPath();
     String path = directorio + nombreBD;
     var baseDatos = await openDatabase(
       path, 
       version: 1, 
       onCreate: (Database db, int version) async{
-        await db.execute(
-          "CREATE TABLE usuarios(id INT PRIMARY KEY,nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))"
-        );
-        //para añadir una segunda tabla
-        // await db.execute(
-        //   "CREATE TABLE Resultados(id INTEGER PRIMARY KEY, jugador1 TEXT, j1set1 TEXT, j1set1 TEXT)"
-        // );
+        // AÑADIMOS UN await db.execute() POR CADA TABLA QUE QUERAMOS AÑADIR
+        await db.execute("CREATE TABLE usuarios(id INTEGER PRIMARY KEY,nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
       }
     );
     return baseDatos;
   }
 
-  //consultar la tabla entera en la base de datos
+  // SELECT * FROM tabla
   Future<List<Map<String, dynamic>>> consultarBD(String tabla) async{
     Database? bd = await baseDatos;
     var resultado = await bd!.query(tabla);
     return resultado;
   }
 
-  //consulta con sql
+  // CONSULTA CON SENTENCIA SQL
   Future<List<Map<String, dynamic>>> consultarSQL(String sql) async{
     Database? bd = await baseDatos;
     var resultado = await bd!.rawQuery(sql);
     return resultado;
   }
 
-  //insertar datos en la base de datos
+  // INSERT INTO tabla
   Future<int> insertarBD(String tabla, Map<String, dynamic> fila) async{
     Database? bd = await baseDatos;
     var resultado = await bd!.insert(tabla, fila);
-    print(resultado);
+    print("ID DEL USUARIO CREADO: ${resultado}");
     return resultado;
   }
 
-  //eliminar datos de la base de datos
+  // DELETE FROM tabla WHERE "id" = id
   Future<int> eliminarBD(String tabla, int id) async{
     Database? bd = await baseDatos;
     var resultado = await bd!.delete(tabla, where: 'id = ?', whereArgs: [id]);
     return resultado;
   }
 
-  //actualizar datos de la base de datos
+  // UPDATE FROM tabla
   Future<int> actualizarBD(String tabla, Map<String, dynamic> fila) async{
     Database? bd = await baseDatos;
     var resultado=0;
@@ -75,14 +70,14 @@ class BDHelper{
   }
 }
 
+// // OTRO MODELO DE BASE DE DATOS TRATANDO CON OBJETOS Usuario, NO PODEMOS USARLO PORQUE TENDRIAMOS QUE INTRODUCIR UN id MANUAL AL USUARIO
 // class DB{
-  
 //   static Future<Database> _openDB() async{
 //     return openDatabase(
 //       join(await getDatabasesPath(),"usuarios.db"),
 //       onCreate: (db,version){
-//         return db.execute("CREATE TABLE usuarios(id INT PRIMARY KEY AUTO_INCREMENT,nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
-//         // return db.execute("CREATE TABLE usuarios(id INT PRIMARY KEY,nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
+//         // return db.execute("CREATE TABLE usuarios(id INTEGER PRIMARY KEY AUTO_INCREMENT,nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
+//         return db.execute("CREATE TABLE usuarios(id INTEGER PRIMARY KEY,nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
 //       },
 //       version: 1
 //     );
