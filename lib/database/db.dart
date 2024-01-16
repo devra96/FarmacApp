@@ -36,6 +36,14 @@ class BDHelper{
     return resultado;
   }
 
+  // SELECT * FROM tabla WHERE correo = correo
+  Future<int> consultarUser(String tabla, String correo) async{
+    Database? bd = await baseDatos;
+    var resultado = await bd!.query(tabla, where: "correo = ?", whereArgs: [correo]);
+    var res = resultado.length;
+    return res;
+  }
+
   // CONSULTA CON SENTENCIA SQL
   Future<List<Map<String, dynamic>>> consultarSQL(String sql) async{
     Database? bd = await baseDatos;

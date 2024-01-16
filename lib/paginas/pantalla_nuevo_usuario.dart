@@ -164,7 +164,9 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                     fontSize: 22
                   ),
                 ),
-                onPressed: (){
+                onPressed: () async{
+                  int c = await bdHelper.consultarUser("usuarios", correo);
+
                   // SI EL USUARIO NO HA RELLENADO TODOS LOS CAMPOS
                   if(nombre == "" || correo == "" || pass == "" || confirmarpass == ""){
                     showDialog<void>(
@@ -214,12 +216,31 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                     );
                   }
                   // COMPROBACION DE SI EL CORREO INTRODUCIDO YA EXISTE EN LA BASE DE DATOS
-                  // else if(){
-                    
-                  // }
+                  else if(c != 0){
+                    showDialog<void>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        content: const Text(
+                          'Ya existe un usuario registrado con la cuenta de correo proporcionada.',
+                          style: TextStyle(
+                            fontSize: 16
+                          )
+                        ),
+                        actions: <TextButton>[
+                          TextButton(
+                            onPressed: (){
+                              Navigator.pop(context);
+                            },
+                            child: const Center(
+                              child: Text('Aceptar')
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }
                   // INSERCION DEL USUARIO EN LA BASE DE DATOS Y VOLVEMOS ATRAS
                   else{
-                    // Usuario u = new Usuario(id: 1, nombre: nombre, correo: correo, password: pass);
                     bdHelper.insertarBD("usuarios",{'nombre':nombre, 'correo':correo, 'password':pass});
                     print("USUARIO CREADO.");
                     Navigator.pop(context);
