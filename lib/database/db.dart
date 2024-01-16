@@ -29,19 +29,27 @@ class BDHelper{
     return baseDatos;
   }
 
+  // SELECT * FROM tabla WHERE correo = correo
+  Future<int> comprobarCorreo(String tabla, String correo) async{
+    Database? bd = await baseDatos;
+    var resultado = await bd!.query(tabla, where: "correo = ?", whereArgs: [correo]);
+    var res = resultado.length;
+    return res;
+  }
+
+  // SELECT * FROM tabla WHERE correo = correo AND password = password
+  Future<int> comprobarLogin(String tabla, String correo, String password) async{
+    Database? bd = await baseDatos;
+    var resultado = await bd!.query(tabla, where: "correo = ? AND password = ?", whereArgs: [correo,password]);
+    var res = resultado.length;
+    return res;
+  }
+
   // SELECT * FROM tabla
   Future<List<Map<String, dynamic>>> consultarBD(String tabla) async{
     Database? bd = await baseDatos;
     var resultado = await bd!.query(tabla);
     return resultado;
-  }
-
-  // SELECT * FROM tabla WHERE correo = correo
-  Future<int> consultarUser(String tabla, String correo) async{
-    Database? bd = await baseDatos;
-    var resultado = await bd!.query(tabla, where: "correo = ?", whereArgs: [correo]);
-    var res = resultado.length;
-    return res;
   }
 
   // CONSULTA CON SENTENCIA SQL

@@ -1,5 +1,6 @@
  import 'dart:io';
 
+import 'package:farmacapp/database/db.dart';
 import 'package:farmacapp/paginas/pantalla_agenda.dart';
 import 'package:farmacapp/paginas/pantalla_nuevo_usuario.dart';
 import 'package:farmacapp/paginas/pantalla_pass_olvidada.dart';
@@ -45,6 +46,7 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
   Widget build(BuildContext context) {
     late String user = "";
     late String pass = "";
+    BDHelper bdHelper = BDHelper();
 
     return Scaffold(
       // ####################  BODY  ####################
@@ -141,16 +143,39 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                     fontSize: 22
                   ),
                 ),
-                onPressed: (){
-                  // DE MOMENTO SE HACE UNA PRUEBA DE INICIO DE SESION CON "admin/admin"
-                  // SE AÑADIRA EN UN FUTURO UNA LISTA DE MAPAS QUE GUARDE USUARIOS CON SUS DATOS??
-                  if(user == "admin" && pass == "admin"){
-                    print("Correcto");
-                    _loadPantallaAgenda();
-                  }
-                  // SI EL USUARIO Y/O CONTRASEÑA SON INCORRECTOS
-                  else{
+                onPressed: () async{
+                  // SI EL USUARIO NO HA RELLENADO AMBOS CAMPOS
+                  if(user == "" || pass == ""){
                     showDialog<void>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        content: const Text(
+                          'Por favor, rellena ambos campos.',
+                          style: TextStyle(
+                            fontSize: 16
+                          )
+                        ),
+                        actions: <TextButton>[
+                          TextButton(
+                            onPressed: (){
+                              Navigator.pop(context);
+                            },
+                            child: const Center(
+                              child: Text('Aceptar')
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }
+                  else{
+                    // SI EL USUARIO Y CONTRASEÑA COINDICEN, DEVOLVERA 1
+                    if(await bdHelper.comprobarLogin("usuarios", user, pass) == 1){
+                      _loadPantallaAgenda();
+                    }
+                    // SI EL USUARIO Y/O CONTRASEÑA SON INCORRECTOS
+                    else{
+                      showDialog<void>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                         content: const Text(
@@ -171,6 +196,7 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                         ],
                       ),
                     );
+                    }
                   }
                 },
               ),

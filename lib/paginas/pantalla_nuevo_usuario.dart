@@ -165,7 +165,10 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                   ),
                 ),
                 onPressed: () async{
-                  int c = await bdHelper.consultarUser("usuarios", correo);
+                  // CONSULTAMOS A LA BASE DE DATOS SI EXISTE ALGUN USUARIO CON EL CORREO INTRODUCIDO
+                  // SI EXISTE, GUARDARA 1
+                  // SI NO, GUARDARA 0
+                  int c = await bdHelper.comprobarCorreo("usuarios", correo);
 
                   // SI EL USUARIO NO HA RELLENADO TODOS LOS CAMPOS
                   if(nombre == "" || correo == "" || pass == "" || confirmarpass == ""){
