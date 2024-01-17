@@ -24,6 +24,8 @@ class BDHelper{
       onCreate: (Database db, int version) async{
         // AÑADIMOS UN await db.execute() POR CADA TABLA QUE QUERAMOS AÑADIR
         await db.execute("CREATE TABLE usuarios(id INTEGER PRIMARY KEY,nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
+        // TABLA MEDICAMENTOS: id, nombre, ultimadosis, proximadosis, numdosis, normasconsumo, caracteristicas,
+        // (fechaprimeradosis, horaprimeradosis O DATETIME fechahoraprimeradosis??), imagen?, idadministrador?
       }
     );
     return baseDatos;
@@ -37,12 +39,16 @@ class BDHelper{
     return res;
   }
 
-  // SELECT * FROM tabla WHERE correo = correo AND password = password
-  Future<int> comprobarLogin(String tabla, String correo, String password) async{
+  // SELECT id FROM tabla WHERE correo = correo AND password = password
+  Future<String> comprobarLogin(String tabla, String correo, String password) async{
+    String id = "";
     Database? bd = await baseDatos;
     var resultado = await bd!.query(tabla, where: "correo = ? AND password = ?", whereArgs: [correo,password]);
-    var res = resultado.length;
-    return res;
+    // var res = resultado.length;
+    for(int i=0;i<resultado.length;i++){
+      id = resultado[i]["id"].toString();
+    }
+    return id;
   }
 
   // SELECT * FROM tabla

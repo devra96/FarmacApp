@@ -169,8 +169,9 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                     );
                   }
                   else{
-                    // SI EL USUARIO Y CONTRASEÑA COINDICEN, DEVOLVERA 1
-                    if(await bdHelper.comprobarLogin("usuarios", user, pass) == 1){
+                    // SI EL USUARIO Y CONTRASEÑA COINDICEN
+                    if(await bdHelper.comprobarLogin("usuarios", user, pass) != ""){
+                      // print("ID DEL USUARIO INICIADO: ${await bdHelper.comprobarLogin("usuarios", user, pass)}");
                       _loadPantallaAgenda();
                     }
                     // SI EL USUARIO Y/O CONTRASEÑA SON INCORRECTOS
