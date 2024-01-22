@@ -3,6 +3,7 @@ import 'package:farmacapp/paginas/pantalla_detalle_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_farmacias_cercanas.dart';
 import 'package:farmacapp/paginas/pantalla_inicio_sesion.dart';
 import 'package:farmacapp/paginas/pantalla_reponer_medicamento.dart';
+import 'package:farmacapp/paginas/pantalla_visitas_medicas.dart';
 import 'package:flutter/material.dart';
 
 class PantallaAgenda extends StatefulWidget {
@@ -45,6 +46,13 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
 
   _loadPantallaInicioSesion() async {
     final destino = MaterialPageRoute(builder: (_) => PantallaInicioSesion());
+    final datoDevuelto = await Navigator.push(context, destino);
+
+    setState(() {});
+  }
+
+  _loadPantallaVisitasMedicas() async {
+    final destino = MaterialPageRoute(builder: (_) => PantallaVisitasMedicas());
     final datoDevuelto = await Navigator.push(context, destino);
 
     setState(() {});
@@ -153,8 +161,9 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                   children: [
                     Icon(Icons.list),
                     Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text('Reponer medicamentos'))
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text('Reponer medicamentos')
+                    )
                   ],
                 ),
                 onTap: () {
@@ -164,10 +173,37 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
               ListTile(
                 title: Row(
                   children: [
+                    Icon(Icons.list),
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text('Visitas medicas'))
+                  ],
+                ),
+                onTap: () {
+                  // IR A PANTALLA VISITAS MEDICAS
+                  _loadPantallaVisitasMedicas();
+                },
+              ),
+              ListTile(
+                title: Row(
+                  children: [
+                    Icon(Icons.settings),
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text('Configuracion'))
+                  ],
+                ),
+                onTap: () {
+                  // IR A CONFIGURACION
+                },
+              ),
+              ListTile(
+                title: Row(
+                  children: [
                     Icon(Icons.logout),
                     Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text('Cerrar sesion'))
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text('Cerrar sesion'))
                   ],
                 ),
                 onTap: (){

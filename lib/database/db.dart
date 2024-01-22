@@ -1,4 +1,4 @@
-import 'package:farmacapp/database/usuario.dart';
+import 'package:farmacapp/modelos/usuario.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
