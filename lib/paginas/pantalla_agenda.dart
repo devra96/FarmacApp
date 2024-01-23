@@ -4,6 +4,7 @@ import 'package:farmacapp/paginas/pantalla_farmacias_cercanas.dart';
 import 'package:farmacapp/paginas/pantalla_inicio_sesion.dart';
 import 'package:farmacapp/paginas/pantalla_reponer_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_visitas_medicas.dart';
+import 'package:farmacapp/widgets/boton_medicamento.dart';
 import 'package:flutter/material.dart';
 
 class PantallaAgenda extends StatefulWidget {
@@ -249,15 +250,16 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                 //     ),
                 //   ],
                 // ),
-                child: Container(
-                  padding: EdgeInsets.all(4),
-                  child: const Text(
-                    "DIAZEPAM\nUltima dosis: 17/08/2023 - 09:00\nUltima dosis: 17/08/2023 - 09:00",
-                    style: TextStyle(
-                      fontSize: 16
-                    ),
-                  ),
-                ),
+                // child: Container(
+                //   padding: EdgeInsets.all(4),
+                //   child: const Text(
+                //     "DIAZEPAM\nUltima dosis: 17/08/2023 - 09:00\nProxima dosis: 18/08/2023 - 09:00",
+                //     style: TextStyle(
+                //       fontSize: 16
+                //     ),
+                //   ),
+                // ),
+                child: BotonMedicamento(nombre: "NOMBRE MEDICAMENTO", ultimaDosis: "23/01/2024 - 12:13", proximaDosis: "24/01/2024 - 12:13"),
               ));
         },
         itemCount: 10,

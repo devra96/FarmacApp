@@ -25,6 +25,39 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
       
     });
   }
+
+  DateTime selectedDate = DateTime.now();
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
+  TimeOfDay selectedHour = TimeOfDay.now();
+  Future<void> _selectHour(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child ?? Container(),
+        );
+      },
+    );
+    if(picked != null && picked != selectedHour) {
+      setState(() {
+        selectedHour = picked;
+      });
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -152,13 +185,13 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
           Row(
             children: [
               Container(
-                margin: EdgeInsets.only(left: 10, right: 70),
+                margin: EdgeInsets.only(left: 10, right: 50),
                 child: Text(
                   "Fecha de la primera dosis:"
                 ),
               ),
               Container(
-                width: 100,
+                width: 120,
                 margin: EdgeInsets.only(top: 10),
                 decoration: BoxDecoration(
                   // color: Colors.grey,
@@ -169,21 +202,14 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                   controller: txt,
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
-                    hintText: "Fecha",
+                    hintText: "${selectedDate}".split(" ")[0],
                     border: OutlineInputBorder()
                   ),
                   onTap: (){
-                    showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(19701231),
-                      lastDate: DateTime.now(),
-                      onDatePickerModeChange: (value) => fecha,
-                    );
-                  },
-                  onChanged: (value){
-                    fecha = value;
-                    txt.text = fecha; // NO FUNCIONA
+                    // IMPEDIMOS QUE ABRA EL TECLADO AL PULSAR EL EDITTEXT
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    // ABRIMOS EL SELECTOR DE FECHA
+                    _selectDate(context);
                   },
                 )
               )
@@ -193,13 +219,13 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
           Row(
             children: [
               Container(
-                margin: EdgeInsets.only(left: 10, right: 78),
+                margin: EdgeInsets.only(left: 10, right: 58),
                 child: Text(
                   "Hora de la primera dosis:"
                 ),
               ),
               Container(
-                width: 100,
+                width: 120,
                 margin: EdgeInsets.only(top: 10),
                 decoration: BoxDecoration(
                   border: Border.all(),
@@ -208,16 +234,17 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                 child: TextField(
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
-                    hintText: "Hora",
+                    hintText: selectedHour.toString(),
                     border: OutlineInputBorder(),
                   ),
                   onTap: (){
-                    showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now()
-                    );
+                    // IMPEDIMOS QUE ABRA EL TECLADO AL PULSAR EL EDITTEXT
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    // ABRIMOS EL SELECTOR DE HORA
+                    _selectHour(context);
+
+                    print("$selectedHour");
                   },
-                  onChanged: (value){},
                 )
               )
             ],
