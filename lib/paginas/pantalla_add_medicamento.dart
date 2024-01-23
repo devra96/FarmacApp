@@ -14,7 +14,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
   // CUANDO CREEMOS EL MEDICAMENTO-
   String nombre = "", fecha = "", hora = "";
   int dias = 0, dosis = 0;
-  var txt = TextEditingController();
+  // var txt = TextEditingController();
   
   // FUNCION PARA CARGAR LA PANTALLA DE AÑADIR MAS OPCIONES AL MEDICAMENTO
   _loadPantallaMasOpcionesMedicamento () async{
@@ -29,11 +29,12 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
   DateTime selectedDate = DateTime.now();
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate) {
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2015, 8),
+      lastDate: DateTime(2101)
+    );
+    if(picked != null && picked != selectedDate){
       setState(() {
         selectedDate = picked;
       });
@@ -41,20 +42,28 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
   }
 
   TimeOfDay selectedHour = TimeOfDay.now();
+  String selectedHourString = "Hora";
   Future<void> _selectHour(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
-      builder: (BuildContext context, Widget? child) {
+      builder: (BuildContext context, Widget? child){
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-          child: child ?? Container(),
+          child: child!,
         );
       },
     );
     if(picked != null && picked != selectedHour) {
       setState(() {
         selectedHour = picked;
+        selectedHourString = "${selectedHour.hour}:${selectedHour.minute}";
+        if(picked.hour < 10){
+          selectedHourString = "0${selectedHour.hour}:${selectedHour.minute}";
+        }
+        if(picked.minute < 10){
+          selectedHourString = "0${selectedHour.hour}:0${selectedHour.minute}";
+        }
       });
     }
   }
@@ -199,7 +208,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
                 child: TextField(
-                  controller: txt,
+                  // controller: txt,
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
                     hintText: "${selectedDate}".split(" ")[0],
@@ -210,6 +219,16 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                     FocusScope.of(context).requestFocus(FocusNode());
                     // ABRIMOS EL SELECTOR DE FECHA
                     _selectDate(context);
+
+                    // FECHA DE PRUEBA
+                    // DateTime a = new DateTime(
+                    //   selectedDate.year,
+                    //   selectedDate.month,
+                    //   selectedDate.day,
+                    //   selectedHour.hour,
+                    //   selectedHour.minute
+                    // );
+                    // print("FECHA DE PRUEBA: $a");
                   },
                 )
               )
@@ -234,7 +253,8 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                 child: TextField(
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
-                    hintText: selectedHour.toString(),
+                    // hintText: "$selectedHourString",
+                    hintText: "${selectedHour.hour}:${selectedHour.minute}",
                     border: OutlineInputBorder(),
                   ),
                   onTap: (){
@@ -242,8 +262,6 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                     FocusScope.of(context).requestFocus(FocusNode());
                     // ABRIMOS EL SELECTOR DE HORA
                     _selectHour(context);
-
-                    print("$selectedHour");
                   },
                 )
               )
@@ -300,7 +318,9 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                     'Por favor, rellena los campos de nombre, dias y dosis incluidas.'),
                   actions: <Widget>[
                     TextButton(
-                      onPressed: () => Navigator.pop(context, 'OK'),
+                      onPressed: (){
+                        Navigator.pop(context, 'OK');
+                      },
                       child: const Text('ACEPTAR'),
                     )
                   ],
@@ -308,8 +328,9 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
               );
               }
               else{
-                // GUARDAR MEDICAMENTO Y VOLVER A LA AGENDA
+                // GUARDAR MEDICAMENTO EN LA BASE DE DATOS
                 // SI NO SE HA INDICADO FECHA Y HORA DE LA PRIMERA DOSIS, EL SISTEMA PONGA LA FECHA Y HORA ACTUAL
+                Navigator.pop(context);
               }
             break;
             case 1:
