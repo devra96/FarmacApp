@@ -26,7 +26,10 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
     });
   }
 
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = DateTime.now();                 // GUARDA LA FECHA SELECCIONADA EN EL EDITTEXT. POR DEFECTO, FECHA ACTUAL
+  String selectedDateString = "Dia";                      // STRING QUE MUESTRA LA FECHA SELECCIONADA EN EL EDITTEXT
+
+  // METODO QUE MUESTRA EL DATEPICKER AL PULSAR EN EL EDITTEXT "FECHA PRIMERA DOSIS"
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -37,12 +40,15 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
     if(picked != null && picked != selectedDate){
       setState(() {
         selectedDate = picked;
+        selectedDateString = "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
       });
     }
   }
 
-  TimeOfDay selectedHour = TimeOfDay.now();
-  String selectedHourString = "Hora";
+  TimeOfDay selectedHour = TimeOfDay.now();               // GUARDA LA HORA SELECCIONADA EN EL EDITTEXT. POR DEFECTO, HORA ACTUAL
+  String selectedHourString = "Hora";                     // STRING QUE MUESTRA LA ULTIMA HORA SELECCIONADA EN EL EDITTEXT
+  
+  // METODO QUE MUESTRA EL DATEPICKER AL PULSAR EN EL EDITTEXT "FECHA PRIMERA DOSIS"
   Future<void> _selectHour(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -211,7 +217,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                   // controller: txt,
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
-                    hintText: "${selectedDate}".split(" ")[0],
+                    hintText: "${selectedDateString}".split(" ")[0],
                     border: OutlineInputBorder()
                   ),
                   onTap: (){
@@ -253,8 +259,8 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
                 child: TextField(
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
-                    // hintText: "$selectedHourString",
-                    hintText: "${selectedHour.hour}:${selectedHour.minute}",
+                    hintText: "$selectedHourString",
+                    // hintText: "${selectedHour.hour}:${selectedHour.minute}",
                     border: OutlineInputBorder(),
                   ),
                   onTap: (){
