@@ -1,4 +1,5 @@
 import 'package:farmacapp/modelos/usuario.dart';
+import 'package:farmacapp/widgets/dialogo.dart';
 import 'package:flutter/material.dart';
 
 import 'package:sqflite/sqflite.dart';
@@ -174,72 +175,21 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                   if(nombre == "" || correo == "" || pass == "" || confirmarpass == ""){
                     showDialog<void>(
                       context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        content: const Text(
-                          'Por favor, rellena todos los campos.',
-                          style: TextStyle(
-                            fontSize: 16
-                          )
-                        ),
-                        actions: <TextButton>[
-                          TextButton(
-                            onPressed: (){
-                              Navigator.pop(context);
-                            },
-                            child: const Center(
-                              child: Text('Aceptar')
-                            ),
-                          )
-                        ],
-                      ),
+                      builder: (BuildContext context) => Dialogo(texto: 'Por favor, rellena todos los campos.')
                     );
                   }
                   // SI LAS CONTRASEÑAS NO COINCIDEN
                   else if(pass != confirmarpass){
                     showDialog<void>(
                       context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        content: const Text(
-                          '¡Las contraseñas no coinciden!',
-                          style: TextStyle(
-                            fontSize: 16
-                          )
-                        ),
-                        actions: <TextButton>[
-                          TextButton(
-                            onPressed: (){
-                              Navigator.pop(context);
-                            },
-                            child: const Center(
-                              child: Text('Aceptar')
-                            ),
-                          )
-                        ],
-                      ),
+                      builder: (BuildContext context) => Dialogo(texto: '¡Las contraseñas no coinciden!')
                     );
                   }
                   // COMPROBACION DE SI EL CORREO INTRODUCIDO YA EXISTE EN LA BASE DE DATOS
                   else if(c != 0){
                     showDialog<void>(
                       context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        content: const Text(
-                          'Ya existe un usuario registrado con la cuenta de correo proporcionada.',
-                          style: TextStyle(
-                            fontSize: 16
-                          )
-                        ),
-                        actions: <TextButton>[
-                          TextButton(
-                            onPressed: (){
-                              Navigator.pop(context);
-                            },
-                            child: const Center(
-                              child: Text('Aceptar')
-                            ),
-                          )
-                        ],
-                      ),
+                      builder: (BuildContext context) => Dialogo(texto: 'Ya existe un usuario registrado con la cuenta de correo proporcionada.')
                     );
                   }
                   // INSERCION DEL USUARIO EN LA BASE DE DATOS Y VOLVEMOS ATRAS

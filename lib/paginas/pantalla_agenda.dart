@@ -1,3 +1,4 @@
+import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_add_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_detalle_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_farmacias_cercanas.dart';
@@ -7,6 +8,8 @@ import 'package:farmacapp/paginas/pantalla_visitas_medicas.dart';
 import 'package:farmacapp/widgets/boton_medicamento.dart';
 import 'package:flutter/material.dart';
 
+// import 'package:http/http.dart' as http;
+
 class PantallaAgenda extends StatefulWidget {
   const PantallaAgenda({super.key});
 
@@ -15,6 +18,8 @@ class PantallaAgenda extends StatefulWidget {
 }
 
 class _PantallaAgendaState extends State<PantallaAgenda> {
+  final Medicamento m = new Medicamento();
+
   _loadPantallaAddMedicamento() async {
     final destino = MaterialPageRoute(builder: (_) => PantallaAddMedicamento());
     final datoDevuelto = await Navigator.push(context, destino);
@@ -218,51 +223,48 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
         ),
       ),
       // ####################  BODY  ####################
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return Container(
-              height: 80,
-              margin: EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                  border: Border.all(),
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                  color: Colors.white),
-              child: InkWell(
-                onTap: () {
-                  // AQUI SE EXPORTARIAN LAS PROPIEDADES DEL MEDICAMENTO
-                  // SELECCIONADO A LA PANTALLA QUE LLAMAMOS EN EL METODO
-                  _loadPantallaDetalleMedicamento();
-                },
-                // child: ListView(
-                //   padding: EdgeInsets.all(2),
-                //   children: [
-                //     Text(
-                //       "DIAZEPAM",
-                //       style: TextStyle(fontSize: 25),
-                //     ),
-                //     Text(
-                //       "Ultima dosis: 17/08/2023 - 09:00",
-                //       style: TextStyle(fontSize: 16),
-                //     ),
-                //     Text(
-                //       "Ultima dosis: 17/08/2023 - 09:00",
-                //       style: TextStyle(fontSize: 16),
-                //     ),
-                //   ],
-                // ),
-                // child: Container(
-                //   padding: EdgeInsets.all(4),
-                //   child: const Text(
-                //     "DIAZEPAM\nUltima dosis: 17/08/2023 - 09:00\nProxima dosis: 18/08/2023 - 09:00",
-                //     style: TextStyle(
-                //       fontSize: 16
-                //     ),
-                //   ),
-                // ),
-                child: BotonMedicamento(nombre: "NOMBRE MEDICAMENTO", ultimaDosis: "23/01/2024 - 12:13", proximaDosis: "24/01/2024 - 12:13"),
-              ));
-        },
-        itemCount: 10,
+      body: Container(
+        child: FutureBuilder(
+          future: m.getMedicamentosUsuario(1),
+          builder: (context, AsyncSnapshot<List<Medicamento>> snapshot){
+            // print("SNAPSHOT DATA: ${snapshot.data}");
+            if(snapshot.hasData){
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index){
+                  
+                  // PRUEBA PARA SUMAR HORAS A UNA FECHA
+                  DateTime prueba = snapshot.data![index].fechahoraultimadosis.add(Duration(hours: 1));
+
+                  return Container(
+                    height: 80,
+                    margin: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      color: Colors.white
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        _loadPantallaDetalleMedicamento();
+                      },
+                      child: BotonMedicamento(
+                        nombre: snapshot.data![index].nombre,
+                        ultimaDosis: "${snapshot.data![index].fechahoraultimadosis.day}/${snapshot.data![index].fechahoraultimadosis.month}/${snapshot.data![index].fechahoraultimadosis.year} - ${snapshot.data![index].fechahoraultimadosis.hour}:${snapshot.data![index].fechahoraultimadosis.minute}",
+                        // ultimaDosis: "${prueba.day}/${prueba.month}/${prueba.year} - ${prueba.hour}:${prueba.minute}",
+                        proximaDosis: "${snapshot.data![index].fechahoraproximadosis.day}/${snapshot.data![index].fechahoraproximadosis.month}/${snapshot.data![index].fechahoraproximadosis.year} - ${snapshot.data![index].fechahoraproximadosis.hour}:${snapshot.data![index].fechahoraproximadosis.minute}"
+                      ),
+                    ),
+                  );
+                }
+              );
+            }
+            else{
+              // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
+              return Text("a");
+            }
+          },
+        ),
       ),
       // #############  BOTTOMNAVIGATIONBAR  ############
       bottomNavigationBar: Container(

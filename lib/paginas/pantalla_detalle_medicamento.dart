@@ -20,22 +20,22 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
         padding: EdgeInsets.all(10),
         children: [
           // CUADRO FOTO
-          Center(
-            child: Container(
-              width: 300,
-              height: 200,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                border: Border.all()
-              ),
-              child: const Column(
-                children: [
-                  Padding(padding: EdgeInsets.only(top: 65)),
-                  Icon(Icons.photo_camera, size: 60, color: Colors.white,),
-                ]
-              ),
-            ),
-          ),
+          // Center(
+          //   child: Container(
+          //     width: 300,
+          //     height: 200,
+          //     decoration: BoxDecoration(
+          //       color: Colors.grey,
+          //       border: Border.all()
+          //     ),
+          //     child: const Column(
+          //       children: [
+          //         Padding(padding: EdgeInsets.only(top: 65)),
+          //         Icon(Icons.photo_camera, size: 60, color: Colors.white,),
+          //       ]
+          //     ),
+          //   ),
+          // ),
           // TEXTO "Ultima dosis"
           Center(
             child: Container(

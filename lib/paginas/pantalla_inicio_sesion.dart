@@ -1,9 +1,11 @@
  import 'dart:io';
 
 import 'package:farmacapp/database/db.dart';
+import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/paginas/pantalla_agenda.dart';
 import 'package:farmacapp/paginas/pantalla_nuevo_usuario.dart';
 import 'package:farmacapp/paginas/pantalla_pass_olvidada.dart';
+import 'package:farmacapp/widgets/dialogo.dart';
 import 'package:flutter/material.dart';
 
 class PantallaInicioSesion extends StatefulWidget {
@@ -15,6 +17,11 @@ class PantallaInicioSesion extends StatefulWidget {
 
 class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
   
+  String correo = "";
+  String password = "";
+
+  BDHelper bdHelper = BDHelper();
+
   _loadPantallaAgenda () async{
     final destino = MaterialPageRoute(builder:(_)=>PantallaAgenda());
     final datoDevuelto = await Navigator.push(context, destino);
@@ -33,193 +40,134 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
     });
   }
 
-  _loadPantallaNuevoUsuario () async{
-    final destino = MaterialPageRoute(builder:(_)=>PantallaNuevoUsuario());
-    final datoDevuelto = await Navigator.push(context, destino);
-    
-    // setState((){
-
-    // });
-  }
-
   @override
   Widget build(BuildContext context) {
-    late String user = "";
-    late String pass = "";
-    BDHelper bdHelper = BDHelper();
-
     return Scaffold(
-      // ####################  BODY  ####################
-      body: ListView(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // LOGO
-          Image.asset("assets/images/logo.png"),
-          // USUARIO
-          Center(
-            child: Container(
-              padding: EdgeInsets.only(top: 20),
-              child: const Text(
-                "Introduzca su nombre de usuario",
-                style: TextStyle(
-                  fontSize: 20
-                ),
-              ),
+          // TEXTO "INICIAR SESION"
+          Text(
+            "INICIAR SESION",
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold
             ),
           ),
-          // TEXTFIELD USUARIO
-          Center(
-            child: Container(
-              width: 300,
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Nombre de usuario",
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value){
-                  user = value;
-                },
-              ),
-            ),
+          // ESPACIO
+          SizedBox(
+            height: 50,
           ),
-          // CONTRASEÑA
-          Center(
-            child: Container(
-              padding: EdgeInsets.only(top: 20),
-              child: const Text(
-                "Introduzca su contraseña",
-                style: TextStyle(
-                  fontSize: 20
-                ),
-              ),
-            ),
-          ),
-          // TEXTFIELD CONTRASEÑA
-          Center(
-            child: Container(
-              width: 300,
-              child: TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Contraseña"
-                ),
-                onChanged: (value){
-                  pass = value;
-                },
-              ),
-            ),
-          ),
-          // TEXTO SI HA OLVIDADO LA CONTRASEÑA
-          Center(
-            child: InkWell(
-              child: Container(
-                padding: EdgeInsets.only(top: 10, bottom: 20),
-                child: Text(
-                  "Si ha olvidado la contraseña, haga click aqui",
-                  style: TextStyle(
-                    color: Colors.red
-                  ),
-                ),
-              ),
-              onTap: (){
-                print("IR A PANTALLA CONTRASEÑA OLVIDADA");
-                _loadPantallaPassOlvidada();
-              },
-            ),
-          ),
-          // BOTON INICIAR SESION
-          Center(
-            child: Container(
-              width: 300,
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.all(Radius.circular(8))
-              ),
-              child: TextButton(
-                child: const Text(
-                  "INICIAR SESION",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22
-                  ),
-                ),
-                onPressed: () async{
-                  // SI EL USUARIO NO HA RELLENADO AMBOS CAMPOS
-                  if(user == "" || pass == ""){
-                    showDialog<void>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        content: const Text(
-                          'Por favor, rellena ambos campos.',
-                          style: TextStyle(
-                            fontSize: 16
-                          )
-                        ),
-                        actions: <TextButton>[
-                          TextButton(
-                            onPressed: (){
-                              Navigator.pop(context);
-                            },
-                            child: const Center(
-                              child: Text('Aceptar')
-                            ),
-                          )
-                        ],
+          // COLUMNA TEXTFIELD´S Y BOTON
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // TEXTFIELD CORREO ELECTRONICO
+              Center(
+                child: SizedBox(
+                  width: 350,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)
                       ),
-                    );
-                  }
-                  else{
-                    // SI EL USUARIO Y CONTRASEÑA COINDICEN
-                    if(await bdHelper.comprobarLogin("usuarios", user, pass) != ""){
-                      // print("ID DEL USUARIO INICIADO: ${await bdHelper.comprobarLogin("usuarios", user, pass)}");
-                      _loadPantallaAgenda();
-                    }
-                    // SI EL USUARIO Y/O CONTRASEÑA SON INCORRECTOS
-                    else{
+                      labelText: "Correo electronico"
+                    ),
+                    onChanged: (value) => correo = value,
+                  ),
+                ),
+              ),
+              // ESPACIO
+              SizedBox(
+                height: 20,
+              ),
+              // TEXTFIELD CONTRASEÑA
+              Center(
+                child: SizedBox(
+                  width: 350,
+                  child: TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      fillColor: Colors.red,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      labelText: "Contraseña"
+                    ),
+                    onChanged: (value) => password = value,
+                  ),
+                ),
+              ),
+              // ESPACIO
+              SizedBox(
+                height: 40,
+              ),
+              // BOTON INICIAR SESION
+              Container(
+                width: 350,
+                height: 55,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF009638),
+                  borderRadius: BorderRadius.all(Radius.circular(8))
+                ),
+                child: TextButton(
+                  child: const Text(
+                    "INICIAR SESION",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  onPressed: ()async{
+                    if(correo == "" || password == ""){
                       showDialog<void>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        content: const Text(
-                          'Usuario y/o contraseña incorrectos.',
-                          style: TextStyle(
-                            fontSize: 16
-                          )
-                        ),
-                        actions: <TextButton>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Center(
-                              child: Text('Aceptar')
-                            ),
-                          )
-                        ],
-                      ),
-                    );
+                        context: context,
+                        builder: (BuildContext context) => Dialogo(texto: "Por favor, rellena ambos campos.")
+                      );
                     }
-                  }
+                    else{
+                      Usuario u = new Usuario();
+                      String response = await u.checkUsuario(correo,password);
+                      if(response == "no"){
+                        showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) => Dialogo(texto: "Usuario y/o contraseña incorrecto(s).")
+                        );
+                      }
+                      else{
+                        // PASAR A LA PANTALLA DE LA AGENDA EL ID DEL USUARIO???
+                        _loadPantallaAgenda();
+                      }
+                    }
+                  },
+                ),
+              ),
+              // ESPACIO
+              SizedBox(
+                height: 30,
+              ),
+              // TEXT "OLVIDASTE LA CONTRASEÑA"
+              InkWell(
+                child: Container(
+                  padding: EdgeInsets.only(top: 10, bottom: 20),
+                  child: Text(
+                    "¿Olvidaste la contraseña? Haz click aqui",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      decoration: TextDecoration.underline
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  print("IR A PANTALLA CONTRASEÑA OLVIDADA");
+                  _loadPantallaPassOlvidada();
                 },
               ),
-            ),
-          ),
+            ],
+          )
         ],
-      ),
-      // BOTON FLOTANTE
-      floatingActionButton: Container(
-        width: 90,
-        height: 70,
-        child: FloatingActionButton(
-          onPressed: (){
-            // IR A PANTALLA NUEVO USUARIO
-            _loadPantallaNuevoUsuario();
-          },
-          child: Text(
-            "¿Nuevo usuario? Haz click aqui.",
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
+      )
     );
   }
 }

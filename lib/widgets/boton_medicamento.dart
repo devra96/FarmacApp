@@ -17,7 +17,7 @@ class BotonMedicamento extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(4),
       child: Text(
-        "$nombre\nProxima dosis: $ultimaDosis\nProxima dosis: $proximaDosis",
+        "$nombre\nUltima dosis: $ultimaDosis\nProxima dosis: $proximaDosis",
         style: TextStyle(
           fontSize: 16
         ),
