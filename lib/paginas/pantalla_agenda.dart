@@ -1,4 +1,5 @@
 import 'package:farmacapp/modelos/medicamento.dart';
+import 'package:farmacapp/modelos/visitamedica.dart';
 import 'package:farmacapp/paginas/pantalla_add_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_detalle_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_farmacias_cercanas.dart';
@@ -6,6 +7,7 @@ import 'package:farmacapp/paginas/pantalla_inicio_sesion.dart';
 import 'package:farmacapp/paginas/pantalla_reponer_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_visitas_medicas.dart';
 import 'package:farmacapp/widgets/boton_medicamento.dart';
+import 'package:farmacapp/widgets/boton_visitamedica.dart';
 import 'package:flutter/material.dart';
 
 // import 'package:http/http.dart' as http;
@@ -19,6 +21,10 @@ class PantallaAgenda extends StatefulWidget {
 
 class _PantallaAgendaState extends State<PantallaAgenda> {
   final Medicamento m = new Medicamento();
+  final VisitaMedica v = new VisitaMedica();
+
+  // NAVIGATION BAR
+  int currentPageIndex = 0;
 
   _loadPantallaAddMedicamento() async {
     final destino = MaterialPageRoute(builder: (_) => PantallaAddMedicamento());
@@ -223,74 +229,112 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
         ),
       ),
       // ####################  BODY  ####################
-      body: Container(
-        child: FutureBuilder(
-          future: m.getMedicamentosUsuario(1),
-          builder: (context, AsyncSnapshot<List<Medicamento>> snapshot){
-            // print("SNAPSHOT DATA: ${snapshot.data}");
-            if(snapshot.hasData){
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index){
-                  
-                  // PRUEBA PARA SUMAR HORAS A UNA FECHA
-                  DateTime prueba = snapshot.data![index].fechahoraultimadosis.add(Duration(hours: 1));
+      body: <Widget>[
+        // MEDICAMENTOS
+        Container(
+          child: FutureBuilder(
+            future: m.getMedicamentosUsuario(1),
+            builder: (context, AsyncSnapshot<List<Medicamento>> snapshot){
+              // print("SNAPSHOT DATA: ${snapshot.data}");
+              if(snapshot.hasData){
+                return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index){
+                    
+                    // PRUEBA PARA SUMAR HORAS A UNA FECHA
+                    DateTime prueba = snapshot.data![index].fechahoraultimadosis.add(Duration(hours: 1));
 
-                  return Container(
-                    height: 80,
-                    margin: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      color: Colors.white
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        _loadPantallaDetalleMedicamento();
-                      },
-                      child: BotonMedicamento(
-                        nombre: snapshot.data![index].nombre,
-                        ultimaDosis: "${snapshot.data![index].fechahoraultimadosis.day}/${snapshot.data![index].fechahoraultimadosis.month}/${snapshot.data![index].fechahoraultimadosis.year} - ${snapshot.data![index].fechahoraultimadosis.hour}:${snapshot.data![index].fechahoraultimadosis.minute}",
-                        // ultimaDosis: "${prueba.day}/${prueba.month}/${prueba.year} - ${prueba.hour}:${prueba.minute}",
-                        proximaDosis: "${snapshot.data![index].fechahoraproximadosis.day}/${snapshot.data![index].fechahoraproximadosis.month}/${snapshot.data![index].fechahoraproximadosis.year} - ${snapshot.data![index].fechahoraproximadosis.hour}:${snapshot.data![index].fechahoraproximadosis.minute}"
+                    return Container(
+                      height: 80,
+                      margin: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        color: Colors.white
                       ),
-                    ),
-                  );
-                }
-              );
-            }
-            else{
-              // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
-              return Text("a");
-            }
-          },
-        ),
-      ),
-      // #############  BOTTOMNAVIGATIONBAR  ############
-      bottomNavigationBar: Container(
-        height: 80,
-        color: const Color.fromARGB(255, 5, 133, 9),
-        child: InkWell(
-          onTap: () {
-            _loadPantallaAddMedicamento();
-          },
-          child: Container(
-            padding: EdgeInsets.only(top: 8.0),
-            child: const Column(
-              children: [
-                Icon(Icons.add, size: 35, color: Colors.white),
-                Text(
-                  "AÑADIR MEDICAMENTO",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20
-                  )
-                ),
-              ],
-            ),
+                      child: InkWell(
+                        onTap: () {
+                          _loadPantallaDetalleMedicamento();
+                        },
+                        child: BotonMedicamento(
+                          nombre: snapshot.data![index].nombre,
+                          ultimaDosis: "${snapshot.data![index].fechahoraultimadosis.day}/${snapshot.data![index].fechahoraultimadosis.month}/${snapshot.data![index].fechahoraultimadosis.year} - ${snapshot.data![index].fechahoraultimadosis.hour}:${snapshot.data![index].fechahoraultimadosis.minute}",
+                          // ultimaDosis: "${prueba.day}/${prueba.month}/${prueba.year} - ${prueba.hour}:${prueba.minute}",
+                          proximaDosis: "${snapshot.data![index].fechahoraproximadosis.day}/${snapshot.data![index].fechahoraproximadosis.month}/${snapshot.data![index].fechahoraproximadosis.year} - ${snapshot.data![index].fechahoraproximadosis.hour}:${snapshot.data![index].fechahoraproximadosis.minute}"
+                        ),
+                      ),
+                    );
+                  }
+                );
+              }
+              else{
+                // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
+                return Text("a");
+              }
+            },
           ),
         ),
+
+        // VISITAS MEDICAS
+        Container(
+          child: FutureBuilder(
+            future: v.getVisitasMedicasUsuario(1),
+            builder: (context, AsyncSnapshot<List<VisitaMedica>> snapshot){
+              if(snapshot.hasData){
+                return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index){
+                    return Container(
+                      height: 80,
+                      margin: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        color: Colors.white
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          // IR A LA PANTALLA DETALLES MEDICAMENTO?
+                        },
+                        child: BotonVisitaMedica(
+                          especialidad: snapshot.data![index].especialidad,
+                          doctor: snapshot.data![index].doctor,
+                          lugar: snapshot.data![index].lugar,
+                          fechayhora: snapshot.data![index].fechayhora
+                        )
+                      ),
+                    );
+                  }
+                );
+              }
+              else{
+                // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
+                return Text("a");
+              }
+            },
+          ),
+        ),
+      ][currentPageIndex],
+      // #############  BOTTOMNAVIGATIONBAR  ############
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index){
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        indicatorColor: Color(0xFF009638),
+        selectedIndex: currentPageIndex,
+        destinations: const <Widget>[
+          NavigationDestination(
+            selectedIcon: Icon(Icons.add),
+            icon: Icon(Icons.add),
+            label: 'Medicamentos',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person),
+            label: 'Visitas medicas',
+          )
+        ],
       ),
     );
   }

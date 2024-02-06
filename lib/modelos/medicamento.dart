@@ -93,8 +93,8 @@ class Medicamento{
   }
 
   // Lectura de datos de la API
-  Future<List<Medicamento>> getMedicamentosUsuario(int id) async{
-    final response = await http.get(Uri.parse('http://10.0.2.2:8000/medicamentos/get_medicamentos/$id'));
+  Future<List<Medicamento>> getMedicamentosUsuario(int id_usuario) async{
+    final response = await http.get(Uri.parse('http://10.0.2.2:8000/medicamentos/get_medicamentos/$id_usuario'));
     if(response.statusCode == 200){
       List<Medicamento> medicamentos = [];
       Medicamento u = new Medicamento();

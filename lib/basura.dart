@@ -212,3 +212,30 @@
 //     ),
 //   ),
 // ),
+
+// ANTIGUA BOTTOMNAVIGATIONBAR
+// bottomNavigationBar: Container(
+//   height: 80,
+//   color: const Color.fromARGB(255, 5, 133, 9),
+//   child: InkWell(
+//     onTap: () {
+//       _loadPantallaAddMedicamento();
+//     },
+//     child: Container(
+//       padding: EdgeInsets.only(top: 8.0),
+//       child: const Column(
+//         children: [
+//           Icon(Icons.add, size: 35, color: Colors.white),
+//           Text(
+//             "AÑADIR MEDICAMENTO",
+//             style: TextStyle(
+//               color: Colors.white,
+//               fontWeight: FontWeight.bold,
+//               fontSize: 20
+//             )
+//           ),
+//         ],
+//       ),
+//     ),
+//   ),
+// ),
