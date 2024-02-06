@@ -19,6 +19,7 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
   
   String correo = "";
   String password = "";
+  bool valorSwitch = true;
 
   BDHelper bdHelper = BDHelper();
 
@@ -58,7 +59,7 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
           SizedBox(
             height: 50,
           ),
-          // COLUMNA TEXTFIELD´S Y BOTON
+          // COLUMNA TEXTFIELDS, SWITCHES Y BOTON CREAR CUENTA
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -100,7 +101,37 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
               ),
               // ESPACIO
               SizedBox(
-                height: 40,
+                height: 10,
+              ),
+              // ROW TEXTO "MODO REMOTO" Y SWITCH
+              Padding(
+                padding: const EdgeInsets.only(left: 22, right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Modo remoto',
+                      style: TextStyle(
+                        fontSize: 20
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10
+                    ),
+                    Switch(
+                      value: valorSwitch,
+                      onChanged: (bool value) {
+                        setState(() {
+                          valorSwitch = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              // ESPACIO
+              SizedBox(
+                height: 20,
               ),
               // BOTON INICIAR SESION
               Container(
@@ -120,24 +151,43 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                     ),
                   ),
                   onPressed: ()async{
+                    // SI EL CAMPO DEL CORREO Y/O CONTRASEÑA ESTA(N) VACIO(S)
                     if(correo == "" || password == ""){
                       showDialog<void>(
                         context: context,
                         builder: (BuildContext context) => Dialogo(texto: "Por favor, rellena ambos campos.")
                       );
                     }
+                    // IDENTIFICACION DE USUARIO Y CONTRASEÑA
                     else{
-                      Usuario u = new Usuario();
-                      String response = await u.checkUsuario(correo,password);
-                      if(response == "no"){
-                        showDialog<void>(
-                          context: context,
-                          builder: (BuildContext context) => Dialogo(texto: "Usuario y/o contraseña incorrecto(s).")
-                        );
+                      // SI EL MODO REMOTO ESTA ACTIVADO (IDENTIFICACION MEDIANTE API)
+                      if(valorSwitch){
+                        Usuario u = new Usuario();
+                        String response = await u.checkUsuario(correo,password);
+                        if(response == "no"){
+                          showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) => Dialogo(texto: "Usuario y/o contraseña incorrecto(s).")
+                          );
+                        }
+                        else{
+                          // PASAR A LA PANTALLA DE LA AGENDA EL ID DEL USUARIO???
+                          _loadPantallaAgenda();
+                        }
                       }
+                      // SI EL MODO REMOTO ESTA ACTIVADO (IDENTIFICACION MEDIANTE BD LOCAL)
                       else{
-                        // PASAR A LA PANTALLA DE LA AGENDA EL ID DEL USUARIO???
-                        _loadPantallaAgenda();
+                        // SI EL USUARIO Y CONTRASEÑA COINDICEN
+                        if(await bdHelper.comprobarLogin("usuarios", correo, password) != ""){
+                          // print("ID DEL USUARIO INICIADO: ${await bdHelper.comprobarLogin("usuarios", user, pass)}");
+                          _loadPantallaAgenda();
+                        }
+                        else{
+                          showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) => Dialogo(texto: "Usuario y/o contraseña incorrecto(s).")
+                          );
+                        }
                       }
                     }
                   },

@@ -23,9 +23,8 @@ class BDHelper{
       version: 1, 
       onCreate: (Database db, int version) async{
         // AÑADIMOS UN await db.execute() POR CADA TABLA QUE QUERAMOS AÑADIR
-        await db.execute("CREATE TABLE usuarios(id INTEGER PRIMARY KEY,nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
-        // TABLA MEDICAMENTOS: id, nombre, ultimadosis, proximadosis, numdosis, normasconsumo, caracteristicas,
-        // (fechaprimeradosis, horaprimeradosis O DATETIME fechahoraprimeradosis??), imagen?, idadministrador?
+        await db.execute("CREATE TABLE usuarios(id INTEGER PRIMARY KEY, id_supervisor INTEGER, nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
+        
       }
     );
     return baseDatos;

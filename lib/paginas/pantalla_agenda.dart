@@ -233,9 +233,9 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
         // MEDICAMENTOS
         Container(
           child: FutureBuilder(
-            future: m.getMedicamentosUsuario(1),
+            future: m.getMedicamentosUsuario(3),
             builder: (context, AsyncSnapshot<List<Medicamento>> snapshot){
-              // print("SNAPSHOT DATA: ${snapshot.data}");
+              print("SNAPSHOT DATA: ${snapshot.data}");
               if(snapshot.hasData){
                 return ListView.builder(
                   itemCount: snapshot.data!.length,
@@ -269,7 +269,20 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
               }
               else{
                 // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
-                return Text("a");
+                print("EEEEE");
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'NO HAY MEDICAMENTOS REGISTRADOS. HAGA CLICK EN EL BOTON FLOTANTE "+" PARA AÑADIR UN NUEVO MEDICAMENTO.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                );
               }
             },
           ),
@@ -309,7 +322,19 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
               }
               else{
                 // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
-                return Text("a");
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'NO HAY VISITAS MEDICAS REGISTRADAS. HAGA CLICK EN EL BOTON FLOTANTE "+" PARA AÑADIR UNA NUEVA VISITA MEDICA.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                );
               }
             },
           ),
