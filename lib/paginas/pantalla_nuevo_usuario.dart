@@ -1,6 +1,8 @@
 import 'package:farmacapp/modelos/usuario.dart';
+import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/widgets/dialogo.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:sqflite/sqflite.dart';
 import 'package:farmacapp/database/db.dart';
@@ -19,13 +21,16 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
   late String pass = "";
   late String confirmarpass = "";
 
-  bool valorSwitchModoRemoto = true;
+  // bool valorSwitchModoRemoto = true;
   bool valorSwitchModoSupervisor = false;
 
   BDHelper bdHelper = BDHelper();
   
   @override
   Widget build(BuildContext context) {
+
+    final modoTrabajo = Provider.of<ModoTrabajo>(context);
+
     return Scaffold(
       // #################### APPBAR ####################
       // appBar: AppBar(
@@ -151,10 +156,10 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                           width: 10
                         ),
                         Switch(
-                          value: valorSwitchModoRemoto,
+                          value: modoTrabajo.modoLocal,
                           onChanged: (bool value) {
                             setState(() {
-                              valorSwitchModoRemoto = value;
+                              modoTrabajo.modoLocal = value;
                             });
                           },
                         ),
@@ -230,7 +235,7 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                         // TODOS LOS CAMPOS INTRODUCIDOS CORRECTAMENTE
                         else{
                           // SI SE CREA CUENTA EN MODO REMOTO (API)
-                          if(valorSwitchModoRemoto){
+                          if(modoTrabajo.modoLocal){
                             // COMPROBACION DE CUENTA EXISTENTE EN LA API
                             Usuario u = new Usuario();
                             int idUsuario = await u.checkUsuarioExistente(correo);

@@ -28,6 +28,12 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
   // NAVIGATION BAR
   int currentPageIndex = 0;
 
+  // HORA ACTUAL
+  final DateTime horaActual = DateTime.now();
+
+  // COLOR FONDO BOTON MEDICAMENTO (PARA INDICAR SI HAY QUE TOMARLO O NO)
+  MaterialColor colorFondo = Colors.red;
+
   _loadPantallaAddMedicamento() async {
     final destino = MaterialPageRoute(builder: (_) => PantallaAddMedicamento());
     final datoDevuelto = await Navigator.push(context, destino);
@@ -102,6 +108,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
   Widget build(BuildContext context) {
 
     var usuarioIniciado = Provider.of<Usuario>(context);
+    var medicamentoSeleccionado = Provider.of<Medicamento>(context);
 
     return Scaffold(
       // #################### APPBAR ####################
@@ -245,12 +252,23 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                 return ListView.builder(
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index){
-                    
                     // PRUEBA PARA SUMAR HORAS A UNA FECHA
-                    DateTime prueba = snapshot.data![index].fechahoraultimadosis.add(Duration(hours: 1));
+                    // DateTime prueba = snapshot.data![index].fechahoraultimadosis.add(Duration(hours: 1));
+
+                    // COMPROBACION DE SI LA FECHA ACTUAL ES POSTERIOR A LA FECHA DE LA PROXIMA DOSIS
+                    // SI ES POSTERIOR: COLOR DE FONDO DEL MEDICAMENTO EN ROJO, INDICANDO QUE HABRIA QUE TOMARLO
+                    // EN CASO CONTRARIO: COLOR DE FONDO DEL MEDICAMENTO EN VERDE, INDICANDO QUE TODO CORRECTO
+                    if(horaActual.isAfter(snapshot.data![index].fechahoraproximadosis)){
+                      // print("TRUE");
+                      colorFondo = Colors.red;
+                    }
+                    else{
+                      // print("FALSE");
+                      colorFondo = Colors.green;
+                    }
 
                     return Container(
-                      height: 80,
+                      height: 160,
                       margin: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         border: Border.all(),
@@ -259,13 +277,26 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                       ),
                       child: InkWell(
                         onTap: () {
+                          // RECOGER DATOS MEDICAMENTO SELECCIONADO
+                          medicamentoSeleccionado.nombre = snapshot.data![index].nombre;
+                          medicamentoSeleccionado.dosisincluidas = snapshot.data![index].dosisincluidas;
+                          medicamentoSeleccionado.dosisrestantes = snapshot.data![index].dosisrestantes;
+                          medicamentoSeleccionado.tiempoconsumo = snapshot.data![index].tiempoconsumo;
+                          medicamentoSeleccionado.fechahoraultimadosis = snapshot.data![index].fechahoraultimadosis;
+                          medicamentoSeleccionado.fechahoraproximadosis = snapshot.data![index].fechahoraproximadosis;
+                          // gestionado por ???
+                          medicamentoSeleccionado.normasconsumo = snapshot.data![index].normasconsumo;
+                          medicamentoSeleccionado.caracteristicas = snapshot.data![index].caracteristicas;
+                          // IR A LA PANTALLA DETALLE MEDICAMENTO
                           _loadPantallaDetalleMedicamento();
                         },
                         child: BotonMedicamento(
                           nombre: snapshot.data![index].nombre,
                           ultimaDosis: "${snapshot.data![index].fechahoraultimadosis.day}/${snapshot.data![index].fechahoraultimadosis.month}/${snapshot.data![index].fechahoraultimadosis.year} - ${snapshot.data![index].fechahoraultimadosis.hour}:${snapshot.data![index].fechahoraultimadosis.minute}",
                           // ultimaDosis: "${prueba.day}/${prueba.month}/${prueba.year} - ${prueba.hour}:${prueba.minute}",
-                          proximaDosis: "${snapshot.data![index].fechahoraproximadosis.day}/${snapshot.data![index].fechahoraproximadosis.month}/${snapshot.data![index].fechahoraproximadosis.year} - ${snapshot.data![index].fechahoraproximadosis.hour}:${snapshot.data![index].fechahoraproximadosis.minute}"
+                          proximaDosis: "${snapshot.data![index].fechahoraproximadosis.day}/${snapshot.data![index].fechahoraproximadosis.month}/${snapshot.data![index].fechahoraproximadosis.year} - ${snapshot.data![index].fechahoraproximadosis.hour}:${snapshot.data![index].fechahoraproximadosis.minute}",
+                          dosisRestantes: snapshot.data![index].dosisrestantes,
+                          colorFondo: colorFondo
                         ),
                       ),
                     );
@@ -303,7 +334,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index){
                     return Container(
-                      height: 80,
+                      height: 130,
                       margin: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         border: Border.all(),
@@ -312,7 +343,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                       ),
                       child: InkWell(
                         onTap: () {
-                          // IR A LA PANTALLA DETALLES MEDICAMENTO?
+                          // IR A LA PANTALLA DETALLES VISITA MEDICA
                         },
                         child: BotonVisitaMedica(
                           especialidad: snapshot.data![index].especialidad,

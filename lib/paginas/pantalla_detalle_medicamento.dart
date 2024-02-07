@@ -1,4 +1,6 @@
+import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PantallaDetalleMedicamento extends StatefulWidget {
   const PantallaDetalleMedicamento({super.key});
@@ -8,198 +10,214 @@ class PantallaDetalleMedicamento extends StatefulWidget {
 }
 
 class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento> {
+
+  // NAVIGATION BAR
+  int currentPageIndex = 0;
+
   @override
   Widget build(BuildContext context) {
+
+    var medicamentoSeleccionado = Provider.of<Medicamento>(context);
+
     return Scaffold(
       // #################### APPBAR ####################
       appBar: AppBar(
-        title: Text("NOMBRE DEL MEDICAMENTO"),
+        title: Text("${medicamentoSeleccionado.nombre}"),
       ),
       // ####################  BODY  ####################
-      body: ListView(
-        padding: EdgeInsets.all(10),
-        children: [
-          // CUADRO FOTO
-          Center(
-            child: Container(
-              width: 300,
-              height: 200,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                border: Border.all()
+      body: <Widget>[
+        // PAGINA CARACTERISTICAS PRINCIPALES
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // CUADRO FOTO
+            Center(
+              child: Container(
+                width: 300,
+                height: 200,
+                decoration: BoxDecoration(
+                  // color: Colors.grey,
+                  border: Border.all()
+                ),
+                // child: const Column(
+                //   children: [
+                //     Padding(padding: EdgeInsets.only(top: 65)),
+                //     Icon(Icons.photo_camera, size: 60, color: Colors.white,),
+                //   ]
+                // ),
+                child: Image.asset('assets/images/medicamento-generico.jpg'),
               ),
-              child: const Column(
+            ),
+            // ESPACIO
+            SizedBox(
+              height: 20,
+            ),
+            // ROW DOSIS INCLUIDAS Y RESTANTES
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(padding: EdgeInsets.only(top: 65)),
-                  Icon(Icons.photo_camera, size: 60, color: Colors.white,),
-                ]
-              ),
-            ),
-          ),
-          // TEXTO "Ultima dosis"
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(top: 20),
-              child: Text(
-                "Ultima dosis: 12/12/2023 00:54",
-                style: TextStyle(
-                  fontSize: 20
-                ),
-              )
-            ),
-          ),
-          // TEXTO "Proxima dosis"
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(top: 20),
-              child: Text(
-                "Proxima dosis: 12/12/2023 00:54",
-                style: TextStyle(
-                  fontSize: 20
-                ),
-              )
-            ),
-          ),
-          // BOTON RENOVAR
-          Center(
-            child: Container(
-              width: 300,
-              margin: EdgeInsets.only(top: 20),
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.all(Radius.circular(8))
-              ),
-              child: TextButton(
-                child: const Text(
-                  "REGISTRAR DOSIS",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22
+                  Expanded(
+                    child: Column(
+                      children: [
+                        // TEXTO "DOSIS INCLUIDAS"
+                        Text(
+                          'Dosis incluidas',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        // NUMERO DOSIS INCLUIDAS
+                        Text(
+                          '${medicamentoSeleccionado.dosisincluidas}',
+                          style: TextStyle(
+                            fontSize: 36
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                onPressed: (){},
+                  Expanded(
+                    child: Column(
+                      children: [
+                        // TEXTO "DOSIS RESTANTES"
+                        Text(
+                          'Dosis restantes',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        // NUMERO DOSIS RESTANTES
+                        Text(
+                          '${medicamentoSeleccionado.dosisrestantes}',
+                          style: TextStyle(
+                            fontSize: 36
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          // TEXTO "Dosis restantes"
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(top: 20),
-              child: Text(
-                "Dosis restantes: 73",
-                style: TextStyle(
-                  fontSize: 20
-                ),
-              )
+            // ESPACIO
+            SizedBox(
+              height: 15,
             ),
-          ),
-          // TEXTO "Gestionado por"
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(top: 20),
+            // TEXTO "ULTIMA DOSIS CONSUMIDA"
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 48),
               child: Text(
-                "Gestionado por: Administrador",
-                style: TextStyle(
-                  fontSize: 20
-                ),
-              )
-            ),
-          ),
-          // TEXTO "Normas de consumo"
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(top: 20),
-              child: Text(
-                "Normas de consumo",
-                
+                "Ultima dosis consumida",
                 style: TextStyle(
                   fontSize: 20,
+                  fontWeight: FontWeight.bold,
                   decoration: TextDecoration.underline
                 ),
-              )
+              ),
             ),
-          ),
-          // NORMAS DE CONSUMO
-          Center(
-            child: Container(
+            // FECHA Y HORA DE LA ULTIMA DOSIS
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 48),
               child: Text(
-                "Algunas normas de consumo de dicho medicamento",
-                textAlign: TextAlign.center,
+                "${medicamentoSeleccionado.fechahoraultimadosis.day}/${medicamentoSeleccionado.fechahoraultimadosis.month}/${medicamentoSeleccionado.fechahoraultimadosis.year} - ${medicamentoSeleccionado.fechahoraultimadosis.hour}:${medicamentoSeleccionado.fechahoraultimadosis.minute}",
                 style: TextStyle(
-                  fontSize: 20
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
                 ),
-              )
+              ),
             ),
-          ),
-          // TEXTO "Caracteristicas generales"
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(top: 20),
+            // ESPACIO
+            SizedBox(
+              height: 20,
+            ),
+            // TEXTO "ULTIMA DOSIS CONSUMIDA"
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 48),
               child: Text(
-                "Caracteristicas generales",
-                
+                "Proxima dosis consumida",
                 style: TextStyle(
                   fontSize: 20,
+                  fontWeight: FontWeight.bold,
                   decoration: TextDecoration.underline
                 ),
-              )
+              ),
             ),
-          ),
-          // CARACTERISTICAS GENERALES
-          Center(
-            child: Container(
+            // FECHA Y HORA DE LA PROXIMA DOSIS
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 48),
               child: Text(
-                "Algunas caracteristicas generales de dicho medicamento",
-                textAlign: TextAlign.center,
+                "${medicamentoSeleccionado.fechahoraproximadosis.day}/${medicamentoSeleccionado.fechahoraproximadosis.month}/${medicamentoSeleccionado.fechahoraproximadosis.year} - ${medicamentoSeleccionado.fechahoraproximadosis.hour}:${medicamentoSeleccionado.fechahoraproximadosis.minute}",
                 style: TextStyle(
-                  fontSize: 20
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
                 ),
-              )
+              ),
             ),
-          ),
-        ],
-      ),
+            SizedBox(
+              height: 20,
+            ),
+            // BOTON REGISTRAR DOSIS
+            Center(
+              child: Container(
+                width: 300,
+                height: 55,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF009638),
+                  borderRadius: BorderRadius.all(Radius.circular(8))
+                ),
+                child: TextButton(
+                  child: const Text(
+                    "REGISTRAR DOSIS",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  onPressed: (){
+              
+                  },
+                ),
+              ),
+            ),
+            // ESPACIO
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+
+        // PAGINA OTRAS CARACTERISTICAS
+        Text("a")
+      ][currentPageIndex],
       // #############  BOTTOMNAVIGATIONBAR  ############
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.mode_edit),
-            label: "Modificar\nmedicamento"
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.delete_forever),
-            label: "Eliminar\nmedicamento"
-          ),
-        ],
-        onTap: (value){
-          switch (value){
-            case 0:
-              // IR A PANTALLA MAS OPCIONES MEDICAMENTO
-              // CARGANDO LOS DATOS DEL MEDICAMENTO ?????
-              setState(() {});
-            break;
-            case 1:
-              showDialog<String>(
-                context: context,
-                builder: (BuildContext context) => AlertDialog(
-                  title: Center(child: const Text('¡ATENCION!')),
-                  content: const Text('¿Estas seguro de que deseas eliminar este medicamento?'),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, 'Cancel'),
-                      child: const Text('CANCELAR'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, 'OK'),
-                      child: const Text('CONFIRMAR'),
-                    ),
-                  ],
-                ),
-              );
-              setState(() {});
-            break;
-          }
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index){
+          setState(() {
+            currentPageIndex = index;
+          });
         },
+        indicatorColor: Color(0xFF009638),
+        selectedIndex: currentPageIndex,
+        destinations: const <Widget>[
+          NavigationDestination(
+            icon: Icon(Icons.list),
+            label: 'Caracteristicas principales',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.add),
+            label: 'Otras caracteristicas',
+          )
+        ],
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/paginas/pantalla_inicio.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
@@ -13,6 +14,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (_) => Usuario()
+        ),
+        ChangeNotifierProvider(
+          create: (_) => Medicamento()
         ),
       ],
       child: MyApp(),
@@ -30,7 +34,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false, // ELIMINAR LABEL "DEBUG" DE ARRIBA A LA DERECHA
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-        // useMaterial3: true,
+        useMaterial3: true,
       ),
       // ARRANCAMOS LA PANTALLA DE INICIO DE SESION, PERO EN UN FUTURO HABRIA QUE CONTROLAR
       // QUE NOS ARRANQUE ESTA O LA PANTALLA DE LA AGENDA, EN BASE A SI SE HA INICIADO O NO

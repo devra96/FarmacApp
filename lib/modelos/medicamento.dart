@@ -1,13 +1,14 @@
 import 'dart:convert';
-
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-class Medicamento{
+class Medicamento with ChangeNotifier{
   int? _id;
   late int _id_usuario;
   late String _nombre;
-  late int _diasconsumo;
+  // late int _diasconsumo;
   late int _dosisincluidas;
+  late int _dosisrestantes;
   late int _tiempoconsumo;
   late DateTime _fechahoraultimadosis;
   late DateTime _fechahoraproximadosis;
@@ -22,8 +23,9 @@ class Medicamento{
     this._id = obj["id"];
     this._id_usuario = obj["id_usuario"];
     this._nombre = obj["nombre"];
-    this._diasconsumo = obj["diasconsumo"];
+    // this._diasconsumo = obj["diasconsumo"];
     this._dosisincluidas = obj["dosisincluidas"];
+    this._dosisrestantes = obj["dosisrestantes"];
     this._tiempoconsumo = obj["tiempoconsumo"];
     this._fechahoraultimadosis = DateTime.parse(obj["fechahoraultimadosis"]);
     this._fechahoraproximadosis = DateTime.parse(obj["fechahoraproximadosis"]);
@@ -36,28 +38,33 @@ class Medicamento{
   // GETTERS
   int? get id => _id;
   int get id_usuario => _id_usuario;
-  String get caracteristicas => _caracteristicas;
-  String get normasconsumo => _normasconsumo;
-  String get gestionadopor => _gestionadopor;
-  // Blob get imagen => _imagen;
+  String get nombre => _nombre;
+  // int get diasconsumo => _diasconsumo;
+  int get dosisincluidas => _dosisincluidas;
+  int get dosisrestantes => _dosisrestantes;
+  int get tiempoconsumo => _tiempoconsumo;
   DateTime get fechahoraultimadosis => _fechahoraultimadosis;
   DateTime get fechahoraproximadosis => _fechahoraproximadosis;
-  int get tiempoconsumo => _tiempoconsumo;
-  int get dosisincluidas => _dosisincluidas;
-  int get diasconsumo => _diasconsumo;
-  String get nombre => _nombre;
+  // Blob get imagen => _imagen;
+  String get gestionadopor => _gestionadopor;
+  String get normasconsumo => _normasconsumo;
+  String get caracteristicas => _caracteristicas;
+  
 
   // SETTERS
   set caracteristicas(String value) {
     _caracteristicas = value;
+    notifyListeners();
   }
 
   set normasconsumo(String value) {
     _normasconsumo = value;
+    notifyListeners();
   }
 
   set gestionadopor(String value) {
     _gestionadopor = value;
+    notifyListeners();
   }
 
   // set imagen(Blob value) {
@@ -66,30 +73,47 @@ class Medicamento{
 
   set fechahoraultimadosis(DateTime value) {
     _fechahoraultimadosis = value;
+    notifyListeners();
   }
 
   set fechahoraproximadosis(DateTime value) {
     _fechahoraproximadosis = value;
+    notifyListeners();
   }
 
   set tiempoconsumo(int value) {
     _tiempoconsumo = value;
+    notifyListeners();
+  }
+
+  set dosisrestantes(int value) {
+    _dosisrestantes = value;
+    notifyListeners();
   }
 
   set dosisincluidas(int value) {
     _dosisincluidas = value;
+    notifyListeners();
   }
 
-  set diasconsumo(int value) {
-    _diasconsumo = value;
-  }
+  // set diasconsumo(int value) {
+  //   _diasconsumo = value;
+  //   notifyListeners();
+  // }
 
   set nombre(String value) {
     _nombre = value;
+    notifyListeners();
   }
 
   set id_usuario(int value) {
     _id_usuario = value;
+    notifyListeners();
+  }
+
+  set id(int? value) {
+    _id = value;
+    notifyListeners();
   }
 
   // Lectura de datos de la API
