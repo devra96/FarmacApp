@@ -1,4 +1,5 @@
 import 'package:farmacapp/modelos/medicamento.dart';
+import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/modelos/visitamedica.dart';
 import 'package:farmacapp/paginas/pantalla_add_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_detalle_medicamento.dart';
@@ -9,6 +10,7 @@ import 'package:farmacapp/paginas/pantalla_visitas_medicas.dart';
 import 'package:farmacapp/widgets/boton_medicamento.dart';
 import 'package:farmacapp/widgets/boton_visitamedica.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // import 'package:http/http.dart' as http;
 
@@ -98,11 +100,14 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
 
   @override
   Widget build(BuildContext context) {
+
+    var usuarioIniciado = Provider.of<Usuario>(context);
+
     return Scaffold(
       // #################### APPBAR ####################
       appBar: AppBar(
         title: Center(
-          child: Text("Agenda de Pepe")
+          child: Text("Agenda de ${usuarioIniciado.nombre}")
         ),
         actions: [
           IconButton(
@@ -233,7 +238,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
         // MEDICAMENTOS
         Container(
           child: FutureBuilder(
-            future: m.getMedicamentosUsuario(3),
+            future: m.getMedicamentosUsuario(usuarioIniciado.id),
             builder: (context, AsyncSnapshot<List<Medicamento>> snapshot){
               print("SNAPSHOT DATA: ${snapshot.data}");
               if(snapshot.hasData){
@@ -269,7 +274,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
               }
               else{
                 // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
-                print("EEEEE");
+                print("ELSE SNAPSHOT SIN DATA");
                 return const Center(
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
@@ -291,7 +296,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
         // VISITAS MEDICAS
         Container(
           child: FutureBuilder(
-            future: v.getVisitasMedicasUsuario(1),
+            future: v.getVisitasMedicasUsuario(usuarioIniciado.id),
             builder: (context, AsyncSnapshot<List<VisitaMedica>> snapshot){
               if(snapshot.hasData){
                 return ListView.builder(

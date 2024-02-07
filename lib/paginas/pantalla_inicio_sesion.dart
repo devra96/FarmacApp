@@ -5,8 +5,11 @@ import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/paginas/pantalla_agenda.dart';
 import 'package:farmacapp/paginas/pantalla_nuevo_usuario.dart';
 import 'package:farmacapp/paginas/pantalla_pass_olvidada.dart';
+import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/widgets/dialogo.dart';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PantallaInicioSesion extends StatefulWidget {
   const PantallaInicioSesion({super.key});
@@ -43,6 +46,10 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
 
   @override
   Widget build(BuildContext context) {
+
+    final modoTrabajo = Provider.of<ModoTrabajo>(context);
+    var usuarioIniciado = Provider.of<Usuario>(context);
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -119,10 +126,10 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                       width: 10
                     ),
                     Switch(
-                      value: valorSwitch,
+                      value: modoTrabajo.modoLocal,
                       onChanged: (bool value) {
                         setState(() {
-                          valorSwitch = value;
+                          modoTrabajo.modoLocal = value;
                         });
                       },
                     ),
@@ -160,9 +167,10 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                     }
                     // IDENTIFICACION DE USUARIO Y CONTRASEÑA
                     else{
+                      Usuario u = new Usuario();
+
                       // SI EL MODO REMOTO ESTA ACTIVADO (IDENTIFICACION MEDIANTE API)
-                      if(valorSwitch){
-                        Usuario u = new Usuario();
+                      if(modoTrabajo.modoLocal){
                         String response = await u.checkUsuario(correo,password);
                         if(response == "no"){
                           showDialog<void>(
@@ -171,15 +179,31 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                           );
                         }
                         else{
-                          // PASAR A LA PANTALLA DE LA AGENDA EL ID DEL USUARIO???
+                          // RECOGEMOS AL USUARIO QUE HA INICIADO SESION
+                          u = await u.getUsuario(correo,password);
+                          // GUARDAMOS LOS ATRIBUTOS DE USUARIO EN EL PROVIDER "usuarioIniciado" PARA TRANSPASARLOS ENTRE PANTALLAS
+                          usuarioIniciado.id = u.id;
+                          usuarioIniciado.id_supervisor = u.id_supervisor;
+                          usuarioIniciado.nombre = u.nombre;
+                          usuarioIniciado.correo = u.correo;
+                          usuarioIniciado.password = u.password;
+                          // CARGAMOS LA AGENDA
                           _loadPantallaAgenda();
                         }
                       }
-                      // SI EL MODO REMOTO ESTA ACTIVADO (IDENTIFICACION MEDIANTE BD LOCAL)
+                      // SI EL MODO REMOTO ESTA DESACTIVADO (IDENTIFICACION MEDIANTE BD LOCAL)
                       else{
                         // SI EL USUARIO Y CONTRASEÑA COINDICEN
                         if(await bdHelper.comprobarLogin("usuarios", correo, password) != ""){
-                          // print("ID DEL USUARIO INICIADO: ${await bdHelper.comprobarLogin("usuarios", user, pass)}");
+                          // RECOGEMOS AL USUARIO QUE HA INICIADO SESION
+                          u = await bdHelper.getUsuario("usuarios",correo,password);
+                          // GUARDAMOS LOS ATRIBUTOS DE USUARIO EN EL PROVIDER "usuarioIniciado" PARA TRANSPASARLOS ENTRE PANTALLAS
+                          usuarioIniciado.id = u.id;
+                          usuarioIniciado.id_supervisor = u.id_supervisor;
+                          usuarioIniciado.nombre = u.nombre;
+                          usuarioIniciado.correo = u.correo;
+                          usuarioIniciado.password = u.password;
+                          // CARGAMOS LA AGENDA
                           _loadPantallaAgenda();
                         }
                         else{

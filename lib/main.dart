@@ -1,8 +1,23 @@
+import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/paginas/pantalla_inicio.dart';
+import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ModoTrabajo()
+        ),
+        ChangeNotifierProvider(
+          create: (_) => Usuario()
+        ),
+      ],
+      child: MyApp(),
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {

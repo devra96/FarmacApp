@@ -50,6 +50,17 @@ class BDHelper{
     return id;
   }
 
+  // SELECT Usuario FROM tabla
+  Future<Usuario> getUsuario(String tabla, String correo, String password) async{
+    Database? bd = await baseDatos;
+    var resultado = await bd!.query(tabla, where: "correo = ? AND password = ?", whereArgs: [correo,password]);
+    Usuario u = new Usuario();
+    for(int i=0;i<resultado.length;i++){
+      u = Usuario.fromMap(resultado[i]);
+    }
+    return u;
+  }
+
   // SELECT * FROM tabla
   Future<List<Map<String, dynamic>>> consultarBD(String tabla) async{
     Database? bd = await baseDatos;
