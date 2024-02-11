@@ -605,3 +605,123 @@
 //     }
 //   },
 // ),
+
+// PANTALLA ADD MEDICAMENTO, ANTIGUO TEXTFIELD HORA&FECHA
+// Container(
+//   width: 120,
+//   margin: EdgeInsets.only(top: 10),
+//   decoration: BoxDecoration(
+//     // color: Colors.grey,
+//     border: Border.all(),
+//     borderRadius: BorderRadius.all(Radius.circular(8)),
+//   ),
+//   child: TextField(
+//     // controller: txt,
+//     textAlign: TextAlign.center,
+//     decoration: InputDecoration(
+//       hintText: "$selectedHourString",
+//       border: OutlineInputBorder()
+//     ),
+//     onTap: (){
+//       // IMPEDIMOS QUE ABRA EL TECLADO AL PULSAR EL EDITTEXT
+//       FocusScope.of(context).requestFocus(FocusNode());
+//       // ABRIMOS EL SELECTOR DE FECHA
+//       _selectHour(context);
+//     },
+//   )
+// )
+
+// PANTALLA MEDICAMENTO, LINEA 391
+// // TEXTO "INDIQUE LA FECHA DE LA PRIMERA DOSIS"
+// Text(
+//   "Indique la fecha de la primera dosis",
+//   style: TextStyle(
+//     fontSize: 18,
+//     fontWeight: FontWeight.bold,
+//   ),
+// ),
+// // BOTON FECHA
+// Container(
+//   width: 350,
+//   height: 55,
+//   decoration: const BoxDecoration(
+//     color: Color(0xFF009638),
+//     borderRadius: BorderRadius.all(Radius.circular(8))
+//   ),
+//   child: TextButton(
+//     child: const Text(
+//       "SELECCIONE LA FECHA",
+//       style: TextStyle(
+//         color: Colors.white,
+//         fontSize: 22,
+//         fontWeight: FontWeight.bold
+//       ),
+//     ),
+//     onPressed: ()async{
+      
+//     },
+//   ),
+// ),
+// // ESPACIO
+// SizedBox(
+//   height: 20,
+// ),
+// // TEXTO "INDIQUE LA HORA DE LA PRIMERA DOSIS"
+// Text(
+//   "Indique la hora de la primera dosis",
+//   style: TextStyle(
+//     fontSize: 18,
+//     fontWeight: FontWeight.bold,
+//   ),
+// ),
+// // BOTON HORA
+// Container(
+//   width: 350,
+//   height: 55,
+//   decoration: const BoxDecoration(
+//     color: Color(0xFF009638),
+//     borderRadius: BorderRadius.all(Radius.circular(8))
+//   ),
+//   child: TextButton(
+//     child: const Text(
+//       "SELECCIONE LA HORA",
+//       style: TextStyle(
+//         color: Colors.white,
+//         fontSize: 22,
+//         fontWeight: FontWeight.bold
+//       ),
+//     ),
+//     onPressed: ()async{
+      
+//     },
+//   ),
+// ),
+// // ESPACIO
+// SizedBox(
+//   height: 50,
+// ),
+// // BOTON HORA
+// Container(
+//   width: 350,
+//   height: 55,
+//   decoration: const BoxDecoration(
+//     color: Color(0xFF009638),
+//     borderRadius: BorderRadius.all(Radius.circular(8))
+//   ),
+//   child: TextButton(
+//     child: const Text(
+//       "SELECCIONE LA HORA",
+//       style: TextStyle(
+//         color: Colors.white,
+//         fontSize: 22,
+//         fontWeight: FontWeight.bold
+//       ),
+//     ),
+//     onPressed: ()async{
+      
+//     },
+//   ),
+// ),
+
+// POST MEDICAMENTO
+// String stringFecha = "${fechahoraproximadosis.year}${fechahoraproximadosis.month}${fechahoraproximadosis.day}${fechahoraproximadosis.hour}${fechahoraproximadosis.minute}00";

@@ -5,8 +5,10 @@ import 'package:farmacapp/paginas/pantalla_add_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_detalle_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_farmacias_cercanas.dart';
 import 'package:farmacapp/paginas/pantalla_inicio_sesion.dart';
+import 'package:farmacapp/paginas/pantalla_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_reponer_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_visitas_medicas.dart';
+import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/widgets/boton_medicamento.dart';
 import 'package:farmacapp/widgets/boton_visitamedica.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +36,16 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
   // COLOR FONDO BOTON MEDICAMENTO (PARA INDICAR SI HAY QUE TOMARLO O NO)
   MaterialColor colorFondo = Colors.red;
 
+  // METODOS
   _loadPantallaAddMedicamento() async {
+    final destino = MaterialPageRoute(builder: (_) => PantallaMedicamento());
+    final datoDevuelto = await Navigator.push(context, destino);
+
+    setState(() {});
+  }
+
+  // BORRAR
+  _loadPantallaAddMedicamento2() async {
     final destino = MaterialPageRoute(builder: (_) => PantallaAddMedicamento());
     final datoDevuelto = await Navigator.push(context, destino);
 
@@ -109,6 +120,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
 
     var usuarioIniciado = Provider.of<Usuario>(context);
     var medicamentoSeleccionado = Provider.of<Medicamento>(context);
+    var modoEdicion = Provider.of<ModoEdicion>(context);
 
     return Scaffold(
       // #################### APPBAR ####################
@@ -117,14 +129,40 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
           child: Text("Agenda de ${usuarioIniciado.nombre}")
         ),
         actions: [
-          IconButton(
-            onPressed: (){
-              _cerrarSesion();
-              // HABRIA QUE CONTROLAR QUE EN BASE AL VALOR DEVUELTO
-              // POR LA FUNCION, VUELVA O NO A LA PANTALLA DE LOGIN
+          // IconButton(
+          //   onPressed: (){
+          //     _cerrarSesion();
+          //     // HABRIA QUE CONTROLAR QUE EN BASE AL VALOR DEVUELTO
+          //     // POR LA FUNCION, VUELVA O NO A LA PANTALLA DE LOGIN
+          //   },
+          //   icon: Icon(Icons.logout)
+          // )
+          PopupMenuButton(
+            icon: Icon(Icons.add),
+            itemBuilder: (BuildContext context) {
+              return <PopupMenuEntry>[
+                PopupMenuItem(
+                  child: Text('Nuevo medicamento'),
+                  value: 'nuevomedicamento',
+                ),
+                PopupMenuItem(
+                  child: Text('Nueva visita medica'),
+                  value: 'nuevavisita',
+                ),
+              ];
             },
-            icon: Icon(Icons.logout)
-          )
+            onSelected: (value){
+              // DESACTIVAMOS EL MODO DE EDICION
+              modoEdicion.modoedicion = false;
+
+              if(value == 'nuevomedicamento'){
+                _loadPantallaAddMedicamento();
+              }
+              else{
+                _loadPantallaAddMedicamento2();
+              }
+            },
+          ),
         ],
       ),
       // #################### DRAWER ####################
@@ -376,6 +414,15 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
           ),
         ),
       ][currentPageIndex],
+      // ############# FLOATINGACTIONBUTTON #############
+      // floatingActionButton: FloatingActionButton.extended(
+      //    onPressed: () {
+      //   // Acción a realizar cuando se presione el botón
+      //   },
+      //   label: Text('Nuevo medicamento'),
+      //   icon: Icon(Icons.add),
+      //   backgroundColor: Color(0xFF009638), // Color de fondo del botón
+      // ),
       // #############  BOTTOMNAVIGATIONBAR  ############
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index){

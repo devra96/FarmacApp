@@ -41,6 +41,15 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
       setState(() {
         selectedDate = picked;
         selectedDateString = "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
+        if(selectedDate.day < 10){
+          selectedDateString = "0${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
+        }
+        if(selectedDate.month < 10){
+          selectedDateString = "${selectedDate.day}/0${selectedDate.month}/${selectedDate.year}";
+        }
+        if(selectedDate.day < 10 && selectedDate.month < 10){
+          selectedDateString = "0${selectedDate.day}/0${selectedDate.month}/${selectedDate.year}";
+        }
       });
     }
   }
@@ -48,7 +57,7 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
   TimeOfDay selectedHour = TimeOfDay.now();               // GUARDA LA HORA SELECCIONADA EN EL EDITTEXT. POR DEFECTO, HORA ACTUAL
   String selectedHourString = "Hora";                     // STRING QUE MUESTRA LA ULTIMA HORA SELECCIONADA EN EL EDITTEXT
   
-  // METODO QUE MUESTRA EL DATEPICKER AL PULSAR EN EL EDITTEXT "FECHA PRIMERA DOSIS"
+  // METODO QUE MUESTRA EL TIMEPICKER AL PULSAR EN EL EDITTEXT "FECHA PRIMERA DOSIS"
   Future<void> _selectHour(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -68,6 +77,9 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
           selectedHourString = "0${selectedHour.hour}:${selectedHour.minute}";
         }
         if(picked.minute < 10){
+          selectedHourString = "${selectedHour.hour}:0${selectedHour.minute}";
+        }
+        if(picked.hour < 10 && picked.minute < 10){
           selectedHourString = "0${selectedHour.hour}:0${selectedHour.minute}";
         }
       });
@@ -79,24 +91,22 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
     return Scaffold(
       // #################### APPBAR ####################
       appBar: AppBar(
-        automaticallyImplyLeading: false, // HACE QUE NO SALGA EL BOTON DE VOLVER
-        title: Center(
-          child: Text("AÑADIR UN MEDICAMENTO"),
-        ),
+        // automaticallyImplyLeading: false, // HACE QUE NO SALGA EL BOTON DE VOLVER
+        // title: Center(
+        //   child: Text("AÑADIR UN MEDICAMENTO"),
+        // ),
       ),
       // ####################  BODY  ####################
       body: ListView(
         padding: EdgeInsets.all(16),
         children: [
           // TEXTO: "Introduzca el nombre del medicamento"
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(bottom: 10),
-              child: Text(
-                "Introduzca el nombre del medicamento",
-                style: TextStyle(
-                  fontSize: 19
-                ),
+          Container(
+            margin: EdgeInsets.only(bottom: 10),
+            child: Text(
+              "Introduzca el nombre del medicamento",
+              style: TextStyle(
+                fontSize: 19
               ),
             ),
           ),
@@ -117,45 +127,45 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
             ),
           ),
           // TEXTO: "¿Durante cuantos dias tiene que tomarlo?"
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(bottom: 10),
-              child: Text(
-                "¿Durante cuantos dias tiene que tomarlo?",
-                style: TextStyle(
-                  fontSize: 19
-                ),
-              ),
-            ),
-          ),
+          // Center(
+          //   child: Container(
+          //     margin: EdgeInsets.only(bottom: 10),
+          //     child: Text(
+          //       "¿Durante cuantos dias tiene que tomarlo?",
+          //       style: TextStyle(
+          //         fontSize: 19
+          //       ),
+          //     ),
+          //   ),
+          // ),
           // ROW DIAS
-          Row(
-            children: [
-              // TEXTO "Pulse en el recuadro e indique un numero =>"
-              Container(
-                width: 300,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 16, left: 8),
-                  child: Text("Pulse en el recuadro e indique un numero => "),
-                ),
-              ),
-              // TEXTFIELD DIAS
-              Container(
-                width: 45,
-                margin: EdgeInsets.only(bottom: 20),
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: "0",
-                    border: OutlineInputBorder()
-                  ),
-                  onChanged: (value){
-                    dias = int.parse(value);
-                  },
-                ),
-              )
-            ],
-          ),
+          // Row(
+          //   children: [
+          //     // TEXTO "Pulse en el recuadro e indique un numero =>"
+          //     Container(
+          //       width: 300,
+          //       child: Padding(
+          //         padding: const EdgeInsets.only(bottom: 16, left: 8),
+          //         child: Text("Pulse en el recuadro e indique un numero => "),
+          //       ),
+          //     ),
+          //     // TEXTFIELD DIAS
+          //     Container(
+          //       width: 45,
+          //       margin: EdgeInsets.only(bottom: 20),
+          //       child: TextField(
+          //         keyboardType: TextInputType.number,
+          //         decoration: InputDecoration(
+          //           hintText: "0",
+          //           border: OutlineInputBorder()
+          //         ),
+          //         onChanged: (value){
+          //           dias = int.parse(value);
+          //         },
+          //       ),
+          //     )
+          //   ],
+          // ),
           // TEXTO: "¿Cuantas dosis vienen en la caja?"
           Center(
             child: Container(
@@ -200,9 +210,9 @@ class _PantallaAddMedicamentoState extends State<PantallaAddMedicamento> {
           Row(
             children: [
               Container(
-                margin: EdgeInsets.only(left: 10, right: 50),
+                margin: EdgeInsets.only(left: 10, right: 23),
                 child: Text(
-                  "Fecha de la primera dosis:"
+                  "Fecha de la primera dosis  =>  "
                 ),
               ),
               Container(

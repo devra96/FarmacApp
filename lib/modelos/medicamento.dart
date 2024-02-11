@@ -116,7 +116,7 @@ class Medicamento with ChangeNotifier{
     notifyListeners();
   }
 
-  // Lectura de datos de la API
+  // [GET] RECUPERACION DE LOS MEDICAMENTOS DE UN USUARIO SEGUN SU ID
   Future<List<Medicamento>> getMedicamentosUsuario(int id_usuario) async{
     final response = await http.get(Uri.parse('http://10.0.2.2:8000/medicamentos/get_medicamentos/$id_usuario'));
     if(response.statusCode == 200){
@@ -139,4 +139,97 @@ class Medicamento with ChangeNotifier{
       throw Exception('Error al leer datos de la API');
     }
   }
+
+  // [POST] AÑADIR UN MEDICAMENTO
+  Future<Medicamento> createMedicamento(int id_usuario, String nombre, int dosis, int horas, DateTime fechahoraultimadosis, DateTime fechahoraproximadosis, String gestionadopor, String normasconsumo, String caracteristicas) async {
+    // CONVERSION FECHAHORA ULTIMA DOSIS A INT (PARA QUE LO RECONOZCA LA API)
+    String sfud = "${fechahoraultimadosis.year}";
+    if(fechahoraultimadosis.month < 10){
+      sfud += "0${fechahoraultimadosis.month}";
+    }
+    else{
+      sfud += "${fechahoraultimadosis.month}";
+    }
+
+    if(fechahoraultimadosis.day < 10){
+      sfud += "0${fechahoraultimadosis.day}";
+    }
+    else{
+      sfud += "${fechahoraultimadosis.day}";
+    }
+
+    if(fechahoraultimadosis.hour < 10){
+      sfud += "0${fechahoraultimadosis.hour}";
+    }
+    else{
+      sfud += "${fechahoraultimadosis.hour}";
+    }
+
+    if(fechahoraultimadosis.minute < 10){
+      sfud += "0${fechahoraultimadosis.minute}00";
+    }
+    else{
+      sfud += "${fechahoraultimadosis.minute}00";
+    }
+    int fud = int.parse(sfud);
+
+    // CONVERSION FECHAHORA PROXIMA DOSIS A INT (PARA QUE LO RECONOZCA LA API)
+    String sfpd = "${fechahoraproximadosis.year}";
+    if(fechahoraproximadosis.month < 10){
+      sfpd += "0${fechahoraproximadosis.month}";
+    }
+    else{
+      sfpd += "${fechahoraproximadosis.month}";
+    }
+
+    if(fechahoraproximadosis.day < 10){
+      sfpd += "0${fechahoraproximadosis.day}";
+    }
+    else{
+      sfpd += "${fechahoraproximadosis.day}";
+    }
+
+    if(fechahoraproximadosis.hour < 10){
+      sfpd += "0${fechahoraproximadosis.hour}";
+    }
+    else{
+      sfpd += "${fechahoraproximadosis.hour}";
+    }
+
+    if(fechahoraproximadosis.minute < 10){
+      sfpd += "0${fechahoraproximadosis.minute}00";
+    }
+    else{
+      sfpd += "${fechahoraproximadosis.minute}00";
+    }
+    int fpd = int.parse(sfpd);
+    
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:8000/medicamentos/add_medicamento'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "id_usuario": id_usuario,
+        "nombre": nombre,
+        "dosisincluidas": dosis,
+        "dosisrestantes": dosis,
+        "tiempoconsumo": horas,
+        "fechahoraultimadosis": fud,
+        "fechahoraproximadosis": fpd,
+        "gestionadopor": gestionadopor,
+        "normasconsumo": normasconsumo,
+        "caracteristicas": caracteristicas
+      }),
+    );
+
+    if(response.statusCode == 200){
+      Medicamento m = new Medicamento.fromMap(jsonDecode(response.body));
+      return m;
+    }
+    else{
+      throw Exception('Fallo al crear el medicamento.');
+    }
+  }
+
 }

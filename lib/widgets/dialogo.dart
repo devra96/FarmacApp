@@ -16,7 +16,7 @@ class Dialogo extends StatelessWidget {
         texto,
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 14
+          fontSize: 16,
         )
       ),
       actions: <TextButton>[

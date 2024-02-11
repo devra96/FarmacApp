@@ -1,4 +1,5 @@
 import 'package:farmacapp/modelos/medicamento.dart';
+import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
   Widget build(BuildContext context) {
 
     var medicamentoSeleccionado = Provider.of<Medicamento>(context);
+    var modoEdicion = Provider.of<ModoEdicion>(context);
 
     return Scaffold(
       // #################### APPBAR ####################
@@ -139,11 +141,11 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
             SizedBox(
               height: 20,
             ),
-            // TEXTO "ULTIMA DOSIS CONSUMIDA"
+            // TEXTO "PROXIMA DOSIS A CONSUMIR"
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 48),
               child: Text(
-                "Proxima dosis consumida",
+                "Proxima dosis a consumir",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -197,7 +199,158 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
         ),
 
         // PAGINA OTRAS CARACTERISTICAS
-        Text("a")
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // TEXTO "NORMAS DE CONSUMO"
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 48),
+              child: Text(
+                'Normas de consumo',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            // TEXTAREA
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 48),
+              child: Container(
+                height: 150,
+                width: 290,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text(
+                    medicamentoSeleccionado.normasconsumo,
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // ESPACIO
+            SizedBox(
+              height: 20,
+            ),
+            // TEXTO "CARACTERISTICAS GENERALES"
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 48),
+              child: Text(
+                'Caracteristicas generales',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            // TEXTAREA
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 48),
+              child: Container(
+                height: 150,
+                width: 290,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text(
+                    medicamentoSeleccionado.caracteristicas,
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // ESPACIO
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 48),
+              child: Text(
+                "Tiempo de consumicion: Cada ${medicamentoSeleccionado.tiempoconsumo} hora(s)",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15
+                ),
+              ),
+            ),
+            // ESPACIO
+            SizedBox(
+              height: 20,
+            ),
+            // BOTON MODIFICAR MEDICAMENTO
+            Center(
+              child: Container(
+                width: 300,
+                height: 55,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF009638),
+                  borderRadius: BorderRadius.all(Radius.circular(8))
+                ),
+                child: TextButton(
+                  child: const Text(
+                    "MODIFICAR MEDICAMENTO",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 21,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  onPressed: (){
+                    // ACTIVAMOS EL MODO DE EDICION
+                    modoEdicion.modoedicion = true;
+                    // VAMOS A LA PANTALLA DE AÑADIR MEDICAMENTO
+
+                  },
+                ),
+              ),
+            ),
+            // ESPACIO
+            SizedBox(
+              height: 20,
+            ),
+            // BOTON ELIMINAR MEDICAMENTO
+            Center(
+              child: Container(
+                width: 300,
+                height: 55,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF009638),
+                  borderRadius: BorderRadius.all(Radius.circular(8))
+                ),
+                child: TextButton(
+                  child: const Text(
+                    "ELIMINAR MEDICAMENTO",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  onPressed: (){
+                    // ALERT DE SI ESTAS SEGURO, AL DARLE QUE SI, ELIMINAR Y VOLVER ATRAS (TOAST SE HA ELIMINADO)
+                  },
+                ),
+              ),
+            ),
+          ],
+        )
+
       ][currentPageIndex],
       // #############  BOTTOMNAVIGATIONBAR  ############
       bottomNavigationBar: NavigationBar(

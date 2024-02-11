@@ -1,6 +1,7 @@
 import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/paginas/pantalla_inicio.dart';
+import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (_) => Medicamento()
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ModoEdicion()
         ),
       ],
       child: MyApp(),

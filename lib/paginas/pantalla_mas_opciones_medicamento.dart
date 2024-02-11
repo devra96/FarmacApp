@@ -16,7 +16,8 @@ class _PantallaMasOpcionesMedicamentoState extends State<PantallaMasOpcionesMedi
         title: Text("MAS OPCIONES"),
       ),
       // ####################  BODY  ####################
-      body: ListView(
+      body:
+      ListView(
         padding: EdgeInsets.all(10),
         children: [
           // CUADRO AÑADIR UNA FOTO
@@ -44,30 +45,30 @@ class _PantallaMasOpcionesMedicamentoState extends State<PantallaMasOpcionesMedi
             )
           ),
           // TEXTO "Gestionado por"
-          Center(
-            child: Container(
-              padding: EdgeInsets.only(top: 20),
-              child: const Text(
-                "Gestionado por",
-                style: TextStyle(
-                  fontSize: 20
-                ),
-              ),
-            ),
-          ),
-          // SE PONE UN TEXTFIELD PERO EN UN FUTURO SE SUSTITUIRA
-          // POR UN ELEMENTO PARA SELECCIONAR A UN "ADMINISTRADOR"
-          Center(
-            child: Container(
-              width: 300,
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value){},
-              ),
-            ),
-          ),
+          // Center(
+          //   child: Container(
+          //     padding: EdgeInsets.only(top: 20),
+          //     child: const Text(
+          //       "Gestionado por",
+          //       style: TextStyle(
+          //         fontSize: 20
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // // SE PONE UN TEXTFIELD PERO EN UN FUTURO SE SUSTITUIRA
+          // // POR UN ELEMENTO PARA SELECCIONAR A UN "ADMINISTRADOR"
+          // Center(
+          //   child: Container(
+          //     width: 300,
+          //     child: TextField(
+          //       decoration: InputDecoration(
+          //         border: OutlineInputBorder(),
+          //       ),
+          //       onChanged: (value){},
+          //     ),
+          //   ),
+          // ),
           // TEXTO "Normas de consumo"
           Center(
             child: Container(
