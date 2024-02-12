@@ -1,3 +1,4 @@
+import 'package:farmacapp/database/db.dart';
 import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/modelos/visitamedica.dart';
@@ -9,6 +10,7 @@ import 'package:farmacapp/paginas/pantalla_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_reponer_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_visitas_medicas.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
+import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/widgets/boton_medicamento.dart';
 import 'package:farmacapp/widgets/boton_visitamedica.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +26,10 @@ class PantallaAgenda extends StatefulWidget {
 }
 
 class _PantallaAgendaState extends State<PantallaAgenda> {
+  
+  // INSTANCIA BASE DE DATOS LOCAL
+  BDHelper bdHelper = BDHelper();
+  
   final Medicamento m = new Medicamento();
   final VisitaMedica v = new VisitaMedica();
 
@@ -36,8 +42,12 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
   // COLOR FONDO BOTON MEDICAMENTO (PARA INDICAR SI HAY QUE TOMARLO O NO)
   MaterialColor colorFondo = Colors.red;
 
+  // VARIABLE DONDE GUARDAREMOS LA FECHA DE LA PROXIMA DOSIS A CONSUMIR
+  // O UN "-" SI YA NO QUEDAN DOSIS
+  late String pd;
+
   // METODOS
-  _loadPantallaAddMedicamento() async {
+  _loadPantallaMedicamento() async {
     final destino = MaterialPageRoute(builder: (_) => PantallaMedicamento());
     final datoDevuelto = await Navigator.push(context, destino);
 
@@ -118,9 +128,24 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
   @override
   Widget build(BuildContext context) {
 
+    // PROVIDERS    
+    var modoTrabajo = Provider.of<ModoTrabajo>(context);
     var usuarioIniciado = Provider.of<Usuario>(context);
     var medicamentoSeleccionado = Provider.of<Medicamento>(context);
     var modoEdicion = Provider.of<ModoEdicion>(context);
+
+    // METODO PARA LLAMAR AL METODO OPORTUNO PARA RECUPERAR LOS MEDICAMENTOS
+    // SEGUN SI ESTAMOS EN "MODO REMOTO" O "MODO LOCAL"
+    Future<List<Medicamento>> recuperarMedicamentos() async{
+      // MODO REMOTO
+      if(modoTrabajo.modoLocal){
+        return m.getMedicamentosUsuario(usuarioIniciado.id);
+      }
+      // MODO LOCAL
+      else{
+        return await bdHelper.getMedicamentosUsuario(usuarioIniciado.id);
+      }
+    }
 
     return Scaffold(
       // #################### APPBAR ####################
@@ -151,15 +176,15 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                 ),
               ];
             },
-            onSelected: (value){
+            onSelected: (value) async{
               // DESACTIVAMOS EL MODO DE EDICION
               modoEdicion.modoedicion = false;
 
               if(value == 'nuevomedicamento'){
-                _loadPantallaAddMedicamento();
+                _loadPantallaMedicamento();
               }
               else{
-                _loadPantallaAddMedicamento2();
+                // _loadPantallaAddMedicamento2();
               }
             },
           ),
@@ -182,14 +207,14 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                   color: Colors.white,
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(bottom: 12),
-                child: const Text(
-                  "Nombre Apellido1 Apellido2", // AQUI IRIAN EL NOMBRE Y APELLIDOS SACADOS DEL USUARIO
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
+              // Container(
+              //   margin: EdgeInsets.only(bottom: 12),
+              //   child: const Text(
+              //     "Nombre Apellido1 Apellido2", // AQUI IRIAN EL NOMBRE Y APELLIDOS SACADOS DEL USUARIO
+              //     textAlign: TextAlign.center,
+              //     style: TextStyle(fontSize: 20),
+              //   ),
+              // ),
               ListTile(
                 title: Row(
                   children: [
@@ -283,7 +308,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
         // MEDICAMENTOS
         Container(
           child: FutureBuilder(
-            future: m.getMedicamentosUsuario(usuarioIniciado.id),
+            future: recuperarMedicamentos(),
             builder: (context, AsyncSnapshot<List<Medicamento>> snapshot){
               print("SNAPSHOT DATA: ${snapshot.data}");
               if(snapshot.hasData){
@@ -296,13 +321,17 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                     // COMPROBACION DE SI LA FECHA ACTUAL ES POSTERIOR A LA FECHA DE LA PROXIMA DOSIS
                     // SI ES POSTERIOR: COLOR DE FONDO DEL MEDICAMENTO EN ROJO, INDICANDO QUE HABRIA QUE TOMARLO
                     // EN CASO CONTRARIO: COLOR DE FONDO DEL MEDICAMENTO EN VERDE, INDICANDO QUE TODO CORRECTO
-                    if(horaActual.isAfter(snapshot.data![index].fechahoraproximadosis)){
-                      // print("TRUE");
+                    if(snapshot.data![index].dosisrestantes == 0){
+                      colorFondo = Colors.grey;
+                      pd = "-";
+                    }
+                    else if(horaActual.isAfter(snapshot.data![index].fechahoraproximadosis)){
                       colorFondo = Colors.red;
+                      pd = "${snapshot.data![index].fechahoraproximadosis.day}/${snapshot.data![index].fechahoraproximadosis.month}/${snapshot.data![index].fechahoraproximadosis.year} - ${snapshot.data![index].fechahoraproximadosis.hour}:${snapshot.data![index].fechahoraproximadosis.minute}";
                     }
                     else{
-                      // print("FALSE");
                       colorFondo = Colors.green;
+                      pd = "${snapshot.data![index].fechahoraproximadosis.day}/${snapshot.data![index].fechahoraproximadosis.month}/${snapshot.data![index].fechahoraproximadosis.year} - ${snapshot.data![index].fechahoraproximadosis.hour}:${snapshot.data![index].fechahoraproximadosis.minute}";
                     }
 
                     return Container(
@@ -316,13 +345,14 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                       child: InkWell(
                         onTap: () {
                           // RECOGER DATOS MEDICAMENTO SELECCIONADO
+                          medicamentoSeleccionado.id = snapshot.data![index].id;
                           medicamentoSeleccionado.nombre = snapshot.data![index].nombre;
                           medicamentoSeleccionado.dosisincluidas = snapshot.data![index].dosisincluidas;
                           medicamentoSeleccionado.dosisrestantes = snapshot.data![index].dosisrestantes;
                           medicamentoSeleccionado.tiempoconsumo = snapshot.data![index].tiempoconsumo;
                           medicamentoSeleccionado.fechahoraultimadosis = snapshot.data![index].fechahoraultimadosis;
                           medicamentoSeleccionado.fechahoraproximadosis = snapshot.data![index].fechahoraproximadosis;
-                          // gestionado por ???
+                          medicamentoSeleccionado.gestionadopor = snapshot.data![index].gestionadopor;
                           medicamentoSeleccionado.normasconsumo = snapshot.data![index].normasconsumo;
                           medicamentoSeleccionado.caracteristicas = snapshot.data![index].caracteristicas;
                           // IR A LA PANTALLA DETALLE MEDICAMENTO
@@ -332,7 +362,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                           nombre: snapshot.data![index].nombre,
                           ultimaDosis: "${snapshot.data![index].fechahoraultimadosis.day}/${snapshot.data![index].fechahoraultimadosis.month}/${snapshot.data![index].fechahoraultimadosis.year} - ${snapshot.data![index].fechahoraultimadosis.hour}:${snapshot.data![index].fechahoraultimadosis.minute}",
                           // ultimaDosis: "${prueba.day}/${prueba.month}/${prueba.year} - ${prueba.hour}:${prueba.minute}",
-                          proximaDosis: "${snapshot.data![index].fechahoraproximadosis.day}/${snapshot.data![index].fechahoraproximadosis.month}/${snapshot.data![index].fechahoraproximadosis.year} - ${snapshot.data![index].fechahoraproximadosis.hour}:${snapshot.data![index].fechahoraproximadosis.minute}",
+                          proximaDosis: pd,
                           dosisRestantes: snapshot.data![index].dosisrestantes,
                           colorFondo: colorFondo
                         ),
@@ -434,12 +464,13 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(
-            selectedIcon: Icon(Icons.add),
-            icon: Icon(Icons.add),
+            selectedIcon: Icon(Icons.medication),
+            icon: Icon(Icons.medication_outlined),
             label: 'Medicamentos',
           ),
           NavigationDestination(
-            icon: Icon(Icons.person),
+            selectedIcon: Icon(Icons.medical_information),
+            icon: Icon(Icons.medical_information_outlined),
             label: 'Visitas medicas',
           )
         ],

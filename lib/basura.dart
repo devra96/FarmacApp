@@ -725,3 +725,9 @@
 
 // POST MEDICAMENTO
 // String stringFecha = "${fechahoraproximadosis.year}${fechahoraproximadosis.month}${fechahoraproximadosis.day}${fechahoraproximadosis.hour}${fechahoraproximadosis.minute}00";
+
+// PRUEBA IMPRIMIR MEDICAMENTOS DE UN USUARIO DE BD LOCAL
+// List<Medicamento> m = await bdHelper.getMedicamentosUsuario(1);
+// for(int i=0;i<m.length;i++){
+//   print("MEDICAMENTO: ${m[i].nombre}");
+// }

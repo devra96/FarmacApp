@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class Medicamento with ChangeNotifier{
-  int? _id;
+  late int _id;
   late int _id_usuario;
   late String _nombre;
   // late int _diasconsumo;
@@ -36,7 +36,7 @@ class Medicamento with ChangeNotifier{
   }
 
   // GETTERS
-  int? get id => _id;
+  int get id => _id;
   int get id_usuario => _id_usuario;
   String get nombre => _nombre;
   // int get diasconsumo => _diasconsumo;
@@ -111,10 +111,50 @@ class Medicamento with ChangeNotifier{
     notifyListeners();
   }
 
-  set id(int? value) {
+  set id(int value) {
     _id = value;
     notifyListeners();
   }
+
+  // METODO QUE CONVIERTE UNA FECHA EN FORMATO DATETIME DE DART A UN ENTERO
+  // PARA QUE SEA RECONOCIDA POR LA API
+  int conversionFechaFormatoAPI(DateTime f){
+    String string_fecha = "${f.year}";
+
+    if(f.month < 10){
+      string_fecha += "0${f.month}";
+    }
+    else{
+      string_fecha += "${f.month}";
+    }
+
+    if(f.day < 10){
+      string_fecha += "0${f.day}";
+    }
+    else{
+      string_fecha += "${f.day}";
+    }
+
+    if(f.hour < 10){
+      string_fecha += "0${f.hour}";
+    }
+    else{
+      string_fecha += "${f.hour}";
+    }
+
+    if(f.minute < 10){
+      string_fecha += "0${f.minute}00";
+    }
+    else{
+      string_fecha += "${f.minute}00";
+    }
+
+    int fecha = int.parse(string_fecha);
+
+    return fecha;
+  }
+
+  // -------------------------------------------------- METODOS HTTP --------------------------------------------------
 
   // [GET] RECUPERACION DE LOS MEDICAMENTOS DE UN USUARIO SEGUN SU ID
   Future<List<Medicamento>> getMedicamentosUsuario(int id_usuario) async{
@@ -143,66 +183,70 @@ class Medicamento with ChangeNotifier{
   // [POST] AÑADIR UN MEDICAMENTO
   Future<Medicamento> createMedicamento(int id_usuario, String nombre, int dosis, int horas, DateTime fechahoraultimadosis, DateTime fechahoraproximadosis, String gestionadopor, String normasconsumo, String caracteristicas) async {
     // CONVERSION FECHAHORA ULTIMA DOSIS A INT (PARA QUE LO RECONOZCA LA API)
-    String sfud = "${fechahoraultimadosis.year}";
-    if(fechahoraultimadosis.month < 10){
-      sfud += "0${fechahoraultimadosis.month}";
-    }
-    else{
-      sfud += "${fechahoraultimadosis.month}";
-    }
+    // (EL FORMATO DE FECHA DE LA API ES UN INT "AÑO-MES-DIA-HORA-MINUTO-SEGUNDO")
+    // String sfud = "${fechahoraultimadosis.year}";
+    // if(fechahoraultimadosis.month < 10){
+    //   sfud += "0${fechahoraultimadosis.month}";
+    // }
+    // else{
+    //   sfud += "${fechahoraultimadosis.month}";
+    // }
 
-    if(fechahoraultimadosis.day < 10){
-      sfud += "0${fechahoraultimadosis.day}";
-    }
-    else{
-      sfud += "${fechahoraultimadosis.day}";
-    }
+    // if(fechahoraultimadosis.day < 10){
+    //   sfud += "0${fechahoraultimadosis.day}";
+    // }
+    // else{
+    //   sfud += "${fechahoraultimadosis.day}";
+    // }
 
-    if(fechahoraultimadosis.hour < 10){
-      sfud += "0${fechahoraultimadosis.hour}";
-    }
-    else{
-      sfud += "${fechahoraultimadosis.hour}";
-    }
+    // if(fechahoraultimadosis.hour < 10){
+    //   sfud += "0${fechahoraultimadosis.hour}";
+    // }
+    // else{
+    //   sfud += "${fechahoraultimadosis.hour}";
+    // }
 
-    if(fechahoraultimadosis.minute < 10){
-      sfud += "0${fechahoraultimadosis.minute}00";
-    }
-    else{
-      sfud += "${fechahoraultimadosis.minute}00";
-    }
-    int fud = int.parse(sfud);
+    // if(fechahoraultimadosis.minute < 10){
+    //   sfud += "0${fechahoraultimadosis.minute}00";
+    // }
+    // else{
+    //   sfud += "${fechahoraultimadosis.minute}00";
+    // }
+    // int fud = int.parse(sfud);
+    int fud = conversionFechaFormatoAPI(fechahoraultimadosis);
 
     // CONVERSION FECHAHORA PROXIMA DOSIS A INT (PARA QUE LO RECONOZCA LA API)
-    String sfpd = "${fechahoraproximadosis.year}";
-    if(fechahoraproximadosis.month < 10){
-      sfpd += "0${fechahoraproximadosis.month}";
-    }
-    else{
-      sfpd += "${fechahoraproximadosis.month}";
-    }
+    // (EL FORMATO DE FECHA DE LA API ES UN INT "AÑO-MES-DIA-HORA-MINUTO-SEGUNDO")
+    // String sfpd = "${fechahoraproximadosis.year}";
+    // if(fechahoraproximadosis.month < 10){
+    //   sfpd += "0${fechahoraproximadosis.month}";
+    // }
+    // else{
+    //   sfpd += "${fechahoraproximadosis.month}";
+    // }
 
-    if(fechahoraproximadosis.day < 10){
-      sfpd += "0${fechahoraproximadosis.day}";
-    }
-    else{
-      sfpd += "${fechahoraproximadosis.day}";
-    }
+    // if(fechahoraproximadosis.day < 10){
+    //   sfpd += "0${fechahoraproximadosis.day}";
+    // }
+    // else{
+    //   sfpd += "${fechahoraproximadosis.day}";
+    // }
 
-    if(fechahoraproximadosis.hour < 10){
-      sfpd += "0${fechahoraproximadosis.hour}";
-    }
-    else{
-      sfpd += "${fechahoraproximadosis.hour}";
-    }
+    // if(fechahoraproximadosis.hour < 10){
+    //   sfpd += "0${fechahoraproximadosis.hour}";
+    // }
+    // else{
+    //   sfpd += "${fechahoraproximadosis.hour}";
+    // }
 
-    if(fechahoraproximadosis.minute < 10){
-      sfpd += "0${fechahoraproximadosis.minute}00";
-    }
-    else{
-      sfpd += "${fechahoraproximadosis.minute}00";
-    }
-    int fpd = int.parse(sfpd);
+    // if(fechahoraproximadosis.minute < 10){
+    //   sfpd += "0${fechahoraproximadosis.minute}00";
+    // }
+    // else{
+    //   sfpd += "${fechahoraproximadosis.minute}00";
+    // }
+    // int fpd = int.parse(sfpd);
+    int fpd = conversionFechaFormatoAPI(fechahoraproximadosis);
     
     final response = await http.post(
       Uri.parse('http://10.0.2.2:8000/medicamentos/add_medicamento'),
@@ -232,4 +276,80 @@ class Medicamento with ChangeNotifier{
     }
   }
 
+  // [PATCH] MODIFICAR UN MEDICAMENTO
+  Future<void> updateMedicamento(int id_medicamento, String nombre, int dosisincluidas, int dosisrestantes, int horas, DateTime fechahoraultimadosis, DateTime fechahoraproximadosis, String normasconsumo, String caracteristicas) async {
+    
+    int fud = conversionFechaFormatoAPI(fechahoraultimadosis);
+    int fpd = conversionFechaFormatoAPI(fechahoraproximadosis);
+    
+    final response = await http.patch(
+      Uri.parse('http://10.0.2.2:8000/medicamentos/mod_medicamento/$id_medicamento'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "nombre": nombre,
+        "dosisincluidas": dosisincluidas,
+        "dosisrestantes": dosisrestantes,
+        "tiempoconsumo": horas,
+        "fechahoraultimadosis": fud,
+        "fechahoraproximadosis": fpd,
+        "normasconsumo": normasconsumo,
+        "caracteristicas": caracteristicas
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Medicamento m = new Medicamento.fromMap(jsonDecode(response.body));
+      // return m;
+
+      print("DOSIS REGISTRADA CORRECTAMENTE.");
+    }
+    else{
+      throw Exception('Fallo al registrar la dosis del medicamento.');
+    }
+  }
+
+  // [PATCH] REGISTRAR UNA DOSIS MODIFICANDO LAS PROPIEDADES DEL MEDICAMENTO
+  Future<void> registrarDosis(int id_medicamento, int dosisrestantes, DateTime fechahoraultimadosis, DateTime fechahoraproximadosis) async {
+    
+    int fud = conversionFechaFormatoAPI(fechahoraultimadosis);
+    int fpd = conversionFechaFormatoAPI(fechahoraproximadosis);
+    
+    final response = await http.patch(
+      Uri.parse('http://10.0.2.2:8000/medicamentos/mod_medicamento/$id_medicamento'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "dosisrestantes": dosisrestantes,
+        "fechahoraultimadosis": fud,
+        "fechahoraproximadosis": fpd
+      }),
+    );
+
+    if(response.statusCode == 200) {
+      print("DOSIS REGISTRADA CORRECTAMENTE.");
+    }
+    else{
+      throw Exception('Fallo al registrar la dosis del medicamento.');
+    }
+  }
+
+  // [DELETE] BORRAR UN MEDICAMENTO
+  Future<void> deleteMedicamento(int id_medicamento) async{
+    final response = await http.delete(
+      Uri.parse('http://10.0.2.2:8000/medicamentos/del_medicamento/$id_medicamento'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if(response.statusCode == 200){
+      print("MEDICAMENTO ELIMINADO CORRECTAMENTE.");
+    }
+    else {
+      throw Exception('Fallo al intentar eliminar el medicamento.');
+    }
+  }
 }

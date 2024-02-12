@@ -1,8 +1,10 @@
+import 'package:farmacapp/database/db.dart';
 import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/widgets/dialogo.dart';
+import 'package:farmacapp/widgets/dialogo_dosis_consumidas.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +16,9 @@ class PantallaMedicamento extends StatefulWidget {
 }
 
 class _PantallaMedicamentoState extends State<PantallaMedicamento> {
+
+  // INSTANCIA A LA BASE DE DATOS LOCAL SQLITE
+  BDHelper bdHelper = BDHelper();
 
   // VARIABLE USADA PARA SI ESTA ACTIVADO EL MODO EDICION, QUE SOLO MODIFIQUE LOS CAMPOS
   // UNA VEZ (PORQUE SINO LOS MODIFICA TODO EL RATO) Y ASI PERMITA EDITARLOS
@@ -110,6 +115,14 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
       primeraVez = false;
 
       textoAppBar = "MODIFICANDO MEDICAMENTO";
+
+      nombre = medicamentoSeleccionado.nombre;
+      dosis = medicamentoSeleccionado.dosisincluidas;
+      stringDosis = medicamentoSeleccionado.dosisincluidas.toString();
+      horas = medicamentoSeleccionado.tiempoconsumo;
+      stringHoras = medicamentoSeleccionado.tiempoconsumo.toString();
+      normasconsumo = medicamentoSeleccionado.normasconsumo;
+      caracteristicas = medicamentoSeleccionado.caracteristicas;
 
       _textFieldNombre.text = medicamentoSeleccionado.nombre;
       _textFieldDosis.text = medicamentoSeleccionado.dosisincluidas.toString();
@@ -397,7 +410,7 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                       ),
                     ),
                     onPressed: ()async{
-
+                      // CREAMOS UN DATETIME QUE "JUNTE" LA FECHA Y HORA SELECCIONADAS
                       DateTime selectedDateTime = DateTime(
                         selectedDate.year,
                         selectedDate.month,
@@ -421,40 +434,194 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                       }
                       // 2. COMPROBACION DE MODO REMOTO
                       else{
-                        // MODO REMOTO
-                        if(modoTrabajo.modoLocal){
-                          Medicamento m = new Medicamento();
-                          // AÑADIR MEDICAMENTO REMOTO
-                          if(!modoEdicion.modoedicion){
-                            m = await m.createMedicamento(
-                              usuarioIniciado.id,
+                        // // MODO REMOTO
+                        // if(modoTrabajo.modoLocal){
+                        //   Medicamento m = new Medicamento();
+                        //   // AÑADIR MEDICAMENTO REMOTO
+                        //   if(!modoEdicion.modoedicion){
+                        //     m = await m.createMedicamento(
+                        //       usuarioIniciado.id,
+                        //       nombre,
+                        //       dosis,
+                        //       horas,
+                        //       selectedDateTime,
+                        //       selectedDateTime.add(Duration(hours: horas)),
+                        //       usuarioIniciado.nombre,
+                        //       normasconsumo,
+                        //       caracteristicas
+                        //     );
+                        //     Navigator.pop(context);
+                        //   }
+                        //   // MODIFICAR MEDICAMENTO REMOTO
+                        //   else{
+                        //     // SI SE HAN MODIFICADO EL NUMERO DE DOSIS INCLUIDAS
+                        //     if(medicamentoSeleccionado.dosisincluidas != dosis){
+                        //       modoEdicion.dosisconsumidas = 0;
+                        //       await showDialog<void>(
+                        //         barrierDismissible: false,
+                        //         context: context,
+                        //         builder: (BuildContext context) => DialogoDosisConsumidas(dosisincluidas: dosis)
+                        //       );
+                        //     }
+
+                        //     // COMPROBACIONES DE SI NO SE HA MODIFICADO NADA???
+
+                        //     await m.updateMedicamento(
+                        //       medicamentoSeleccionado.id,
+                        //       nombre,
+                        //       dosis,
+                        //       modoEdicion.dosisconsumidas,
+                        //       horas,
+                        //       selectedDateTime,
+                        //       selectedDateTime.add(Duration(hours: horas)),
+                        //       normasconsumo,
+                        //       caracteristicas
+                        //     );
+                        //     Navigator.pop(context);
+                        //     Navigator.pop(context);
+                        //   }
+                        // }
+                        // // MODO LOCAL
+                        // else{
+                        //   // AÑADIR MEDICAMENTO LOCAL
+                        //   if(!modoEdicion.modoedicion){
+                        //     // FECHAS
+                        //     String fud = selectedDateTime.toIso8601String();
+                        //     String fpd = selectedDateTime.add(Duration(hours: horas)).toIso8601String();
+
+                        //     bdHelper.insertarBD("medicamentos", {
+                        //       "id_usuario": usuarioIniciado.id,
+                        //       "nombre": nombre,
+                        //       "dosisincluidas": dosis,
+                        //       "dosisrestantes": dosis,
+                        //       "tiempoconsumo": horas,
+                        //       "fechahoraultimadosis": fud,
+                        //       "fechahoraproximadosis": fpd,
+                        //       "gestionadopor": usuarioIniciado.nombre,
+                        //       "normasconsumo": normasconsumo,
+                        //       "caracteristicas": caracteristicas
+                        //     });
+
+                        //     Navigator.pop(context);
+                        //   }
+                        //   // MODIFICAR MEDICAMENTO LOCAL
+                        //   else{
+                            
+                        //   }
+                        // }
+
+                        
+                        // 2. COMPROBACION DE SI SE VA A CREAR O MODIFICAR
+
+                        Medicamento m = new Medicamento();
+                        // FECHAS EN FORMATO SQLITE
+                        String fud = selectedDateTime.toIso8601String();
+                        String fpd = selectedDateTime.add(Duration(hours: horas)).toIso8601String();
+
+                        // MODO AÑADIR MEDICAMENTO
+                        if(!modoEdicion.modoedicion){
+                          // AÑADIR MODO REMOTO
+                          if(modoTrabajo.modoLocal){
+                              m = await m.createMedicamento(
+                                usuarioIniciado.id,
+                                nombre,
+                                dosis,
+                                horas,
+                                selectedDateTime,
+                                selectedDateTime.add(Duration(hours: horas)),
+                                usuarioIniciado.nombre,
+                                normasconsumo,
+                                caracteristicas
+                              );
+                            Navigator.pop(context);
+                          }
+                          // AÑADIR MODO LOCAL
+                          else{
+                            // FECHAS
+                            // String fud = selectedDateTime.toIso8601String();
+                            // String fpd = selectedDateTime.add(Duration(hours: horas)).toIso8601String();
+
+                            bdHelper.insertarBD("medicamentos", {
+                              "id_usuario": usuarioIniciado.id,
+                              "nombre": nombre,
+                              "dosisincluidas": dosis,
+                              "dosisrestantes": dosis,
+                              "tiempoconsumo": horas,
+                              "fechahoraultimadosis": fud,
+                              "fechahoraproximadosis": fpd,
+                              "gestionadopor": usuarioIniciado.nombre,
+                              "normasconsumo": normasconsumo,
+                              "caracteristicas": caracteristicas
+                            });
+
+                            Navigator.pop(context);
+                          }
+                        }
+                        // MODO MODIFICAR MEDICAMENTO
+                        else{
+                          modoEdicion.dosisconsumidas = 0;
+
+                          // VARIABLE QUE GUARDARA LAS DOSIS RESTANTES DEL MEDICAMENTO
+                          // SEGUN SI HEMOS ACTUALIZADO LAS DOSIS INCLUIDAS O NO
+                          int dr;
+                          
+                          // SI SE HAN MODIFICADO EL NUMERO DE DOSIS INCLUIDAS
+                          if(medicamentoSeleccionado.dosisincluidas != dosis){
+                            await showDialog<void>(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext context) => DialogoDosisConsumidas(dosisincluidas: dosis)
+                            );
+                            
+                            // SE RESTAN LAS DOSIS QUE SE HAYAN CONSUMIDO A LAS NUEVAS "DOSIS INCLUIDAS" ACTUALIZADAS
+                            if(modoEdicion.dosisconsumidas > 0){
+                              dr = dosis - modoEdicion.dosisconsumidas;
+                            }
+                            // SI NO SE HA CONSUMIDO NINGUNA, SE INDICAN LAS MISMAS DOSIS RESTANTES QUE INCLUIDAS
+                            else{
+                              dr = dosis;
+                            }
+                          }
+                          // SI NO SE HAN ACTUALIZADO, SE MANTIENE EL NUMERO DE DOSIS RESTANTES QUE HABIA
+                          else{
+                            dr = medicamentoSeleccionado.dosisrestantes;
+                          }
+
+                          // MODIFICAR MODO REMOTO
+                          if(modoTrabajo.modoLocal){
+                            await m.updateMedicamento(
+                              medicamentoSeleccionado.id,
                               nombre,
                               dosis,
+                              dr,
                               horas,
                               selectedDateTime,
                               selectedDateTime.add(Duration(hours: horas)),
-                              usuarioIniciado.nombre,
                               normasconsumo,
                               caracteristicas
                             );
                           }
-                          // MODIFICAR MEDICAMENTO REMOTO
+                          // MODIFICAR MODO LOCAL
                           else{
+                            int resultadoUpdate = await bdHelper.actualizarBD("medicamentos", {
+                              "id": medicamentoSeleccionado.id,
+                              "id_usuario": usuarioIniciado.id,
+                              "nombre": nombre,
+                              "dosisincluidas": dosis,
+                              "dosisrestantes": dr,
+                              "tiempoconsumo": horas,
+                              "fechahoraultimadosis": fud,
+                              "fechahoraproximadosis": fpd,
+                              "gestionadopor": usuarioIniciado.nombre,
+                              "normasconsumo": normasconsumo,
+                              "caracteristicas": caracteristicas
+                            });
+                            print("MEDICAMENTO ACTUALIZADO EN BD LOCAL CON RESULTADO: $resultadoUpdate");
+                          }
 
-                          }
+                          Navigator.pop(context);
+                          Navigator.pop(context);
                         }
-                        // MODO LOCAL
-                        else{
-                          // AÑADIR MEDICAMENTO LOCAL
-                          if(modoEdicion.modoedicion){
-                            
-                          }
-                          // MODIFICAR MEDICAMENTO LOCAL
-                          else{
-                            
-                          }
-                        }
-                        Navigator.pop(context);
                       }
                     },
                   ),

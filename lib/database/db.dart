@@ -1,3 +1,4 @@
+import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/modelos/usuario.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -23,12 +24,18 @@ class BDHelper{
       version: 1, 
       onCreate: (Database db, int version) async{
         // AÑADIMOS UN await db.execute() POR CADA TABLA QUE QUERAMOS AÑADIR
-        await db.execute("CREATE TABLE usuarios(id INTEGER PRIMARY KEY, id_supervisor INTEGER, nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
-        
+        await db.execute(
+          "CREATE TABLE usuarios(id INTEGER PRIMARY KEY, id_supervisor INTEGER, nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))",
+        );
+        await db.execute(
+          "CREATE TABLE medicamentos(id INTEGER PRIMARY KEY, id_usuario INTEGER, nombre VARCHAR(30), dosisincluidas INTEGER, dosisrestantes INTEGER, tiempoconsumo INTEGER, fechahoraultimadosis VARCHAR(30), fechahoraproximadosis VARCHAR(30), gestionadopor VARCHAR(20), normasconsumo VARCHAR(200), caracteristicas VARCHAR(200))",
+        );
       }
     );
     return baseDatos;
   }
+
+  // -------------------------------------------------- METODOS USUARIOS --------------------------------------------------
 
   // SELECT * FROM tabla WHERE correo = correo
   Future<int> comprobarCorreo(String tabla, String correo) async{
@@ -61,6 +68,23 @@ class BDHelper{
     return u;
   }
 
+  // -------------------------------------------------- METODOS MEDICAMENTOS --------------------------------------------------
+
+  Future<List<Medicamento>> getMedicamentosUsuario(int id_usuario) async{
+    Database? bd = await baseDatos;
+    var resultado = await bd!.query("medicamentos", where: "id_usuario = ?", whereArgs: [id_usuario]);
+    // Medicamento m = new Medicamento();
+    // List<Medicamento> medicamentos;
+    // for(int i=0;i<resultado.length;i++){
+    //   m = Medicamento.fromMap(resultado[i]);
+    //   medicamentos.add(m);
+    // }
+    return List.generate(resultado.length, (index) => Medicamento.fromMap(resultado[index]));
+  }
+
+
+  // -------------------------------------------------- METODOS GENERALES --------------------------------------------------
+
   // SELECT * FROM tabla
   Future<List<Map<String, dynamic>>> consultarBD(String tabla) async{
     Database? bd = await baseDatos;
@@ -79,7 +103,7 @@ class BDHelper{
   Future<int> insertarBD(String tabla, Map<String, dynamic> fila) async{
     Database? bd = await baseDatos;
     var resultado = await bd!.insert(tabla, fila);
-    print("ID DEL USUARIO CREADO: ${resultado}");
+    print("ID DEL OBJETO CREADO: ${resultado}");
     return resultado;
   }
 
@@ -102,48 +126,50 @@ class BDHelper{
   }
 }
 
-// // OTRO MODELO DE BASE DE DATOS TRATANDO CON OBJETOS Usuario, NO PODEMOS USARLO PORQUE TENDRIAMOS QUE INTRODUCIR UN id MANUAL AL USUARIO
-// class DB{
-//   static Future<Database> _openDB() async{
-//     return openDatabase(
-//       join(await getDatabasesPath(),"usuarios.db"),
-//       onCreate: (db,version){
-//         // return db.execute("CREATE TABLE usuarios(id INTEGER PRIMARY KEY AUTO_INCREMENT,nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
-//         return db.execute("CREATE TABLE usuarios(id INTEGER PRIMARY KEY,nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
-//       },
-//       version: 1
-//     );
-//   }
+/**
+// OTRO MODELO DE BASE DE DATOS TRATANDO CON OBJETOS Usuario, NO PODEMOS USARLO PORQUE TENDRIAMOS QUE INTRODUCIR UN id MANUAL AL USUARIO
+class DB{
+  static Future<Database> _openDB() async{
+    return openDatabase(
+      join(await getDatabasesPath(),"usuarios.db"),
+      onCreate: (db,version){
+        // return db.execute("CREATE TABLE usuarios(id INTEGER PRIMARY KEY AUTO_INCREMENT,nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
+        return db.execute("CREATE TABLE usuarios(id INTEGER PRIMARY KEY,nombre VARCHAR(30),correo VARCHAR(30),password VARCHAR(30))");
+      },
+      version: 1
+    );
+  }
 
-//   static Future<int> insert(Usuario usuario) async{
-//     Database db = await _openDB();
+  static Future<int> insert(Usuario usuario) async{
+    Database db = await _openDB();
     
-//     return db.insert("usuarios", usuario.toMap());
-//   }
+    return db.insert("usuarios", usuario.toMap());
+  }
 
-//   static Future<int> delete(Usuario usuario) async{
-//     Database db = await _openDB();
+  static Future<int> delete(Usuario usuario) async{
+    Database db = await _openDB();
 
-//     return db.delete("usuarios", where: "id = ?", whereArgs: [usuario.id]);
-//   }
+    return db.delete("usuarios", where: "id = ?", whereArgs: [usuario.id]);
+  }
 
-//   static Future<int> update(Usuario usuario) async{
-//     Database db = await _openDB();
+  static Future<int> update(Usuario usuario) async{
+    Database db = await _openDB();
 
-//     return db.update("usuarios", usuario.toMap(), where: "id = ?", whereArgs: [usuario.id]);
-//   }
+    return db.update("usuarios", usuario.toMap(), where: "id = ?", whereArgs: [usuario.id]);
+  }
 
-//   static Future<List<Usuario>> usuarios() async{
-//     Database db = await _openDB();
+  static Future<List<Usuario>> usuarios() async{
+    Database db = await _openDB();
 
-//     final List<Map<String, dynamic>> usuariosMap = await db.query("usuarios");
+    final List<Map<String, dynamic>> usuariosMap = await db.query("usuarios");
 
-//     return List.generate(usuariosMap.length,(i) => Usuario(
-//       id: usuariosMap[i]["id"],
-//       nombre: usuariosMap[i]["nombre"],
-//       correo: usuariosMap[i]["correo"],
-//       password: usuariosMap[i]["password"]
-//       )
-//     );
-//   }
-// }
+    return List.generate(usuariosMap.length,(i) => Usuario(
+      id: usuariosMap[i]["id"],
+      nombre: usuariosMap[i]["nombre"],
+      correo: usuariosMap[i]["correo"],
+      password: usuariosMap[i]["password"]
+      )
+    );
+  }
+}
+*/
