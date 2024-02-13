@@ -6,7 +6,10 @@ import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async{
+
+  // WidgetsFlutterBinding.ensureInitialized();
+
   runApp(
     MultiProvider(
       providers: [

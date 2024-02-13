@@ -1,11 +1,17 @@
+import 'dart:io';
+
+// import 'package:camera/camera.dart';
 import 'package:farmacapp/database/db.dart';
 import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
+import 'package:farmacapp/widgets/boton_add_imagen.dart';
 import 'package:farmacapp/widgets/dialogo.dart';
 import 'package:farmacapp/widgets/dialogo_dosis_consumidas.dart';
+import 'package:farmacapp/widgets/take_picture_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class PantallaMedicamento extends StatefulWidget {
@@ -16,6 +22,9 @@ class PantallaMedicamento extends StatefulWidget {
 }
 
 class _PantallaMedicamentoState extends State<PantallaMedicamento> {
+
+  bool fotoModificada = false;
+  File ? _selectedImage;
 
   // INSTANCIA A LA BASE DE DATOS LOCAL SQLITE
   BDHelper bdHelper = BDHelper();
@@ -36,6 +45,9 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
   // TEXTO APPBAR (AÑADIENDO O MODIFICANDO)
   String textoAppBar = "AÑADIENDO MEDICAMENTO";
   
+  // RUTA FOTO (PARA MODO AÑADIR O MODIFICAR)
+  String rutaFoto = "assets/images/image_add_photo.png";
+
   // VARIABLES QUE USAREMOS PARA CONTROLAR SI SE HA ESCRITO ALGO O NO
   // CUANDO CREEMOS EL MEDICAMENTO
   String nombre = "", normasconsumo = "", caracteristicas = "", stringDosis = "", stringHoras = "";
@@ -116,6 +128,8 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
 
       textoAppBar = "MODIFICANDO MEDICAMENTO";
 
+      rutaFoto = "assets/images/medicamento-generico.jpg";
+
       nombre = medicamentoSeleccionado.nombre;
       dosis = medicamentoSeleccionado.dosisincluidas;
       stringDosis = medicamentoSeleccionado.dosisincluidas.toString();
@@ -130,6 +144,10 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
       _textFieldNormasConsumo.text = medicamentoSeleccionado.normasconsumo;
       _textFieldCaracteristicas.text = medicamentoSeleccionado.caracteristicas;
       selectedDate = medicamentoSeleccionado.fechahoraultimadosis;
+      selectedHour = TimeOfDay(
+        hour: medicamentoSeleccionado.fechahoraultimadosis.hour,
+        minute: medicamentoSeleccionado.fechahoraultimadosis.minute
+      );
 
       selectedDateString = "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
       if(selectedDate.day < 10){
@@ -660,14 +678,60 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                       decoration: BoxDecoration(
                         border: Border.all()
                       ),
-                      child: Image.asset("assets/images/medicamento-generico.jpg"),
+                      child: fotoModificada ? Image.file(_selectedImage!,fit: BoxFit.fill) : Image.asset(rutaFoto)
                     ),
-                    onTap: (){
+                    onTap: () async{
                       // EL MOVIL PEDIRA INCLUIR UNA FOTO
                       print("EL MOVIL PEDIRA UNA FOTO");
+                      
+                      // // Obtain a list of the available cameras on the device.
+                      // final cameras = await availableCameras();
+                      // // Get a specific camera from the list of available cameras.
+                      // final firstCamera = cameras.first;
+                      // final destino = MaterialPageRoute(builder: (_) => TakePictureScreen(camera: firstCamera));
+                      // final datoDevuelto = await Navigator.push(context, destino);
+                      // setState(() {
+                      //   rutaFoto = "assets/images/medicamento-generico.jpg";
+                      // });
+
+                      modoEdicion.fotocamara = 0;
+                      
+                      await showDialog<void>(
+                        // barrierDismissible: false,
+                        context: context,
+                        builder: (BuildContext context) => BotonAddImagen()
+                      );
+                      
+                      if(modoEdicion.fotocamara != 0){
+                        _pickImage(modoEdicion.fotocamara);
+                      }
                     },
                   )
                 ),
+                // Center(
+                //   child: InkWell(
+                //     onTap: (){
+                //       // EL MOVIL PEDIRA INCLUIR UNA FOTO
+                //       print("EL MOVIL PEDIRA UNA FOTO");
+                //     },
+                //     child: Container(
+                //       width: 300,
+                //       height: 150,
+                //       decoration: BoxDecoration(
+                //         color: Colors.grey,
+                //         border: Border.all()
+                //       ),
+                //       child: const Column(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: [
+                //           // Padding(padding: EdgeInsets.only(top: 50)),
+                //           Icon(Icons.photo_camera, size: 60, color: Colors.white,),
+                //           Text("Añadir una foto", style: TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold))
+                //         ]
+                //       ),
+                //     ),
+                //   )
+                // ),
                 // ESPACIO
                 SizedBox(
                   height: 20,
@@ -765,5 +829,23 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
         ],
       ),
     );
+  }
+
+  Future _pickImage(int fromCamera) async{
+    final returnedImage;
+    
+    if(fromCamera == 1){
+      returnedImage = await ImagePicker().pickImage(source: ImageSource.camera);
+    }
+    else{
+      returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    }
+
+    if(returnedImage == null) return;
+
+    setState(() {
+      fotoModificada = true;
+      _selectedImage = File(returnedImage!.path);
+    });
   }
 }
