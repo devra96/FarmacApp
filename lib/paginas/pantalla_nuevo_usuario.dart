@@ -244,15 +244,17 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                               // SI CREAMOS CUENTA DE SUPERVISOR
                               if(valorSwitchModoSupervisor){
                                 // PRIMERO INSERTAMOS CUENTA SIN id_supervisor
-                                u = await u.createUsuario(nombre, correo, pass);
+                                u = await u.createUsuario(0, nombre, correo, pass);
                                 // PATCH AL USUARIO CREADO CON id_supervisor = idUsuario
                                 idUsuario = await u.checkUsuarioExistente(correo); // Volvemos a llamar al metodo para recoger el ID del usuario creado
                                 u.updateUsuario_idSupervisor(idUsuario);
                               }
                               // SI CREAMOS CUENTA ESTANDAR (SIN id_supervisor)
                               else{
-                                u = await u.createUsuario(nombre, correo, pass);
+                                u = await u.createUsuario(0, nombre, correo, pass);
                               }
+
+                              Navigator.pop(context);
                             }
                             // SI EXISTE
                             else{
@@ -289,12 +291,13 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                               }
                               // SI CREAMOS CUENTA ESTANDAR (NO INSERTAMOS id_supervisor)
                               else{
-                                bdHelper.insertarBD("usuarios",{'nombre':nombre, 'correo':correo, 'password':pass});
+                                bdHelper.insertarBD("usuarios",{'id_supervisor':0, 'nombre':nombre, 'correo':correo, 'password':pass});
                               }
+
+                              Navigator.pop(context);
                             }
                           }
                         }
-                        Navigator.pop(context);
                       },
                     ),
                   ),

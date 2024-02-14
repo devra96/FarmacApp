@@ -1,5 +1,6 @@
 import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/modelos/usuario.dart';
+import 'package:farmacapp/modelos/visitamedica.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -29,6 +30,9 @@ class BDHelper{
         );
         await db.execute(
           "CREATE TABLE medicamentos(id INTEGER PRIMARY KEY, id_usuario INTEGER, nombre VARCHAR(30), dosisincluidas INTEGER, dosisrestantes INTEGER, tiempoconsumo INTEGER, fechahoraultimadosis VARCHAR(30), fechahoraproximadosis VARCHAR(30), gestionadopor VARCHAR(20), normasconsumo VARCHAR(200), caracteristicas VARCHAR(200))",
+        );
+        await db.execute(
+          "CREATE TABLE visitasmedicas(id INTEGER PRIMARY KEY, id_usuario INTEGER, gestionadopor VARCHAR(30), especialidad VARCHAR(30), doctor VARCHAR(30), lugar VARCHAR(30), fechayhora VARCHAR(30))",
         );
       }
     );
@@ -68,6 +72,23 @@ class BDHelper{
     return u;
   }
 
+  // SELECT * FROM usuarios WHERE id_supervisor = ?
+  Future<List<Usuario>> getUsuariosSupervisor(int id_supervisor) async{
+    Database? bd = await baseDatos;
+    var resultado = await bd!.query("usuarios", where: "id_supervisor = ?", whereArgs: [id_supervisor]);
+    Usuario u = new Usuario();
+    List<Usuario> usuarios = [];
+    for(int i=0;i<resultado.length;i++){
+      u = Usuario.fromMap(resultado[i]);
+      // APLICAMOS UN "FILTRO" PARA QUE SE MUESTREN TODOS LOS USUARIOS MENOS EL NUESTRO PROPIO
+      if(u.id != id_supervisor){
+        usuarios.add(u);
+      }
+    }
+    return usuarios;
+    // return List.generate(resultado.length, (index) => Usuario.fromMap(resultado[index]));
+  }
+
   // -------------------------------------------------- METODOS MEDICAMENTOS --------------------------------------------------
 
   Future<List<Medicamento>> getMedicamentosUsuario(int id_usuario) async{
@@ -80,6 +101,20 @@ class BDHelper{
     //   medicamentos.add(m);
     // }
     return List.generate(resultado.length, (index) => Medicamento.fromMap(resultado[index]));
+  }
+
+  // -------------------------------------------------- METODOS VISITAS MEDICAS --------------------------------------------------
+
+  Future<List<VisitaMedica>> getVisitasMedicasUsuario(int id_usuario) async{
+    Database? bd = await baseDatos;
+    var resultado = await bd!.query("visitasmedicas", where: "id_usuario = ?", whereArgs: [id_usuario]);
+    // Medicamento m = new Medicamento();
+    // List<Medicamento> medicamentos;
+    // for(int i=0;i<resultado.length;i++){
+    //   m = Medicamento.fromMap(resultado[i]);
+    //   medicamentos.add(m);
+    // }
+    return List.generate(resultado.length, (index) => VisitaMedica.fromMap(resultado[index]));
   }
 
 

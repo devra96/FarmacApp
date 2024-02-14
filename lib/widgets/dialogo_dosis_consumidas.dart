@@ -49,6 +49,13 @@ class DialogoDosisConsumidas extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: (){
+              modoEdicion.confirmacion = false;
+              Navigator.of(context).pop();
+            },
+            child: Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: (){
               if(dosisincluidas < modoEdicion.dosisconsumidas){
                 showDialog<void>(
                   context: context,
@@ -62,6 +69,7 @@ class DialogoDosisConsumidas extends StatelessWidget {
               //   );
               // }
               else{
+                modoEdicion.confirmacion = true;
                 Navigator.of(context).pop();
               }
             },

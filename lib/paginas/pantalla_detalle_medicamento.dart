@@ -1,6 +1,7 @@
 import 'package:farmacapp/database/db.dart';
 import 'package:farmacapp/modelos/medicamento.dart';
-import 'package:farmacapp/paginas/pantalla_medicamento.dart';
+// import 'package:farmacapp/paginas/pantalla_medicamento.dart';
+import 'package:farmacapp/paginas/pantalla_nuevo_medicamento.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/widgets/dialogo.dart';
@@ -467,10 +468,10 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
                     await showDialog<void>(
                       barrierDismissible: false,
                       context: context,
-                      builder: (BuildContext context) => DialogoConfirmacion(texto: '¿Esta seguro de borrar el medicamento? Una vez confirmada la operacion, no habra marcha atras.')
+                      builder: (BuildContext context) => DialogoConfirmacion(title: "ATENCIÓN", texto: '¿Esta seguro de borrar el medicamento? Una vez confirmada la operacion, no habra marcha atras.')
                     );
 
-                    if(modoEdicion.eliminar){
+                    if(modoEdicion.confirmacion){
                       // ELIMINAR MODO REMOTO
                       if(modoTrabajo.modoLocal){
                         await m.deleteMedicamento(medicamentoSeleccionado.id);

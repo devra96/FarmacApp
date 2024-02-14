@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class Usuario with ChangeNotifier{
   late int _id;
-  int? _id_supervisor;
+  late int _id_supervisor;
   late String _nombre;
   late String _correo;
   late String _password;
@@ -52,7 +52,7 @@ class Usuario with ChangeNotifier{
   // int? get id => _id;
   // int? get id_supervisor => _id_supervisor;
   int get id => _id;
-  int? get id_supervisor => _id_supervisor;
+  int get id_supervisor => _id_supervisor;
   String get nombre => _nombre;
   String get correo => _correo;
   String get password => _password;
@@ -64,7 +64,7 @@ class Usuario with ChangeNotifier{
     notifyListeners();
   }
 
-  set id_supervisor(int? value) {
+  set id_supervisor(int value) {
     _id_supervisor = value;
     notifyListeners();
   }
@@ -147,14 +147,36 @@ class Usuario with ChangeNotifier{
     }
   }
 
+  // [GET] RECUPERACION DE USUARIOS SEGUN SU ID_SUPERVISOR
+  Future<List<Usuario>> getUsuariosSupervisor(int id_supervisor) async{
+    final response = await http.get(Uri.parse('http://10.0.2.2:8000/usuario/get_usuarios_supervisor?id_supervisor=$id_supervisor'));
+    if(response.statusCode == 200){
+      List<Usuario> usuarios = [];
+      Usuario u = new Usuario();
+      var data = json.decode(response.body);
+      for(int i=0;i<data.length;i++){
+        u = Usuario.fromMap(data[i]);
+        // APLICAMOS UN "FILTRO" PARA QUE SE MUESTREN TODOS LOS USUARIOS MENOS EL NUESTRO PROPIO
+        if(u.id != id_supervisor){
+          usuarios.add(u);
+        }
+      }
+      return usuarios;
+    }
+    else{
+      throw Exception('Error al leer los usuarios supervisados');
+    }
+  }
+
   // [POST] CREAR UN USUARIO
-  Future<Usuario> createUsuario(String nombre, String correo, String password) async {
+  Future<Usuario> createUsuario(int id_supervisor, String nombre, String correo, String password) async {
     final response = await http.post(
       Uri.parse('http://10.0.2.2:8000/usuario/add_usuario'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
+        'id_supervisor': id_supervisor,
         'nombre': nombre,
         'correo': correo,
         'password': password

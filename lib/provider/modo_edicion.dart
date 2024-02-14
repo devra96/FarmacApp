@@ -3,18 +3,20 @@ import 'package:flutter/material.dart';
 class ModoEdicion with ChangeNotifier{
   late bool _modoedicion = false;
   late int _dosisconsumidas = 0;
-  late bool _eliminar = false;
+  late bool _confirmacion = false;
   // late String _rutaimagen;
   late int _fotocamara = 0;
+  late bool _addusuario;
 
-  ModoEdicion(){}
+  ModoEdicion();
 
   // GETTER
   bool get modoedicion => _modoedicion;
   int get dosisconsumidas => _dosisconsumidas;
-  bool get eliminar => _eliminar;
+  bool get confirmacion => _confirmacion;
   // String get rutaimagen => _rutaimagen;
   int get fotocamara => _fotocamara;
+  bool get addusuario => _addusuario;
 
   // SETTER
   set modoedicion(bool value) {
@@ -27,8 +29,8 @@ class ModoEdicion with ChangeNotifier{
     notifyListeners();
   }
 
-  set eliminar(bool value) {
-    _eliminar = value;
+  set confirmacion(bool value) {
+    _confirmacion = value;
     notifyListeners();
   }
 
@@ -39,6 +41,11 @@ class ModoEdicion with ChangeNotifier{
 
   set fotocamara(int value){
     _fotocamara = value;
+    notifyListeners();
+  }
+
+  set addusuario(bool value){
+    _addusuario = value;
     notifyListeners();
   }
 }

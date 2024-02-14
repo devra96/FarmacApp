@@ -1,12 +1,14 @@
 import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/modelos/usuario.dart';
+import 'package:farmacapp/modelos/visitamedica.dart';
 import 'package:farmacapp/paginas/pantalla_inicio.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
+import 'package:farmacapp/provider/usuario_supervisor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-Future<void> main() async{
+void main() {
 
   // WidgetsFlutterBinding.ensureInitialized();
 
@@ -23,7 +25,13 @@ Future<void> main() async{
           create: (_) => Medicamento()
         ),
         ChangeNotifierProvider(
+          create: (_) => VisitaMedica()
+        ),
+        ChangeNotifierProvider(
           create: (_) => ModoEdicion()
+        ),
+        ChangeNotifierProvider(
+          create: (_) => UsuarioSupervisor()
         ),
       ],
       child: MyApp(),

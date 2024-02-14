@@ -176,7 +176,7 @@ class Medicamento with ChangeNotifier{
       return medicamentos;
     }
     else{
-      throw Exception('Error al leer datos de la API');
+      throw Exception('Error al leer los medicamentos');
     }
   }
 
@@ -303,10 +303,10 @@ class Medicamento with ChangeNotifier{
       // Medicamento m = new Medicamento.fromMap(jsonDecode(response.body));
       // return m;
 
-      print("DOSIS REGISTRADA CORRECTAMENTE.");
+      print("DOSIS MODIFICADA CORRECTAMENTE.");
     }
     else{
-      throw Exception('Fallo al registrar la dosis del medicamento.');
+      throw Exception('Fallo al modificar el medicamento.');
     }
   }
 

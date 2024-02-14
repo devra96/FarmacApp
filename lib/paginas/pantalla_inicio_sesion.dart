@@ -6,6 +6,7 @@ import 'package:farmacapp/paginas/pantalla_agenda.dart';
 import 'package:farmacapp/paginas/pantalla_nuevo_usuario.dart';
 import 'package:farmacapp/paginas/pantalla_pass_olvidada.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
+import 'package:farmacapp/provider/usuario_supervisor.dart';
 import 'package:farmacapp/widgets/dialogo.dart';
 
 import 'package:flutter/material.dart';
@@ -49,6 +50,7 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
 
     final modoTrabajo = Provider.of<ModoTrabajo>(context);
     var usuarioIniciado = Provider.of<Usuario>(context);
+    var usuarioSupervisor = Provider.of<UsuarioSupervisor>(context);
 
     return Scaffold(
       body: Column(
@@ -187,6 +189,22 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                           usuarioIniciado.nombre = u.nombre;
                           usuarioIniciado.correo = u.correo;
                           usuarioIniciado.password = u.password;
+
+                          // SI EL USUARIO INICIADO ES SUPERVISOR
+                          if(u.id == u.id_supervisor){
+                            usuarioSupervisor.supervisoriniciado = true;
+                            usuarioSupervisor.modosupervisor = false; // Por si acaso
+                            usuarioSupervisor.id = u.id;
+                            usuarioSupervisor.id_supervisor = u.id_supervisor;
+                            usuarioSupervisor.nombre = u.nombre;
+                            usuarioSupervisor.correo = u.correo;
+                            usuarioSupervisor.password = u.password;
+                          }
+                          else{
+                            usuarioSupervisor.supervisoriniciado = false;
+                            usuarioSupervisor.modosupervisor = false; // Por si acaso
+                          }
+
                           // CARGAMOS LA AGENDA
                           _loadPantallaAgenda();
                         }
@@ -197,12 +215,29 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                         if(await bdHelper.comprobarLogin("usuarios", correo, password) != ""){
                           // RECOGEMOS AL USUARIO QUE HA INICIADO SESION
                           u = await bdHelper.getUsuario("usuarios",correo,password);
+                          
                           // GUARDAMOS LOS ATRIBUTOS DE USUARIO EN EL PROVIDER "usuarioIniciado" PARA TRANSPASARLOS ENTRE PANTALLAS
                           usuarioIniciado.id = u.id;
                           usuarioIniciado.id_supervisor = u.id_supervisor;
                           usuarioIniciado.nombre = u.nombre;
                           usuarioIniciado.correo = u.correo;
                           usuarioIniciado.password = u.password;
+
+                          // SI EL USUARIO INICIADO ES SUPERVISOR
+                          if(u.id == u.id_supervisor){
+                            usuarioSupervisor.supervisoriniciado = true;
+                            usuarioSupervisor.modosupervisor = false; // Por si acaso
+                            usuarioSupervisor.id = u.id;
+                            usuarioSupervisor.id_supervisor = u.id_supervisor;
+                            usuarioSupervisor.nombre = u.nombre;
+                            usuarioSupervisor.correo = u.correo;
+                            usuarioSupervisor.password = u.password;
+                          }
+                          else{
+                            usuarioSupervisor.supervisoriniciado = false;
+                            usuarioSupervisor.modosupervisor = false; // Por si acaso
+                          }
+
                           // CARGAMOS LA AGENDA
                           _loadPantallaAgenda();
                         }

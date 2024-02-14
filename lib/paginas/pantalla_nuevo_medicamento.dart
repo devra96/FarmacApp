@@ -540,18 +540,17 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                         if(!modoEdicion.modoedicion){
                           // AÑADIR MODO REMOTO
                           if(modoTrabajo.modoLocal){
-                              m = await m.createMedicamento(
-                                usuarioIniciado.id,
-                                nombre,
-                                dosis,
-                                horas,
-                                selectedDateTime,
-                                selectedDateTime.add(Duration(hours: horas)),
-                                usuarioIniciado.nombre,
-                                normasconsumo,
-                                caracteristicas
-                              );
-                            Navigator.pop(context);
+                            m = await m.createMedicamento(
+                              usuarioIniciado.id,
+                              nombre,
+                              dosis,
+                              horas,
+                              selectedDateTime,
+                              selectedDateTime.add(Duration(hours: horas)),
+                              usuarioIniciado.nombre,
+                              normasconsumo,
+                              caracteristicas
+                            );
                           }
                           // AÑADIR MODO LOCAL
                           else{
@@ -571,13 +570,13 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                               "normasconsumo": normasconsumo,
                               "caracteristicas": caracteristicas
                             });
-
-                            Navigator.pop(context);
                           }
+                          Navigator.pop(context);
                         }
                         // MODO MODIFICAR MEDICAMENTO
                         else{
                           modoEdicion.dosisconsumidas = 0;
+                          modoEdicion.confirmacion = true;
 
                           // VARIABLE QUE GUARDARA LAS DOSIS RESTANTES DEL MEDICAMENTO
                           // SEGUN SI HEMOS ACTUALIZADO LAS DOSIS INCLUIDAS O NO
@@ -605,40 +604,42 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                             dr = medicamentoSeleccionado.dosisrestantes;
                           }
 
-                          // MODIFICAR MODO REMOTO
-                          if(modoTrabajo.modoLocal){
-                            await m.updateMedicamento(
-                              medicamentoSeleccionado.id,
-                              nombre,
-                              dosis,
-                              dr,
-                              horas,
-                              selectedDateTime,
-                              selectedDateTime.add(Duration(hours: horas)),
-                              normasconsumo,
-                              caracteristicas
-                            );
-                          }
-                          // MODIFICAR MODO LOCAL
-                          else{
-                            int resultadoUpdate = await bdHelper.actualizarBD("medicamentos", {
-                              "id": medicamentoSeleccionado.id,
-                              "id_usuario": usuarioIniciado.id,
-                              "nombre": nombre,
-                              "dosisincluidas": dosis,
-                              "dosisrestantes": dr,
-                              "tiempoconsumo": horas,
-                              "fechahoraultimadosis": fud,
-                              "fechahoraproximadosis": fpd,
-                              "gestionadopor": usuarioIniciado.nombre,
-                              "normasconsumo": normasconsumo,
-                              "caracteristicas": caracteristicas
-                            });
-                            print("MEDICAMENTO ACTUALIZADO EN BD LOCAL CON RESULTADO: $resultadoUpdate");
-                          }
+                          if(modoEdicion.confirmacion){
+                            // MODIFICAR MODO REMOTO
+                            if(modoTrabajo.modoLocal){
+                              await m.updateMedicamento(
+                                medicamentoSeleccionado.id,
+                                nombre,
+                                dosis,
+                                dr,
+                                horas,
+                                selectedDateTime,
+                                selectedDateTime.add(Duration(hours: horas)),
+                                normasconsumo,
+                                caracteristicas
+                              );
+                            }
+                            // MODIFICAR MODO LOCAL
+                            else{
+                              int resultadoUpdate = await bdHelper.actualizarBD("medicamentos", {
+                                "id": medicamentoSeleccionado.id,
+                                "id_usuario": usuarioIniciado.id,
+                                "nombre": nombre,
+                                "dosisincluidas": dosis,
+                                "dosisrestantes": dr,
+                                "tiempoconsumo": horas,
+                                "fechahoraultimadosis": fud,
+                                "fechahoraproximadosis": fpd,
+                                "gestionadopor": usuarioIniciado.nombre,
+                                "normasconsumo": normasconsumo,
+                                "caracteristicas": caracteristicas
+                              });
+                              print("MEDICAMENTO ACTUALIZADO EN BD LOCAL CON RESULTADO: $resultadoUpdate");
+                            }
 
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          }
                         }
                       }
                     },

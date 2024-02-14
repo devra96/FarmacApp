@@ -6,10 +6,12 @@ import 'package:provider/provider.dart';
 
 class DialogoConfirmacion extends StatelessWidget {
 
+  final String title;
   final String texto;
 
   const DialogoConfirmacion({
     super.key,
+    required this.title,
     required this.texto
   });
 
@@ -21,7 +23,7 @@ class DialogoConfirmacion extends StatelessWidget {
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: AlertDialog(
-        title: Text('ATENCIÓN'),
+        title: Text(title),
         content: Container(
           child: Text(
             texto
@@ -31,14 +33,14 @@ class DialogoConfirmacion extends StatelessWidget {
           TextButton(
             child: Text('Cancelar'),
             onPressed: (){
-              modoEdicion.eliminar = false;
+              modoEdicion.confirmacion = false;
               Navigator.pop(context);
             },
           ),
           TextButton(
             child: Text('Aceptar'),
             onPressed: (){
-              modoEdicion.eliminar = true;
+              modoEdicion.confirmacion = true;
               Navigator.pop(context);
             },
           ),

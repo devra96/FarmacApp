@@ -3,16 +3,23 @@ import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/modelos/visitamedica.dart';
 import 'package:farmacapp/paginas/pantalla_add_medicamento.dart';
+import 'package:farmacapp/paginas/pantalla_add_visita_medica.dart';
 import 'package:farmacapp/paginas/pantalla_detalle_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_farmacias_cercanas.dart';
 import 'package:farmacapp/paginas/pantalla_inicio_sesion.dart';
-import 'package:farmacapp/paginas/pantalla_medicamento.dart';
+import 'package:farmacapp/paginas/pantalla_nueva_visita_medica.dart';
+import 'package:farmacapp/paginas/pantalla_nuevo_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_reponer_medicamento.dart';
+import 'package:farmacapp/paginas/pantalla_usuarios.dart';
 import 'package:farmacapp/paginas/pantalla_visitas_medicas.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
+import 'package:farmacapp/provider/usuario_supervisor.dart';
+import 'package:farmacapp/widgets/boton_click_visita_medica.dart';
 import 'package:farmacapp/widgets/boton_medicamento.dart';
 import 'package:farmacapp/widgets/boton_visitamedica.dart';
+import 'package:farmacapp/widgets/dialogo.dart';
+import 'package:farmacapp/widgets/dialogo_confirmacion.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -55,12 +62,12 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
   }
 
   // BORRAR
-  _loadPantallaAddMedicamento2() async {
-    final destino = MaterialPageRoute(builder: (_) => PantallaAddMedicamento());
-    final datoDevuelto = await Navigator.push(context, destino);
+  // _loadPantallaAddMedicamento2() async {
+  //   final destino = MaterialPageRoute(builder: (_) => PantallaAddMedicamento());
+  //   final datoDevuelto = await Navigator.push(context, destino);
 
-    setState(() {});
-  }
+  //   setState(() {});
+  // }
 
   _loadPantallaDetalleMedicamento() async {
     final destino =
@@ -92,8 +99,22 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
     setState(() {});
   }
 
-  _loadPantallaVisitasMedicas() async {
-    final destino = MaterialPageRoute(builder: (_) => PantallaVisitasMedicas());
+  // _loadPantallaVisitasMedicas() async {
+  //   final destino = MaterialPageRoute(builder: (_) => PantallaVisitasMedicas());
+  //   final datoDevuelto = await Navigator.push(context, destino);
+
+  //   setState(() {});
+  // }
+
+  _loadPantallaVisitaMedica() async {
+    final destino = MaterialPageRoute(builder: (_) => PantallaVisitaMedica());
+    final datoDevuelto = await Navigator.push(context, destino);
+
+    setState(() {});
+  }
+
+  _loadPantallaUsuarios() async {
+    final destino = MaterialPageRoute(builder: (_) => PantallaUsuarios());
     final datoDevuelto = await Navigator.push(context, destino);
 
     setState(() {});
@@ -132,7 +153,9 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
     var modoTrabajo = Provider.of<ModoTrabajo>(context);
     var usuarioIniciado = Provider.of<Usuario>(context);
     var medicamentoSeleccionado = Provider.of<Medicamento>(context);
+    var visitaMedicaSeleccionada = Provider.of<VisitaMedica>(context);
     var modoEdicion = Provider.of<ModoEdicion>(context);
+    var usuarioSupervisor = Provider.of<UsuarioSupervisor>(context);
 
     // METODO PARA LLAMAR AL METODO OPORTUNO PARA RECUPERAR LOS MEDICAMENTOS
     // SEGUN SI ESTAMOS EN "MODO REMOTO" O "MODO LOCAL"
@@ -147,11 +170,24 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
       }
     }
 
+    // METODO PARA LLAMAR AL METODO OPORTUNO PARA RECUPERAR LOS MEDICAMENTOS
+    // SEGUN SI ESTAMOS EN "MODO REMOTO" O "MODO LOCAL"
+    Future<List<VisitaMedica>> recuperarVisitasMedicas() async{
+      // MODO REMOTO
+      if(modoTrabajo.modoLocal){
+        return v.getVisitasMedicasUsuario(usuarioIniciado.id);
+      }
+      // MODO LOCAL
+      else{
+        return await bdHelper.getVisitasMedicasUsuario(usuarioIniciado.id);
+      }
+    }
+
     return Scaffold(
       // #################### APPBAR ####################
       appBar: AppBar(
         title: Center(
-          child: Text("Agenda de ${usuarioIniciado.nombre}")
+          child: !usuarioSupervisor.supervisoriniciado? Text("Agenda de ${usuarioIniciado.nombre}") : Text("a"),
         ),
         actions: [
           // IconButton(
@@ -184,7 +220,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                 _loadPantallaMedicamento();
               }
               else{
-                // _loadPantallaAddMedicamento2();
+                _loadPantallaVisitaMedica();
               }
             },
           ),
@@ -198,6 +234,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
             // IMPORTANTE ELIMINAR CUALQUIER PADDING DE LA LISTVIEW
             padding: EdgeInsets.zero,
             children: [
+              // SUSTITUIR ESTO POR LA IMAGEN DEL ABUELO
               const DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.green,
@@ -215,19 +252,22 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
               //     style: TextStyle(fontSize: 20),
               //   ),
               // ),
+              // BOTON MODIFICAR PERFIL
               ListTile(
                 title: Row(
                   children: [
                     Icon(Icons.supervised_user_circle),
                     Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text('Mi perfil'))
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text('Modificar perfil')
+                    )
                   ],
                 ),
                 onTap: (){
-                  // IR A PANTALLA DE DATOS DEL USUARIO (AUN POR CREAR)
+                  // IR A PANTALLA CREAR USUARIO????
                 },
               ),
+              // BOTON FARMACIAS CERCANAS
               ListTile(
                 title: Row(
                   children: [
@@ -243,34 +283,43 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                   _loadPantallaFarmaciasCercanas();
                 },
               ),
+              // // BOTON 
+              // ListTile(
+              //   title: Row(
+              //     children: [
+              //       Icon(Icons.list),
+              //       Container(
+              //         margin: EdgeInsets.only(left: 10),
+              //         child: Text('Reponer medicamentos')
+              //       )
+              //     ],
+              //   ),
+              //   onTap: () {
+              //     _loadPantallaReponerMedicamento();
+              //   },
+              // ),
+              // BOTON MIS USUARIOS
+              // (VISIBLE SOLO SI HA INICIADO SESION UN SUPERVISOR Y NO ESTAMOS EN MODO SUPERVISOR)
+              usuarioSupervisor.supervisoriniciado && !usuarioSupervisor.modosupervisor
+              ?
               ListTile(
                 title: Row(
                   children: [
-                    Icon(Icons.list),
+                    Icon(Icons.person),
                     Container(
                       margin: EdgeInsets.only(left: 10),
-                      child: Text('Reponer medicamentos')
-                    )
+                      child: Text('Mis usuarios'))
                   ],
                 ),
-                onTap: () {
-                  _loadPantallaReponerMedicamento();
+                onTap: (){
+                  // IR A PANTALLA USUARIOS
+                  _loadPantallaUsuarios();
                 },
-              ),
-              ListTile(
-                title: Row(
-                  children: [
-                    Icon(Icons.list),
-                    Container(
-                      margin: EdgeInsets.only(left: 10),
-                      child: Text('Visitas medicas'))
-                  ],
-                ),
-                onTap: () {
-                  // IR A PANTALLA VISITAS MEDICAS
-                  _loadPantallaVisitasMedicas();
-                },
-              ),
+              )
+              : Container(),
+              // BOTON CONFIGURACION (SI ESTAMOS EN MODO SUPERVISOR, SE DESACTIVA)
+              !usuarioSupervisor.modosupervisor
+              ?
               ListTile(
                 title: Row(
                   children: [
@@ -283,7 +332,11 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                 onTap: () {
                   // IR A CONFIGURACION
                 },
-              ),
+              )
+              : Container(),
+              // BOTON CERRAR SESION (SI ESTAMOS EN MODO SUPERVISOR, SE DESACTIVA)
+              !usuarioSupervisor.modosupervisor
+              ?
               ListTile(
                 title: Row(
                   children: [
@@ -298,7 +351,8 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                   // HABRIA QUE CONTROLAR QUE EN BASE AL VALOR DEVUELTO
                   // POR LA FUNCION, VUELVA O NO A LA PANTALLA DE LOGIN
                 },
-              ),
+              )
+              : Container(),
             ],
           ),
         ),
@@ -378,7 +432,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
-                      'NO HAY MEDICAMENTOS REGISTRADOS. HAGA CLICK EN EL BOTON FLOTANTE "+" PARA AÑADIR UN NUEVO MEDICAMENTO.',
+                      'NO HAY MEDICAMENTOS REGISTRADOS. HAGA CLICK EN EL BOTON "+" DE ARRIBA PARA AÑADIR UN NUEVO MEDICAMENTO.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
@@ -395,14 +449,14 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
         // VISITAS MEDICAS
         Container(
           child: FutureBuilder(
-            future: v.getVisitasMedicasUsuario(usuarioIniciado.id),
+            future: recuperarVisitasMedicas(),
             builder: (context, AsyncSnapshot<List<VisitaMedica>> snapshot){
               if(snapshot.hasData){
                 return ListView.builder(
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index){
                     return Container(
-                      height: 130,
+                      height: 175,
                       margin: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         border: Border.all(),
@@ -410,8 +464,62 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                         color: Colors.white
                       ),
                       child: InkWell(
-                        onTap: () {
-                          // IR A LA PANTALLA DETALLES VISITA MEDICA
+                        onTap: () async{
+                          
+                          // ESTABLECEMOS AMBOS VALORES EN false POR SI EL USUARIO QUITA EL ALERTDIALOG
+                          // PULSANDO FUERA DE EL, AL BOTON DE ATRAS O A CANCELAR
+                          modoEdicion.modoedicion = false;
+                          modoEdicion.confirmacion = false;
+
+                          // RECOGEMOS LOS DATOS DE LA VISITA MEDICA PULSADA
+                          visitaMedicaSeleccionada.id = snapshot.data![index].id;
+                          visitaMedicaSeleccionada.id_usuario = snapshot.data![index].id_usuario;
+                          visitaMedicaSeleccionada.gestionadopor = snapshot.data![index].gestionadopor;
+                          visitaMedicaSeleccionada.especialidad = snapshot.data![index].especialidad;
+                          visitaMedicaSeleccionada.doctor = snapshot.data![index].doctor;
+                          visitaMedicaSeleccionada.lugar = snapshot.data![index].lugar;
+                          visitaMedicaSeleccionada.fechayhora = snapshot.data![index].fechayhora; 
+                          
+                          // ABRIR MENU MODIFICAR O BORRAR
+                          await showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) => BotonClickVisitaMedica()
+                          );
+
+                          // SI EL USUARIO QUIERE MODIFICAR, VAMOS A LA PANTALLA DE VISITA MEDICA
+                          if(modoEdicion.modoedicion){
+                            _loadPantallaVisitaMedica();
+                          }
+                          // SI EL USUARIO QUIERE ELIMINAR, MOSTRAMOS DIALOGO DE CONFIRMACION
+                          else if(modoEdicion.confirmacion){
+                            await showDialog<void>(
+                              context: context,
+                              builder: (BuildContext context) => DialogoConfirmacion(title: "ATENCIÓN", texto: '¿Esta seguro de borrar la visita medica? Una vez confirmada la operacion, no habra marcha atras.')
+                            );
+
+                            if(modoEdicion.confirmacion){
+                              // ELIMINACION VISITA MODO REMOTO
+                              if(modoTrabajo.modoLocal){
+                                v.deleteVisitaMedica(visitaMedicaSeleccionada.id);
+                              }
+                              // ELIMINACION VISITA MODO LOCAL
+                              else{
+                                int resultadoDelete = await bdHelper.eliminarBD("visitasmedicas", visitaMedicaSeleccionada.id);
+                                print("VISITA MEDICA ELIMINADA CORRECTAMENTE CON ID: $resultadoDelete");
+                              }
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("VISITA MEDICA ELIMINADA CORRECTAMENTE.")
+                                )
+                              );
+                            }
+                          }
+                          // SI EL USUARIO DA A CANCELAR (NO OCURRE NADA)
+                          else{
+                            
+                          }
+                          
                         },
                         child: BotonVisitaMedica(
                           especialidad: snapshot.data![index].especialidad,
@@ -430,7 +538,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
-                      'NO HAY VISITAS MEDICAS REGISTRADAS. HAGA CLICK EN EL BOTON FLOTANTE "+" PARA AÑADIR UNA NUEVA VISITA MEDICA.',
+                      'NO HAY VISITAS MEDICAS REGISTRADAS. HAGA CLICK EN EL BOTON "+" DE ARRIBA PARA AÑADIR UNA NUEVA VISITA MEDICA.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
