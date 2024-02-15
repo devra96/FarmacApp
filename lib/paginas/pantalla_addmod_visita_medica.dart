@@ -3,6 +3,7 @@ import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/modelos/visitamedica.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
+import 'package:farmacapp/provider/usuario_supervisor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,6 +46,7 @@ class _PantallaVisitaMedicaState extends State<PantallaVisitaMedica> {
 
     // PROVIDERS
     var usuarioIniciado = Provider.of<Usuario>(context);
+    var usuarioSupervisor = Provider.of<UsuarioSupervisor>(context);
     var visitaMedicaSeleccionada = Provider.of<VisitaMedica>(context);
     final modoTrabajo = Provider.of<ModoTrabajo>(context);
     var modoEdicion = Provider.of<ModoEdicion>(context);
@@ -264,25 +266,53 @@ class _PantallaVisitaMedicaState extends State<PantallaVisitaMedica> {
                         if(!modoEdicion.modoedicion){
                           // INSERCION MODO REMOTO
                           if(modoTrabajo.modoLocal){
-                            v = await v.createVisitaMedica(
-                              usuarioIniciado.id,
-                              usuarioIniciado.nombre, // SUPERVISOR
-                              especialidad,
-                              doctor,
-                              lugar,
-                              fechayhora
-                            );
+                            // MODO SUPERVISOR (UN SUPERVISOR LE AÑADE EL MEDICAMENTO A UN USUARIO)
+                            if(usuarioSupervisor.modosupervisor){
+                              v = await v.createVisitaMedica(
+                                usuarioIniciado.id,
+                                usuarioSupervisor.nombre,
+                                especialidad,
+                                doctor,
+                                lugar,
+                                fechayhora
+                              );
+                            }
+                            // MODO "NORMAL" (UN USUARIO/SUPERVISOR SE AÑADE SU PROPIO MEDICAMENTO)
+                            else{
+                              v = await v.createVisitaMedica(
+                                usuarioSupervisor.supervisoriniciado ? usuarioSupervisor.id : usuarioIniciado.id,
+                                usuarioSupervisor.supervisoriniciado ? usuarioSupervisor.nombre : usuarioIniciado.nombre,
+                                especialidad,
+                                doctor,
+                                lugar,
+                                fechayhora
+                              );
+                            }
                           }
                           // INSERCION MODO LOCAL
                           else{
-                            bdHelper.insertarBD("visitasmedicas", {
-                              "id_usuario": usuarioIniciado.id,
-                              "gestionadopor": usuarioIniciado.nombre, // SUPERVISOR
-                              "especialidad": especialidad,
-                              "doctor": doctor,
-                              "lugar": lugar,
-                              "fechayhora": fechayhora
-                            });
+                            // MODO SUPERVISOR (UN SUPERVISOR LE AÑADE EL MEDICAMENTO A UN USUARIO)
+                            if(usuarioSupervisor.modosupervisor){
+                              bdHelper.insertarBD("visitasmedicas", {
+                                "id_usuario": usuarioIniciado.id,
+                                "gestionadopor": usuarioSupervisor.nombre,
+                                "especialidad": especialidad,
+                                "doctor": doctor,
+                                "lugar": lugar,
+                                "fechayhora": fechayhora
+                              });
+                            }
+                            // MODO "NORMAL" (UN USUARIO/SUPERVISOR SE AÑADE SU PROPIO MEDICAMENTO)
+                            else{
+                              bdHelper.insertarBD("visitasmedicas", {
+                                "id_usuario": usuarioSupervisor.supervisoriniciado ? usuarioSupervisor.id : usuarioIniciado.id,
+                                "gestionadopor": usuarioSupervisor.supervisoriniciado ? usuarioSupervisor.nombre : usuarioIniciado.nombre,
+                                "especialidad": especialidad,
+                                "doctor": doctor,
+                                "lugar": lugar,
+                                "fechayhora": fechayhora
+                              });
+                            }
                           }
                           // Navigator.pop(context);
                         }
@@ -292,8 +322,8 @@ class _PantallaVisitaMedicaState extends State<PantallaVisitaMedica> {
                           if(modoTrabajo.modoLocal){
                             await v.updateVisitaMedica(
                               visitaMedicaSeleccionada.id,
-                              usuarioIniciado.id,
-                              usuarioIniciado.nombre, // SUPERVISOR
+                              // usuarioIniciado.id,
+                              usuarioSupervisor.supervisoriniciado ? usuarioSupervisor.nombre : usuarioIniciado.nombre,
                               especialidad,
                               doctor,
                               lugar,
@@ -304,8 +334,8 @@ class _PantallaVisitaMedicaState extends State<PantallaVisitaMedica> {
                           else{
                             await bdHelper.actualizarBD("visitasmedicas", {
                               "id": visitaMedicaSeleccionada.id,
-                              "id_usuario": usuarioIniciado.id,
-                              "gestionadopor": usuarioIniciado.nombre, // SUPERVISOR
+                              // "id_usuario": usuarioIniciado.id,
+                              "gestionadopor": usuarioSupervisor.supervisoriniciado ? usuarioSupervisor.nombre : usuarioIniciado.nombre,
                               "especialidad": especialidad,
                               "doctor": doctor,
                               "lugar": lugar,

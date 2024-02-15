@@ -6,7 +6,8 @@ class ModoEdicion with ChangeNotifier{
   late bool _confirmacion = false;
   // late String _rutaimagen;
   late int _fotocamara = 0;
-  late bool _addusuario;
+  late bool _addusuario; // PANTALLA_USUARIO
+  late bool _cambiarpass;
 
   ModoEdicion();
 
@@ -17,6 +18,7 @@ class ModoEdicion with ChangeNotifier{
   // String get rutaimagen => _rutaimagen;
   int get fotocamara => _fotocamara;
   bool get addusuario => _addusuario;
+  bool get cambiarpass => _cambiarpass;
 
   // SETTER
   set modoedicion(bool value) {
@@ -46,6 +48,11 @@ class ModoEdicion with ChangeNotifier{
 
   set addusuario(bool value){
     _addusuario = value;
+    notifyListeners();
+  }
+  
+  set cambiarpass(bool value){
+    _cambiarpass = value;
     notifyListeners();
   }
 }

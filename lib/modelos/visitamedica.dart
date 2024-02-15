@@ -107,7 +107,7 @@ class VisitaMedica with ChangeNotifier{
   }
 
   // [PATCH] MODIFICAR UNA VISITA MEDICA
-  Future<void> updateVisitaMedica(int id_visitamedica, int id_usuario, String gestionadopor, String especialidad, String doctor, String lugar, String fechayhora) async{
+  Future<void> updateVisitaMedica(int id_visitamedica, String gestionadopor, String especialidad, String doctor, String lugar, String fechayhora) async{
       final response = await http.patch(
       Uri.parse('http://10.0.2.2:8000/visitasmedicas/mod_visitamedica/$id_visitamedica'),
       headers: <String, String>{
@@ -115,7 +115,7 @@ class VisitaMedica with ChangeNotifier{
       },
       body: jsonEncode(<String, dynamic>{
         "id": id_visitamedica,
-        "id_usuario": id_usuario,
+        // "id_usuario": id_usuario,
         "gestionadopor": gestionadopor,
         "especialidad": especialidad,
         "doctor": doctor,

@@ -1,7 +1,7 @@
 import 'package:farmacapp/database/db.dart';
 import 'package:farmacapp/modelos/medicamento.dart';
 // import 'package:farmacapp/paginas/pantalla_medicamento.dart';
-import 'package:farmacapp/paginas/pantalla_nuevo_medicamento.dart';
+import 'package:farmacapp/paginas/pantalla_addmod_medicamento.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/widgets/dialogo.dart';
@@ -50,7 +50,7 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
     // SI YA NO QUEDAN DOSIS DEL MEDICAMENTO:
     // - EN LA FECHA DE LA PROXIMA DOSIS SALDRA UN "-"
     // - EL BOTON TENDRA EL TEXTO "RENOVAR" EN VEZ DE "REGISTRAR"
-    // - CUANDO PULSEMOS EL BOTON SE APLICARA LA FUNCION DE RENOVAR
+    // - CUANDO PULSEMOS EL BOTON, SE MOSTRARA EL TEXTO CORRESPONDIENTE A LA FUNCION DE RENOVAR
     // SI QUEDAN DOSIS, SE APLICARA TODO LO CONTRARIO
     if(medicamentoSeleccionado.dosisrestantes == 0){
       pd = "-";

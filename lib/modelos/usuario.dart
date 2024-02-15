@@ -193,9 +193,9 @@ class Usuario with ChangeNotifier{
   }
 
   // [PATCH] AÑADIR EL id_supervisor AL USUARIO INDICADO
-  Future<void> updateUsuario_idSupervisor(int id_supervisor) async {
+  Future<void> updateUsuario_idSupervisor(int id_usuario, int id_supervisor) async {
     final response = await http.patch(
-      Uri.parse('http://10.0.2.2:8000/usuario/mod_usuario/$id_supervisor'),
+      Uri.parse('http://10.0.2.2:8000/usuario/mod_usuario/$id_usuario'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -209,6 +209,53 @@ class Usuario with ChangeNotifier{
       // return u;
 
       print("AÑADIDO id_supervisor CORRECTAMENTE");
+    }
+    else{
+      throw Exception('Fallo al añadir el id_supervidor al usuario.');
+    }
+  }
+
+  // [PATCH] MODIFICAR LA CONTRASEÑA DEL USUARIO
+  Future<void> updateUsuario_pass(int id_usuario, String password) async {
+    final response = await http.patch(
+      Uri.parse('http://10.0.2.2:8000/usuario/mod_usuario/$id_usuario'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Usuario u = new Usuario.fromMap(jsonDecode(response.body));
+      // return u;
+
+      print("CONTRASEÑA DEL USUARIO $id_usuario MODIFICADA CORRECTAMENTE.");
+    }
+    else{
+      throw Exception('Fallo al añadir el id_supervidor al usuario.');
+    }
+  }
+
+  // [PATCH] MODIFICAR LA CONTRASEÑA DEL USUARIO
+  Future<void> updateUsuario_nombreycorreo(int id_usuario, String nombre, String correo) async {
+    final response = await http.patch(
+      Uri.parse('http://10.0.2.2:8000/usuario/mod_usuario/$id_usuario'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "nombre": nombre,
+        "correo": correo
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Usuario u = new Usuario.fromMap(jsonDecode(response.body));
+      // return u;
+
+      print("CONTRASEÑA DEL USUARIO $id_usuario MODIFICADA CORRECTAMENTE.");
     }
     else{
       throw Exception('Fallo al añadir el id_supervidor al usuario.');

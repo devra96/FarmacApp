@@ -1,6 +1,7 @@
 import 'package:farmacapp/paginas/pantalla_inicio_sesion.dart';
-import 'package:farmacapp/paginas/pantalla_nuevo_usuario.dart';
+import 'package:farmacapp/paginas/pantalla_add_usuario.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PantallaInicio extends StatefulWidget {
   const PantallaInicio({super.key});
@@ -27,84 +28,105 @@ class _PantallaInicioState extends State<PantallaInicio> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // FONDO DE LA PANTALLA
-          Opacity(
-            opacity: 0.1,
-            child: Image.asset(
-              'assets/images/fondo_pantalla_inicio.jpg',
-              fit: BoxFit.cover,
-            ),
+    return WillPopScope(
+      onWillPop: () async{
+        // Manejar el comportamiento al presionar el botón de retroceso del dispositivo
+        return await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('¿Quieres salir de la aplicación?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () => SystemNavigator.pop(),
+                child: Text('Salir'),
+              ),
+            ],
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                // IMAGEN DEL CENTRO
-                Container(
-                  padding: EdgeInsets.only(top: 100),
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.white.withOpacity(0),
+        ) ?? false;
+      },
+      child: Scaffold(
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            // FONDO DE LA PANTALLA
+            Opacity(
+              opacity: 0.1,
+              child: Image.asset(
+                'assets/images/fondo_pantalla_inicio.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  // IMAGEN DEL CENTRO
+                  Container(
+                    padding: EdgeInsets.only(top: 100),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0),
+                        ),
+                      ],
+                    ),
+                    child: Image.asset(
+                      'assets/images/logo_farmacapp_sinfondo.png',
+                      height: 400,
+                      width: 400,
+                    ),
+                  ),
+                  // ESPACIO
+                  SizedBox(height: 20),
+                  // BOTON "INICIAR SESION"
+                  ElevatedButton(
+                    onPressed: () {
+                      // Acción al presionar el botón "Iniciar sesión"
+                      _loadPantallaInicioSesion();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Color(0xFF009638), // Letra de color blanco
+                    ),
+                    child: Text(
+                      'INICIAR SESIÓN',
+                      style: TextStyle(
+                        fontSize: 30, // Tamaño de texto 30
+                        fontWeight: FontWeight.bold
                       ),
-                    ],
-                  ),
-                  child: Image.asset(
-                    'assets/images/logo_farmacapp_sinfondo.png',
-                    height: 400,
-                    width: 400,
-                  ),
-                ),
-                // ESPACIO
-                SizedBox(height: 20),
-                // BOTON "INICIAR SESION"
-                ElevatedButton(
-                  onPressed: () {
-                    // Acción al presionar el botón "Iniciar sesión"
-                    _loadPantallaInicioSesion();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Color(0xFF009638), // Letra de color blanco
-                  ),
-                  child: Text(
-                    'INICIAR SESIÓN',
-                    style: TextStyle(
-                      fontSize: 30, // Tamaño de texto 30
-                      fontWeight: FontWeight.bold
                     ),
                   ),
-                ),
-                // ESPACIO
-                SizedBox(
-                  height: 20,
-                ),
-                // BOTON "CREAR CUENTA"
-                ElevatedButton(
-                  onPressed: () {
-                    // Acción al presionar el botón "Crear cuenta"
-                    _loadPantallaNuevoUsuario();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Color(0xFF009638),
+                  // ESPACIO
+                  SizedBox(
+                    height: 20,
                   ),
-                  child: Text(
-                    'CREAR CUENTA',
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold
+                  // BOTON "CREAR CUENTA"
+                  ElevatedButton(
+                    onPressed: () {
+                      // Acción al presionar el botón "Crear cuenta"
+                      _loadPantallaNuevoUsuario();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Color(0xFF009638),
+                    ),
+                    child: Text(
+                      'CREAR CUENTA',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

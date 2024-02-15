@@ -247,7 +247,7 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                                 u = await u.createUsuario(0, nombre, correo, pass);
                                 // PATCH AL USUARIO CREADO CON id_supervisor = idUsuario
                                 idUsuario = await u.checkUsuarioExistente(correo); // Volvemos a llamar al metodo para recoger el ID del usuario creado
-                                u.updateUsuario_idSupervisor(idUsuario);
+                                u.updateUsuario_idSupervisor(idUsuario, idUsuario);
                               }
                               // SI CREAMOS CUENTA ESTANDAR (SIN id_supervisor)
                               else{

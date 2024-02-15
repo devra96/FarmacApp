@@ -2,10 +2,12 @@ import 'package:farmacapp/database/db.dart';
 import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/paginas/pantalla_add_del_usuarios.dart';
 import 'package:farmacapp/paginas/pantalla_agenda.dart';
+import 'package:farmacapp/paginas/pantalla_agenda_supervisor.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/provider/usuario_supervisor.dart';
 import 'package:farmacapp/widgets/boton_usuario.dart';
+import 'package:farmacapp/widgets/dialogo_supervisor_add_usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,8 +26,8 @@ class _PantallaUsuariosState extends State<PantallaUsuarios> {
   // INSTANCIA MODELO USUARIO
   Usuario u = new Usuario();
 
-  _loadPantallaAgenda () async{
-    final destino = MaterialPageRoute(builder:(_)=>PantallaAgenda());
+  _loadPantallaAgendaSupervisor () async{
+    final destino = MaterialPageRoute(builder:(_)=>PantallaAgendaSupervisor());
     final datoDevuelto = await Navigator.push(context, destino);
   }
 
@@ -112,7 +114,7 @@ class _PantallaUsuariosState extends State<PantallaUsuarios> {
                     child: InkWell(
                       onTap: () {
                         // MODO SUPERVISOR ACTIVADO
-                        usuarioSupervisor.modosupervisor = true;
+                        // usuarioSupervisor.modosupervisor = true;
 
                         // RECOGER LOS DATOS DEL USUARIO SELECCIONADO
                         usuarioIniciado.id = snapshot.data![index].id;
@@ -121,8 +123,8 @@ class _PantallaUsuariosState extends State<PantallaUsuarios> {
                         usuarioIniciado.correo = snapshot.data![index].correo;
                         usuarioIniciado.password = snapshot.data![index].password;
 
-                        // IR A AGENDA
-                        _loadPantallaAgenda();
+                        // IR A AGENDA SUPERVISOR
+                        _loadPantallaAgendaSupervisor();
                       },
                       child: BotonUsuario(
                         nombre: snapshot.data![index].nombre,

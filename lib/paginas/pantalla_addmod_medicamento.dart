@@ -6,6 +6,7 @@ import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
+import 'package:farmacapp/provider/usuario_supervisor.dart';
 import 'package:farmacapp/widgets/boton_add_imagen.dart';
 import 'package:farmacapp/widgets/dialogo.dart';
 import 'package:farmacapp/widgets/dialogo_dosis_consumidas.dart';
@@ -23,6 +24,8 @@ class PantallaMedicamento extends StatefulWidget {
 
 class _PantallaMedicamentoState extends State<PantallaMedicamento> {
 
+  // VARIABLES PARA SI MODIFICAMOS LA FOTO DEL MEDICAMENTO
+  // Y CARGAMOS UNA DE LA CAMARA O GALERIA
   bool fotoModificada = false;
   File ? _selectedImage;
 
@@ -118,6 +121,7 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
 
     // PROVIDERS
     var usuarioIniciado = Provider.of<Usuario>(context);
+    var usuarioSupervisor = Provider.of<UsuarioSupervisor>(context);
     var medicamentoSeleccionado = Provider.of<Medicamento>(context);
     final modoTrabajo = Provider.of<ModoTrabajo>(context);
     var modoEdicion = Provider.of<ModoEdicion>(context);
@@ -540,17 +544,34 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                         if(!modoEdicion.modoedicion){
                           // AÑADIR MODO REMOTO
                           if(modoTrabajo.modoLocal){
-                            m = await m.createMedicamento(
-                              usuarioIniciado.id,
-                              nombre,
-                              dosis,
-                              horas,
-                              selectedDateTime,
-                              selectedDateTime.add(Duration(hours: horas)),
-                              usuarioIniciado.nombre,
-                              normasconsumo,
-                              caracteristicas
-                            );
+                            // MODO SUPERVISOR (UN SUPERVISOR LE AÑADE EL MEDICAMENTO A UN USUARIO)
+                            if(usuarioSupervisor.modosupervisor){
+                              m = await m.createMedicamento(
+                                usuarioIniciado.id,
+                                nombre,
+                                dosis,
+                                horas,
+                                selectedDateTime,
+                                selectedDateTime.add(Duration(hours: horas)),
+                                usuarioSupervisor.nombre,
+                                normasconsumo,
+                                caracteristicas
+                              );
+                            }
+                            // MODO "NORMAL" (UN USUARIO/SUPERVISOR SE AÑADE SU PROPIO MEDICAMENTO)
+                            else{
+                              m = await m.createMedicamento(
+                                usuarioSupervisor.supervisoriniciado ? usuarioSupervisor.id : usuarioIniciado.id,
+                                nombre,
+                                dosis,
+                                horas,
+                                selectedDateTime,
+                                selectedDateTime.add(Duration(hours: horas)),
+                                usuarioSupervisor.supervisoriniciado ? usuarioSupervisor.nombre : usuarioIniciado.nombre,
+                                normasconsumo,
+                                caracteristicas
+                              );
+                            }
                           }
                           // AÑADIR MODO LOCAL
                           else{
@@ -558,18 +579,36 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                             // String fud = selectedDateTime.toIso8601String();
                             // String fpd = selectedDateTime.add(Duration(hours: horas)).toIso8601String();
 
-                            bdHelper.insertarBD("medicamentos", {
-                              "id_usuario": usuarioIniciado.id,
-                              "nombre": nombre,
-                              "dosisincluidas": dosis,
-                              "dosisrestantes": dosis,
-                              "tiempoconsumo": horas,
-                              "fechahoraultimadosis": fud,
-                              "fechahoraproximadosis": fpd,
-                              "gestionadopor": usuarioIniciado.nombre,
-                              "normasconsumo": normasconsumo,
-                              "caracteristicas": caracteristicas
-                            });
+                            // MODO SUPERVISOR (UN SUPERVISOR LE AÑADE EL MEDICAMENTO A UN USUARIO)
+                            if(usuarioSupervisor.modosupervisor){
+                              bdHelper.insertarBD("medicamentos", {
+                                "id_usuario": usuarioIniciado.id,
+                                "nombre": nombre,
+                                "dosisincluidas": dosis,
+                                "dosisrestantes": (dosis-1),
+                                "tiempoconsumo": horas,
+                                "fechahoraultimadosis": fud,
+                                "fechahoraproximadosis": fpd,
+                                "gestionadopor": usuarioSupervisor.nombre,
+                                "normasconsumo": normasconsumo,
+                                "caracteristicas": caracteristicas
+                              });
+                            }
+                            // MODO "NORMAL" (UN USUARIO/SUPERVISOR SE AÑADE SU PROPIO MEDICAMENTO)
+                            else{
+                              bdHelper.insertarBD("medicamentos", {
+                                "id_usuario": usuarioSupervisor.supervisoriniciado ? usuarioSupervisor.id : usuarioIniciado.id,
+                                "nombre": nombre,
+                                "dosisincluidas": dosis,
+                                "dosisrestantes": (dosis-1),
+                                "tiempoconsumo": horas,
+                                "fechahoraultimadosis": fud,
+                                "fechahoraproximadosis": fpd,
+                                "gestionadopor": usuarioSupervisor.supervisoriniciado ? usuarioSupervisor.nombre : usuarioIniciado.nombre,
+                                "normasconsumo": normasconsumo,
+                                "caracteristicas": caracteristicas
+                              });
+                            }
                           }
                           Navigator.pop(context);
                         }
@@ -615,6 +654,7 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                                 horas,
                                 selectedDateTime,
                                 selectedDateTime.add(Duration(hours: horas)),
+                                usuarioSupervisor.supervisoriniciado ? usuarioSupervisor.nombre : usuarioIniciado.nombre,
                                 normasconsumo,
                                 caracteristicas
                               );
@@ -623,14 +663,14 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                             else{
                               int resultadoUpdate = await bdHelper.actualizarBD("medicamentos", {
                                 "id": medicamentoSeleccionado.id,
-                                "id_usuario": usuarioIniciado.id,
+                                // "id_usuario": usuarioIniciado.id,
                                 "nombre": nombre,
                                 "dosisincluidas": dosis,
                                 "dosisrestantes": dr,
                                 "tiempoconsumo": horas,
                                 "fechahoraultimadosis": fud,
                                 "fechahoraproximadosis": fpd,
-                                "gestionadopor": usuarioIniciado.nombre,
+                                "gestionadopor": usuarioSupervisor.supervisoriniciado ? usuarioSupervisor.nombre : usuarioIniciado.nombre,
                                 "normasconsumo": normasconsumo,
                                 "caracteristicas": caracteristicas
                               });

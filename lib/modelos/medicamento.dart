@@ -257,7 +257,7 @@ class Medicamento with ChangeNotifier{
         "id_usuario": id_usuario,
         "nombre": nombre,
         "dosisincluidas": dosis,
-        "dosisrestantes": dosis,
+        "dosisrestantes": (dosis-1),
         "tiempoconsumo": horas,
         "fechahoraultimadosis": fud,
         "fechahoraproximadosis": fpd,
@@ -277,7 +277,7 @@ class Medicamento with ChangeNotifier{
   }
 
   // [PATCH] MODIFICAR UN MEDICAMENTO
-  Future<void> updateMedicamento(int id_medicamento, String nombre, int dosisincluidas, int dosisrestantes, int horas, DateTime fechahoraultimadosis, DateTime fechahoraproximadosis, String normasconsumo, String caracteristicas) async {
+  Future<void> updateMedicamento(int id_medicamento, String nombre, int dosisincluidas, int dosisrestantes, int horas, DateTime fechahoraultimadosis, DateTime fechahoraproximadosis, String gestionadopor, String normasconsumo, String caracteristicas) async {
     
     int fud = conversionFechaFormatoAPI(fechahoraultimadosis);
     int fpd = conversionFechaFormatoAPI(fechahoraproximadosis);
@@ -294,6 +294,7 @@ class Medicamento with ChangeNotifier{
         "tiempoconsumo": horas,
         "fechahoraultimadosis": fud,
         "fechahoraproximadosis": fpd,
+        "gestionadopor": gestionadopor,
         "normasconsumo": normasconsumo,
         "caracteristicas": caracteristicas
       }),
