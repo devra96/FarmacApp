@@ -105,7 +105,7 @@ class Usuario with ChangeNotifier{
       return "no";
     }
     else{
-      throw Exception('Error al leer datos de la API');
+      throw Exception('Error en el login.');
     }
   }
 
@@ -121,7 +121,7 @@ class Usuario with ChangeNotifier{
       return 0;
     }
     else{
-      throw Exception('Error al leer datos de la API');
+      throw Exception('Error al comprobar el usuario ya existente.');
     }
   }
 
@@ -143,7 +143,7 @@ class Usuario with ChangeNotifier{
       return u;
     }
     else{
-      throw Exception('Error al leer datos de la API');
+      throw Exception('Error al recuperar el usuario (metodo getUsuario)');
     }
   }
 
@@ -211,7 +211,7 @@ class Usuario with ChangeNotifier{
       print("AÑADIDO id_supervisor CORRECTAMENTE");
     }
     else{
-      throw Exception('Fallo al añadir el id_supervidor al usuario.');
+      throw Exception('Fallo al añadir el id_supervisor al usuario.');
     }
   }
 
@@ -234,11 +234,11 @@ class Usuario with ChangeNotifier{
       print("CONTRASEÑA DEL USUARIO $id_usuario MODIFICADA CORRECTAMENTE.");
     }
     else{
-      throw Exception('Fallo al añadir el id_supervidor al usuario.');
+      throw Exception('Fallo al actualizar la contraseña del usuario.');
     }
   }
 
-  // [PATCH] MODIFICAR LA CONTRASEÑA DEL USUARIO
+  // [PATCH] MODIFICAR EL PERFIL DEL USUARIO
   Future<void> updateUsuario_nombreycorreo(int id_usuario, String nombre, String correo) async {
     final response = await http.patch(
       Uri.parse('http://10.0.2.2:8000/usuario/mod_usuario/$id_usuario'),
@@ -255,10 +255,10 @@ class Usuario with ChangeNotifier{
       // Usuario u = new Usuario.fromMap(jsonDecode(response.body));
       // return u;
 
-      print("CONTRASEÑA DEL USUARIO $id_usuario MODIFICADA CORRECTAMENTE.");
+      print("PERFIL DEL USUARIO $id_usuario MODIFICADO CORRECTAMENTE.");
     }
     else{
-      throw Exception('Fallo al añadir el id_supervidor al usuario.');
+      throw Exception('Fallo al modificar el perfil del usuario.');
     }
   }
 }

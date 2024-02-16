@@ -249,9 +249,14 @@ class _PantallaAgendaSupervisorState extends State<PantallaAgendaSupervisor> {
                 decoration: BoxDecoration(
                   color: Colors.green,
                 ),
-                child: Icon(
-                  Icons.photo_camera,
-                  color: Colors.white,
+                // child: Icon(
+                //   Icons.photo_camera,
+                //   color: Colors.white,
+                // ),
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: AssetImage("assets/images/abuelo.jpg")
                 ),
               ),
               // BOTON PERFIL
@@ -271,21 +276,21 @@ class _PantallaAgendaSupervisorState extends State<PantallaAgendaSupervisor> {
                 },
               ),
               // BOTON FARMACIAS CERCANAS
-              ListTile(
-                title: Row(
-                  children: [
-                    Icon(Icons.add_box),
-                    Container(
-                      margin: EdgeInsets.only(left: 10),
-                      child: Text('Farmacias cercanas')
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  // NOS LLEVA A LA PANTALLA DE FARMACIAS CERCANAS
-                  _loadPantallaFarmaciasCercanas();
-                },
-              ),
+              // ListTile(
+              //   title: Row(
+              //     children: [
+              //       Icon(Icons.add_box),
+              //       Container(
+              //         margin: EdgeInsets.only(left: 10),
+              //         child: Text('Farmacias cercanas')
+              //       ),
+              //     ],
+              //   ),
+              //   onTap: () {
+              //     // NOS LLEVA A LA PANTALLA DE FARMACIAS CERCANAS
+              //     _loadPantallaFarmaciasCercanas();
+              //   },
+              // ),
               // // BOTON 
               // ListTile(
               //   title: Row(

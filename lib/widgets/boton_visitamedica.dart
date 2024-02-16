@@ -269,6 +269,7 @@ class BotonVisitaMedica extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black
                       ),
                     ),
                   ),
@@ -281,6 +282,7 @@ class BotonVisitaMedica extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: Colors.black
                   ),
                 ),
                 Text(
@@ -288,6 +290,7 @@ class BotonVisitaMedica extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: Colors.black
                   ),
                 ),
                 Text(
@@ -295,6 +298,7 @@ class BotonVisitaMedica extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: Colors.black
                   ),
                 ),
                 Text(
@@ -302,6 +306,7 @@ class BotonVisitaMedica extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: Colors.black
                   ),
                 ),
               ],

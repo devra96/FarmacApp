@@ -254,6 +254,12 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                                 u = await u.createUsuario(0, nombre, correo, pass);
                               }
 
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("CUENTA CREADA CON EXITO.")
+                                )
+                              );
+
                               Navigator.pop(context);
                             }
                             // SI EXISTE
@@ -295,6 +301,12 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                               }
 
                               Navigator.pop(context);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("CUENTA CREADA CON EXITO.")
+                                )
+                              );
                             }
                           }
                         }

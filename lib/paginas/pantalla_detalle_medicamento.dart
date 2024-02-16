@@ -241,7 +241,7 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
                       if(modoTrabajo.modoLocal){
                         await m.registrarDosis(
                           medicamentoSeleccionado.id,
-                          medicamentoSeleccionado.dosisincluidas,
+                          (medicamentoSeleccionado.dosisincluidas - 1),
                           DateTime.now(),
                           DateTime.now().add(Duration(hours: medicamentoSeleccionado.tiempoconsumo)),
                         );
@@ -250,7 +250,7 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
                       else{
                         int resultadoRegistroDosis = await bdHelper.actualizarBD("medicamentos", {
                           "id": medicamentoSeleccionado.id,
-                          "dosisrestantes": medicamentoSeleccionado.dosisincluidas,
+                          "dosisrestantes": (medicamentoSeleccionado.dosisincluidas - 1),
                           "fechahoraultimadosis": fud,
                           "fechahoraproximadosis": fpd
                         });
@@ -325,6 +325,10 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // ESPACIO
+            SizedBox(
+              height: 13,
+            ),
             // TEXTO "NORMAS DE CONSUMO"
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 48),

@@ -314,6 +314,13 @@ class _PantallaVisitaMedicaState extends State<PantallaVisitaMedica> {
                               });
                             }
                           }
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("VISITA MEDICA INSERTADA CORRECTAMENTE.")
+                            )
+                          );
+
                           // Navigator.pop(context);
                         }
                         // MODO MODIFICAR VISITA
@@ -342,6 +349,13 @@ class _PantallaVisitaMedicaState extends State<PantallaVisitaMedica> {
                               "fechayhora": fechayhora
                             });
                           }
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("VISITA MEDICA MODIFICADA CORRECTAMENTE.")
+                            )
+                          );
+
                         }
                         Navigator.pop(context);
                       }

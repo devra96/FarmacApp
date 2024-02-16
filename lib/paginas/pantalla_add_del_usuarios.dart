@@ -58,8 +58,6 @@ class _PantallaAddDelUsuariosState extends State<PantallaAddDelUsuarios> {
       // idAddDel = 0;
       textoAppBar = "AÑADIR UN USUARIO";
 
-      print("VUELTA A EMPEZAR! CORREO VALE $correo");
-
       return Scaffold(
         appBar: AppBar(
           title: Text(textoAppBar),
@@ -69,6 +67,10 @@ class _PantallaAddDelUsuariosState extends State<PantallaAddDelUsuarios> {
             // mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              // ESPACIO
+              SizedBox(
+                height: 20,
+              ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(

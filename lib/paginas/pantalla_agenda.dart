@@ -17,6 +17,7 @@ import 'package:farmacapp/paginas/pantalla_usuarios.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/provider/usuario_supervisor.dart';
+import 'package:farmacapp/tema/tema.dart';
 import 'package:farmacapp/widgets/boton_click_visita_medica.dart';
 import 'package:farmacapp/widgets/boton_medicamento.dart';
 import 'package:farmacapp/widgets/boton_visitamedica.dart';
@@ -248,435 +249,438 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
       }
     }
 
-    return WillPopScope(
-      onWillPop: () async {
-        SystemNavigator.pop(); // Cerrar la aplicación directamente
-        return true;
-
-        // Invocar la plataforma Android para ir a la pantalla de inicio del dispositivo
-        // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-        // return false; // Evitar que la aplicación se cierre
-      },
-      child: Scaffold(
-        // #################### APPBAR ####################
-        appBar: AppBar(
-          title: Center(
-            child: Text("Agenda de ${
+    return Scaffold(
+      // #################### APPBAR ####################
+      appBar: AppBar(
+        title: Center(
+          child: Text("Agenda de ${
+            usuarioSupervisor.supervisoriniciado
+            ? usuarioSupervisor.nombre.indexOf(" ") == -1
+              ? usuarioSupervisor.nombre
+              : usuarioSupervisor.nombre.substring(0, usuarioSupervisor.nombre.indexOf(" "))
+            : usuarioIniciado.nombre.indexOf(" ") == -1
+              ? usuarioIniciado.nombre
+              : usuarioIniciado.nombre.substring(0, usuarioIniciado.nombre.indexOf(" "))
+          }")
+        ),
+        actions: [
+          // IconButton(
+          //   onPressed: (){
+          //     _cerrarSesion();
+          //     // HABRIA QUE CONTROLAR QUE EN BASE AL VALOR DEVUELTO
+          //     // POR LA FUNCION, VUELVA O NO A LA PANTALLA DE LOGIN
+          //   },
+          //   icon: Icon(Icons.logout)
+          // )
+          PopupMenuButton(
+            icon: Icon(Icons.add),
+            itemBuilder: (BuildContext context) {
+              return <PopupMenuEntry>[
+                PopupMenuItem(
+                  child: Text('Nuevo medicamento'),
+                  value: 'nuevomedicamento',
+                ),
+                PopupMenuItem(
+                  child: Text('Nueva visita medica'),
+                  value: 'nuevavisita',
+                ),
+              ];
+            },
+            onSelected: (value) async{
+              // DESACTIVAMOS EL MODO DE EDICION
+              modoEdicion.modoedicion = false;
+    
+              // MODO SUPERVISOR DESACTIVADO
+              usuarioSupervisor.modosupervisor = false;
+    
+              if(value == 'nuevomedicamento'){
+                _loadPantallaMedicamento();
+              }
+              else{
+                _loadPantallaVisitaMedica();
+              }
+            },
+          ),
+        ],
+      ),
+      // #################### DRAWER ####################
+      drawer: Container(
+        width: 260,
+        child: Drawer(
+          child: ListView(
+            // IMPORTANTE ELIMINAR CUALQUIER PADDING DE LA LISTVIEW
+            padding: EdgeInsets.zero,
+            children: [
+              // SUSTITUIR ESTO POR LA IMAGEN DEL ABUELO
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                ),
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: AssetImage("assets/images/abuelo.jpg")
+                ),
+              ),
+              // Container(
+              //   margin: EdgeInsets.only(bottom: 12),
+              //   child: const Text(
+              //     "Nombre Apellido1 Apellido2", // AQUI IRIAN EL NOMBRE Y APELLIDOS SACADOS DEL USUARIO
+              //     textAlign: TextAlign.center,
+              //     style: TextStyle(fontSize: 20),
+              //   ),
+              // ),
+              // BOTON PERFIL
+              ListTile(
+                title: Row(
+                  children: [
+                    Icon(Icons.person),
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text('Perfil')
+                    )
+                  ],
+                ),
+                onTap: (){
+                  // modoEdicion.modoedicion = true;
+                  usuarioSupervisor.modosupervisor = false;
+                  // IR A PANTALLA PERFIL
+                  _loadPantallaPerfil();
+                },
+              ),
+              // BOTON FARMACIAS CERCANAS
+              ListTile(
+                title: Row(
+                  children: [
+                    Icon(Icons.add_box),
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text('Farmacias cercanas')
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  // NOS LLEVA A LA PANTALLA DE FARMACIAS CERCANAS
+                  _loadPantallaFarmaciasCercanas();
+                },
+              ),
+              // // BOTON 
+              // ListTile(
+              //   title: Row(
+              //     children: [
+              //       Icon(Icons.list),
+              //       Container(
+              //         margin: EdgeInsets.only(left: 10),
+              //         child: Text('Reponer medicamentos')
+              //       )
+              //     ],
+              //   ),
+              //   onTap: () {
+              //     _loadPantallaReponerMedicamento();
+              //   },
+              // ),
+              // BOTON MIS USUARIOS
+              // (VISIBLE SOLO SI HA INICIADO SESION UN SUPERVISOR Y NO ESTAMOS EN MODO SUPERVISOR)
               usuarioSupervisor.supervisoriniciado
-              ? usuarioSupervisor.nombre.indexOf(" ") == -1
-                ? usuarioSupervisor.nombre
-                : usuarioSupervisor.nombre.substring(0, usuarioSupervisor.nombre.indexOf(" "))
-              : usuarioIniciado.nombre.indexOf(" ") == -1
-                ? usuarioIniciado.nombre
-                : usuarioIniciado.nombre.substring(0, usuarioIniciado.nombre.indexOf(" "))
-            }")
-          ),
-          actions: [
-            // IconButton(
-            //   onPressed: (){
-            //     _cerrarSesion();
-            //     // HABRIA QUE CONTROLAR QUE EN BASE AL VALOR DEVUELTO
-            //     // POR LA FUNCION, VUELVA O NO A LA PANTALLA DE LOGIN
-            //   },
-            //   icon: Icon(Icons.logout)
-            // )
-            PopupMenuButton(
-              icon: Icon(Icons.add),
-              itemBuilder: (BuildContext context) {
-                return <PopupMenuEntry>[
-                  PopupMenuItem(
-                    child: Text('Nuevo medicamento'),
-                    value: 'nuevomedicamento',
-                  ),
-                  PopupMenuItem(
-                    child: Text('Nueva visita medica'),
-                    value: 'nuevavisita',
-                  ),
-                ];
-              },
-              onSelected: (value) async{
-                // DESACTIVAMOS EL MODO DE EDICION
-                modoEdicion.modoedicion = false;
-      
-                // MODO SUPERVISOR DESACTIVADO
-                usuarioSupervisor.modosupervisor = false;
-      
-                if(value == 'nuevomedicamento'){
-                  _loadPantallaMedicamento();
-                }
-                else{
-                  _loadPantallaVisitaMedica();
-                }
-              },
-            ),
-          ],
-        ),
-        // #################### DRAWER ####################
-        drawer: Container(
-          width: 260,
-          child: Drawer(
-            child: ListView(
-              // IMPORTANTE ELIMINAR CUALQUIER PADDING DE LA LISTVIEW
-              padding: EdgeInsets.zero,
-              children: [
-                // SUSTITUIR ESTO POR LA IMAGEN DEL ABUELO
-                const DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                  ),
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.transparent,
-                    backgroundImage: AssetImage("assets/images/abuelo.jpg")
-                  ),
+              ?
+              ListTile(
+                title: Row(
+                  children: [
+                    Icon(Icons.supervised_user_circle),
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text('Mis usuarios'))
+                  ],
                 ),
-                // Container(
-                //   margin: EdgeInsets.only(bottom: 12),
-                //   child: const Text(
-                //     "Nombre Apellido1 Apellido2", // AQUI IRIAN EL NOMBRE Y APELLIDOS SACADOS DEL USUARIO
-                //     textAlign: TextAlign.center,
-                //     style: TextStyle(fontSize: 20),
-                //   ),
-                // ),
-                // BOTON PERFIL
-                ListTile(
-                  title: Row(
-                    children: [
-                      Icon(Icons.person),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text('Perfil')
-                      )
-                    ],
-                  ),
-                  onTap: (){
-                    // modoEdicion.modoedicion = true;
-                    usuarioSupervisor.modosupervisor = false;
-                    // IR A PANTALLA PERFIL
-                    _loadPantallaPerfil();
+                onTap: (){
+                  // IR A PANTALLA USUARIOS
+                  _loadPantallaUsuarios();
+                },
+              )
+              : Container(),
+              // BOTON CONFIGURACION (SI ESTAMOS EN MODO SUPERVISOR, SE DESACTIVA)
+              // !usuarioSupervisor.modosupervisor
+              // ?
+              // ListTile(
+              //   title: Row(
+              //     children: [
+              //       Icon(Icons.settings),
+              //       Container(
+              //         margin: EdgeInsets.only(left: 10),
+              //         child: Text('Configuracion')
+              //       )
+              //     ],
+              //   ),
+              //   onTap: () {
+              //     // IR A CONFIGURACION
+              //   },
+              // ),
+              // : Container(),
+              // SWITCH MODO OSCURO
+              ListTile(
+                leading: Icon(Icons.light_mode), // Icono a la izquierda
+                title: Text('Modo oscuro'), // Texto del ListTile
+                trailing: Switch( // Switch a la derecha
+                  value: Theme.of(context).brightness == Brightness.dark,
+                  onChanged: (_) {
+                    Provider.of<Tema>(context, listen: false).toggleTheme();
                   },
                 ),
-                // BOTON FARMACIAS CERCANAS
-                ListTile(
-                  title: Row(
-                    children: [
-                      Icon(Icons.add_box),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text('Farmacias cercanas')
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    // NOS LLEVA A LA PANTALLA DE FARMACIAS CERCANAS
-                    _loadPantallaFarmaciasCercanas();
-                  },
+              ),
+              // BOTON CERRAR SESION (SI ESTAMOS EN MODO SUPERVISOR, SE DESACTIVA)
+              // !usuarioSupervisor.modosupervisor
+              // ?
+              ListTile(
+                title: Row(
+                  children: [
+                    Icon(Icons.logout),
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text('Cerrar sesion')
+                    )
+                  ],
                 ),
-                // // BOTON 
-                // ListTile(
-                //   title: Row(
-                //     children: [
-                //       Icon(Icons.list),
-                //       Container(
-                //         margin: EdgeInsets.only(left: 10),
-                //         child: Text('Reponer medicamentos')
-                //       )
-                //     ],
-                //   ),
-                //   onTap: () {
-                //     _loadPantallaReponerMedicamento();
-                //   },
-                // ),
-                // BOTON MIS USUARIOS
-                // (VISIBLE SOLO SI HA INICIADO SESION UN SUPERVISOR Y NO ESTAMOS EN MODO SUPERVISOR)
-                usuarioSupervisor.supervisoriniciado
-                ?
-                ListTile(
-                  title: Row(
-                    children: [
-                      Icon(Icons.supervised_user_circle),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text('Mis usuarios'))
-                    ],
-                  ),
-                  onTap: (){
-                    // IR A PANTALLA USUARIOS
-                    _loadPantallaUsuarios();
-                  },
-                )
-                : Container(),
-                // BOTON CONFIGURACION (SI ESTAMOS EN MODO SUPERVISOR, SE DESACTIVA)
-                // !usuarioSupervisor.modosupervisor
-                // ?
-                ListTile(
-                  title: Row(
-                    children: [
-                      Icon(Icons.settings),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text('Configuracion'))
-                    ],
-                  ),
-                  onTap: () {
-                    // IR A CONFIGURACION
-                  },
-                ),
-                // : Container(),
-                // BOTON CERRAR SESION (SI ESTAMOS EN MODO SUPERVISOR, SE DESACTIVA)
-                // !usuarioSupervisor.modosupervisor
-                // ?
-                ListTile(
-                  title: Row(
-                    children: [
-                      Icon(Icons.logout),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text('Cerrar sesion'))
-                    ],
-                  ),
-                  onTap: (){
-                    _cerrarSesion();
-                    // HABRIA QUE CONTROLAR QUE EN BASE AL VALOR DEVUELTO
-                    // POR LA FUNCION, VUELVA O NO A LA PANTALLA DE LOGIN
-                  },
-                ),
-                // : Container(),
-              ],
-            ),
+                onTap: (){
+                  _cerrarSesion();
+                  // HABRIA QUE CONTROLAR QUE EN BASE AL VALOR DEVUELTO
+                  // POR LA FUNCION, VUELVA O NO A LA PANTALLA DE LOGIN
+                },
+              ),
+              // : Container(),
+            ],
           ),
         ),
-        // ####################  BODY  ####################
-        body: <Widget>[
-          // MEDICAMENTOS
-          Container(
-            child: FutureBuilder(
-              future: recuperarMedicamentos(),
-              builder: (context, AsyncSnapshot<List<Medicamento>> snapshot){
-                print("SNAPSHOT DATA: ${snapshot.data}");
-                if(snapshot.hasData){
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index){
-                      // PRUEBA PARA SUMAR HORAS A UNA FECHA
-                      // DateTime prueba = snapshot.data![index].fechahoraultimadosis.add(Duration(hours: 1));
-      
-                      // COMPROBACION DE SI LA FECHA ACTUAL ES POSTERIOR A LA FECHA DE LA PROXIMA DOSIS
-                      // SI ES POSTERIOR: COLOR DE FONDO DEL MEDICAMENTO EN ROJO, INDICANDO QUE HABRIA QUE TOMARLO
-                      // EN CASO CONTRARIO: COLOR DE FONDO DEL MEDICAMENTO EN VERDE, INDICANDO QUE TODO CORRECTO
-                      if(snapshot.data![index].dosisrestantes == 0){
-                        colorFondo = Colors.grey;
-                        pd = "-";
-                      }
-                      else if(horaActual.isAfter(snapshot.data![index].fechahoraproximadosis)){
-                        colorFondo = Colors.red;
-                        pd = "${snapshot.data![index].fechahoraproximadosis.day}/${snapshot.data![index].fechahoraproximadosis.month}/${snapshot.data![index].fechahoraproximadosis.year} - ${snapshot.data![index].fechahoraproximadosis.hour}:${snapshot.data![index].fechahoraproximadosis.minute}";
-                      }
-                      else{
-                        colorFondo = Colors.green;
-                        pd = "${snapshot.data![index].fechahoraproximadosis.day}/${snapshot.data![index].fechahoraproximadosis.month}/${snapshot.data![index].fechahoraproximadosis.year} - ${snapshot.data![index].fechahoraproximadosis.hour}:${snapshot.data![index].fechahoraproximadosis.minute}";
-                      }
-      
-                      return Container(
-                        height: 160,
-                        margin: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          color: Colors.white
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            // MODO SUPERVISOR DESACTIVADO
-                            usuarioSupervisor.modosupervisor = false;
-      
-                            // RECOGER DATOS MEDICAMENTO SELECCIONADO
-                            medicamentoSeleccionado.id = snapshot.data![index].id;
-                            medicamentoSeleccionado.nombre = snapshot.data![index].nombre;
-                            medicamentoSeleccionado.dosisincluidas = snapshot.data![index].dosisincluidas;
-                            medicamentoSeleccionado.dosisrestantes = snapshot.data![index].dosisrestantes;
-                            medicamentoSeleccionado.tiempoconsumo = snapshot.data![index].tiempoconsumo;
-                            medicamentoSeleccionado.fechahoraultimadosis = snapshot.data![index].fechahoraultimadosis;
-                            medicamentoSeleccionado.fechahoraproximadosis = snapshot.data![index].fechahoraproximadosis;
-                            medicamentoSeleccionado.gestionadopor = snapshot.data![index].gestionadopor;
-                            medicamentoSeleccionado.normasconsumo = snapshot.data![index].normasconsumo;
-                            medicamentoSeleccionado.caracteristicas = snapshot.data![index].caracteristicas;
-                            // IR A LA PANTALLA DETALLE MEDICAMENTO
-                            _loadPantallaDetalleMedicamento();
-                          },
-                          child: BotonMedicamento(
-                            nombre: snapshot.data![index].nombre,
-                            ultimaDosis: "${snapshot.data![index].fechahoraultimadosis.day}/${snapshot.data![index].fechahoraultimadosis.month}/${snapshot.data![index].fechahoraultimadosis.year} - ${snapshot.data![index].fechahoraultimadosis.hour}:${snapshot.data![index].fechahoraultimadosis.minute}",
-                            // ultimaDosis: "${prueba.day}/${prueba.month}/${prueba.year} - ${prueba.hour}:${prueba.minute}",
-                            proximaDosis: pd,
-                            dosisRestantes: snapshot.data![index].dosisrestantes,
-                            colorFondo: colorFondo
-                          ),
-                        ),
-                      );
+      ),
+      // ####################  BODY  ####################
+      body: <Widget>[
+        // MEDICAMENTOS
+        Container(
+          child: FutureBuilder(
+            future: recuperarMedicamentos(),
+            builder: (context, AsyncSnapshot<List<Medicamento>> snapshot){
+              print("SNAPSHOT DATA: ${snapshot.data}");
+              if(snapshot.hasData){
+                return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index){
+                    // PRUEBA PARA SUMAR HORAS A UNA FECHA
+                    // DateTime prueba = snapshot.data![index].fechahoraultimadosis.add(Duration(hours: 1));
+    
+                    // COMPROBACION DE SI LA FECHA ACTUAL ES POSTERIOR A LA FECHA DE LA PROXIMA DOSIS
+                    // SI ES POSTERIOR: COLOR DE FONDO DEL MEDICAMENTO EN ROJO, INDICANDO QUE HABRIA QUE TOMARLO
+                    // EN CASO CONTRARIO: COLOR DE FONDO DEL MEDICAMENTO EN VERDE, INDICANDO QUE TODO CORRECTO
+                    if(snapshot.data![index].dosisrestantes == 0){
+                      colorFondo = Colors.grey;
+                      pd = "-";
                     }
-                  );
-                }
-                else{
-                  // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
-                  print("ELSE SNAPSHOT SIN DATA");
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'NO HAY MEDICAMENTOS REGISTRADOS. HAGA CLICK EN EL BOTON "+" DE ARRIBA PARA AÑADIR UN NUEVO MEDICAMENTO.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                    else if(horaActual.isAfter(snapshot.data![index].fechahoraproximadosis)){
+                      colorFondo = Colors.red;
+                      pd = "${snapshot.data![index].fechahoraproximadosis.day}/${snapshot.data![index].fechahoraproximadosis.month}/${snapshot.data![index].fechahoraproximadosis.year} - ${snapshot.data![index].fechahoraproximadosis.hour}:${snapshot.data![index].fechahoraproximadosis.minute}";
+                    }
+                    else{
+                      colorFondo = Colors.green;
+                      pd = "${snapshot.data![index].fechahoraproximadosis.day}/${snapshot.data![index].fechahoraproximadosis.month}/${snapshot.data![index].fechahoraproximadosis.year} - ${snapshot.data![index].fechahoraproximadosis.hour}:${snapshot.data![index].fechahoraproximadosis.minute}";
+                    }
+    
+                    return Container(
+                      height: 160,
+                      margin: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        color: Colors.white
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          // MODO SUPERVISOR DESACTIVADO
+                          usuarioSupervisor.modosupervisor = false;
+    
+                          // RECOGER DATOS MEDICAMENTO SELECCIONADO
+                          medicamentoSeleccionado.id = snapshot.data![index].id;
+                          medicamentoSeleccionado.nombre = snapshot.data![index].nombre;
+                          medicamentoSeleccionado.dosisincluidas = snapshot.data![index].dosisincluidas;
+                          medicamentoSeleccionado.dosisrestantes = snapshot.data![index].dosisrestantes;
+                          medicamentoSeleccionado.tiempoconsumo = snapshot.data![index].tiempoconsumo;
+                          medicamentoSeleccionado.fechahoraultimadosis = snapshot.data![index].fechahoraultimadosis;
+                          medicamentoSeleccionado.fechahoraproximadosis = snapshot.data![index].fechahoraproximadosis;
+                          medicamentoSeleccionado.gestionadopor = snapshot.data![index].gestionadopor;
+                          medicamentoSeleccionado.normasconsumo = snapshot.data![index].normasconsumo;
+                          medicamentoSeleccionado.caracteristicas = snapshot.data![index].caracteristicas;
+                          // IR A LA PANTALLA DETALLE MEDICAMENTO
+                          _loadPantallaDetalleMedicamento();
+                        },
+                        child: BotonMedicamento(
+                          nombre: snapshot.data![index].nombre,
+                          ultimaDosis: "${snapshot.data![index].fechahoraultimadosis.day}/${snapshot.data![index].fechahoraultimadosis.month}/${snapshot.data![index].fechahoraultimadosis.year} - ${snapshot.data![index].fechahoraultimadosis.hour}:${snapshot.data![index].fechahoraultimadosis.minute}",
+                          // ultimaDosis: "${prueba.day}/${prueba.month}/${prueba.year} - ${prueba.hour}:${prueba.minute}",
+                          proximaDosis: pd,
+                          dosisRestantes: snapshot.data![index].dosisrestantes,
+                          colorFondo: colorFondo
                         ),
+                      ),
+                    );
+                  }
+                );
+              }
+              else{
+                // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
+                print("ELSE SNAPSHOT SIN DATA");
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'NO HAY MEDICAMENTOS REGISTRADOS. HAGA CLICK EN EL BOTON "+" DE ARRIBA PARA AÑADIR UN NUEVO MEDICAMENTO.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  );
-                }
-              },
-            ),
+                  ),
+                );
+              }
+            },
           ),
-      
-          // VISITAS MEDICAS
-          Container(
-            child: FutureBuilder(
-              future: recuperarVisitasMedicas(),
-              builder: (context, AsyncSnapshot<List<VisitaMedica>> snapshot){
-                if(snapshot.hasData){
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index){
-                      return Container(
-                        height: 175,
-                        margin: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          color: Colors.white
-                        ),
-                        child: InkWell(
-                          onTap: () async{
-                            // MODO SUPERVISOR DESACTIVADO
-                            usuarioSupervisor.modosupervisor = false;
-                            
-                            // ESTABLECEMOS AMBOS VALORES EN false POR SI EL USUARIO QUITA EL ALERTDIALOG
-                            // PULSANDO FUERA DE EL, AL BOTON DE ATRAS O A CANCELAR
-                            modoEdicion.modoedicion = false;
-                            modoEdicion.confirmacion = false;
-      
-                            // RECOGEMOS LOS DATOS DE LA VISITA MEDICA PULSADA
-                            visitaMedicaSeleccionada.id = snapshot.data![index].id;
-                            visitaMedicaSeleccionada.id_usuario = snapshot.data![index].id_usuario;
-                            visitaMedicaSeleccionada.gestionadopor = snapshot.data![index].gestionadopor;
-                            visitaMedicaSeleccionada.especialidad = snapshot.data![index].especialidad;
-                            visitaMedicaSeleccionada.doctor = snapshot.data![index].doctor;
-                            visitaMedicaSeleccionada.lugar = snapshot.data![index].lugar;
-                            visitaMedicaSeleccionada.fechayhora = snapshot.data![index].fechayhora; 
-                            
-                            // ABRIR MENU MODIFICAR O BORRAR
+        ),
+    
+        // VISITAS MEDICAS
+        Container(
+          child: FutureBuilder(
+            future: recuperarVisitasMedicas(),
+            builder: (context, AsyncSnapshot<List<VisitaMedica>> snapshot){
+              if(snapshot.hasData){
+                return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index){
+                    return Container(
+                      height: 175,
+                      margin: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        color: Colors.white
+                      ),
+                      child: InkWell(
+                        onTap: () async{
+                          // MODO SUPERVISOR DESACTIVADO
+                          usuarioSupervisor.modosupervisor = false;
+                          
+                          // ESTABLECEMOS AMBOS VALORES EN false POR SI EL USUARIO QUITA EL ALERTDIALOG
+                          // PULSANDO FUERA DE EL, AL BOTON DE ATRAS O A CANCELAR
+                          modoEdicion.modoedicion = false;
+                          modoEdicion.confirmacion = false;
+    
+                          // RECOGEMOS LOS DATOS DE LA VISITA MEDICA PULSADA
+                          visitaMedicaSeleccionada.id = snapshot.data![index].id;
+                          visitaMedicaSeleccionada.id_usuario = snapshot.data![index].id_usuario;
+                          visitaMedicaSeleccionada.gestionadopor = snapshot.data![index].gestionadopor;
+                          visitaMedicaSeleccionada.especialidad = snapshot.data![index].especialidad;
+                          visitaMedicaSeleccionada.doctor = snapshot.data![index].doctor;
+                          visitaMedicaSeleccionada.lugar = snapshot.data![index].lugar;
+                          visitaMedicaSeleccionada.fechayhora = snapshot.data![index].fechayhora; 
+                          
+                          // ABRIR MENU MODIFICAR O BORRAR
+                          await showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) => BotonClickVisitaMedica()
+                          );
+    
+                          // SI EL USUARIO QUIERE MODIFICAR, VAMOS A LA PANTALLA DE VISITA MEDICA
+                          if(modoEdicion.modoedicion){
+                            _loadPantallaVisitaMedica();
+                          }
+                          // SI EL USUARIO QUIERE ELIMINAR, MOSTRAMOS DIALOGO DE CONFIRMACION
+                          else if(modoEdicion.confirmacion){
                             await showDialog<void>(
                               context: context,
-                              builder: (BuildContext context) => BotonClickVisitaMedica()
+                              builder: (BuildContext context) => DialogoConfirmacion(title: "ATENCIÓN", texto: '¿Esta seguro de borrar la visita medica? Una vez confirmada la operacion, no habra marcha atras.')
                             );
-      
-                            // SI EL USUARIO QUIERE MODIFICAR, VAMOS A LA PANTALLA DE VISITA MEDICA
-                            if(modoEdicion.modoedicion){
-                              _loadPantallaVisitaMedica();
-                            }
-                            // SI EL USUARIO QUIERE ELIMINAR, MOSTRAMOS DIALOGO DE CONFIRMACION
-                            else if(modoEdicion.confirmacion){
-                              await showDialog<void>(
-                                context: context,
-                                builder: (BuildContext context) => DialogoConfirmacion(title: "ATENCIÓN", texto: '¿Esta seguro de borrar la visita medica? Una vez confirmada la operacion, no habra marcha atras.')
-                              );
-      
-                              if(modoEdicion.confirmacion){
-                                // ELIMINACION VISITA MODO REMOTO
-                                if(modoTrabajo.modoLocal){
-                                  v.deleteVisitaMedica(visitaMedicaSeleccionada.id);
-                                }
-                                // ELIMINACION VISITA MODO LOCAL
-                                else{
-                                  int resultadoDelete = await bdHelper.eliminarBD("visitasmedicas", visitaMedicaSeleccionada.id);
-                                  print("VISITA MEDICA ELIMINADA CORRECTAMENTE CON ID: $resultadoDelete");
-                                }
-      
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text("VISITA MEDICA ELIMINADA CORRECTAMENTE.")
-                                  )
-                                );
+    
+                            if(modoEdicion.confirmacion){
+                              // ELIMINACION VISITA MODO REMOTO
+                              if(modoTrabajo.modoLocal){
+                                v.deleteVisitaMedica(visitaMedicaSeleccionada.id);
                               }
+                              // ELIMINACION VISITA MODO LOCAL
+                              else{
+                                int resultadoDelete = await bdHelper.eliminarBD("visitasmedicas", visitaMedicaSeleccionada.id);
+                                print("VISITA MEDICA ELIMINADA CORRECTAMENTE CON ID: $resultadoDelete");
+                              }
+    
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("VISITA MEDICA ELIMINADA CORRECTAMENTE.")
+                                )
+                              );
                             }
-                            // SI EL USUARIO DA A CANCELAR (NO OCURRE NADA)
-                            else{
-                              
-                            }
+                          }
+                          // SI EL USUARIO DA A CANCELAR (NO OCURRE NADA)
+                          else{
                             
-                          },
-                          child: BotonVisitaMedica(
-                            especialidad: snapshot.data![index].especialidad,
-                            doctor: snapshot.data![index].doctor,
-                            lugar: snapshot.data![index].lugar,
-                            fechayhora: snapshot.data![index].fechayhora
-                          )
-                        ),
-                      );
-                    }
-                  );
-                }
-                else{
-                  // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'NO HAY VISITAS MEDICAS REGISTRADAS. HAGA CLICK EN EL BOTON "+" DE ARRIBA PARA AÑADIR UNA NUEVA VISITA MEDICA.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                          }
+                          
+                        },
+                        child: BotonVisitaMedica(
+                          especialidad: snapshot.data![index].especialidad,
+                          doctor: snapshot.data![index].doctor,
+                          lugar: snapshot.data![index].lugar,
+                          fechayhora: snapshot.data![index].fechayhora
+                        )
+                      ),
+                    );
+                  }
+                );
+              }
+              else{
+                // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'NO HAY VISITAS MEDICAS REGISTRADAS. HAGA CLICK EN EL BOTON "+" DE ARRIBA PARA AÑADIR UNA NUEVA VISITA MEDICA.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  );
-                }
-              },
-            ),
+                  ),
+                );
+              }
+            },
           ),
-        ][currentPageIndex],
-        // ############# FLOATINGACTIONBUTTON #############
-        // floatingActionButton: FloatingActionButton.extended(
-        //    onPressed: () {
-        //   // Acción a realizar cuando se presione el botón
-        //   },
-        //   label: Text('Nuevo medicamento'),
-        //   icon: Icon(Icons.add),
-        //   backgroundColor: Color(0xFF009638), // Color de fondo del botón
-        // ),
-        // #############  BOTTOMNAVIGATIONBAR  ############
-        bottomNavigationBar: NavigationBar(
-          onDestinationSelected: (int index){
-            setState(() {
-              currentPageIndex = index;
-            });
-          },
-          indicatorColor: Color(0xFF009638),
-          selectedIndex: currentPageIndex,
-          destinations: const <Widget>[
-            NavigationDestination(
-              selectedIcon: Icon(Icons.medication),
-              icon: Icon(Icons.medication_outlined),
-              label: 'Medicamentos',
-            ),
-            NavigationDestination(
-              selectedIcon: Icon(Icons.medical_information),
-              icon: Icon(Icons.medical_information_outlined),
-              label: 'Visitas medicas',
-            )
-          ],
         ),
+      ][currentPageIndex],
+      // ############# FLOATINGACTIONBUTTON #############
+      // floatingActionButton: FloatingActionButton.extended(
+      //    onPressed: () {
+      //   // Acción a realizar cuando se presione el botón
+      //   },
+      //   label: Text('Nuevo medicamento'),
+      //   icon: Icon(Icons.add),
+      //   backgroundColor: Color(0xFF009638), // Color de fondo del botón
+      // ),
+      // #############  BOTTOMNAVIGATIONBAR  ############
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index){
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        indicatorColor: Color(0xFF009638),
+        selectedIndex: currentPageIndex,
+        destinations: const <Widget>[
+          NavigationDestination(
+            selectedIcon: Icon(Icons.medication),
+            icon: Icon(Icons.medication_outlined),
+            label: 'Medicamentos',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.medical_information),
+            icon: Icon(Icons.medical_information_outlined),
+            label: 'Visitas medicas',
+          )
+        ],
       ),
     );
   }

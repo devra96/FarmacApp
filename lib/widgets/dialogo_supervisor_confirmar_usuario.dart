@@ -29,7 +29,7 @@ class DialogoSupervisorConfirmarUsuario extends StatelessWidget {
     // var usuarioSupervisor = Provider.of<UsuarioSupervisor>(context);
 
     return AlertDialog(
-      title: Center(child: Text('Confirmacion')),
+      title: Center(child: Text('Confirmación')),
       content: Container(
         child: Column(
           mainAxisSize: MainAxisSize.min,

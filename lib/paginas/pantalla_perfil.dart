@@ -36,11 +36,15 @@ class _PantallaPerfilState extends State<PantallaPerfil> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ESPACIO
+          SizedBox(
+            height: 20,
+          ),
           // CUADRO FOTO
           Center(
             child: Container(
               width: 300,
-              height: 200,
+              height: 250,
               decoration: BoxDecoration(
                 border: Border.all()
               ),
@@ -49,7 +53,7 @@ class _PantallaPerfilState extends State<PantallaPerfil> {
           ),
           // ESPACIO
           SizedBox(
-            height: 40,
+            height: 20,
           ),
           // TEXTO "NOMBRE COMPLETO"
           Padding(
@@ -69,14 +73,14 @@ class _PantallaPerfilState extends State<PantallaPerfil> {
             child: Text(
               (!usuarioSupervisor.supervisoriniciado || (usuarioSupervisor.supervisoriniciado && usuarioSupervisor.modosupervisor)) ? usuarioIniciado.nombre : usuarioSupervisor.nombre,
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
           // ESPACIO
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           // TEXTO "CORREO ELECTRONICO"
           Padding(
@@ -96,7 +100,7 @@ class _PantallaPerfilState extends State<PantallaPerfil> {
             child: Text(
               (!usuarioSupervisor.supervisoriniciado || (usuarioSupervisor.supervisoriniciado && usuarioSupervisor.modosupervisor)) ? usuarioIniciado.correo : usuarioSupervisor.correo,
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -108,7 +112,7 @@ class _PantallaPerfilState extends State<PantallaPerfil> {
           Center(
             child: Container(
               width: 300,
-              height: 55,
+              height: 50,
               decoration: const BoxDecoration(
                 color: Color(0xFF009638),
                 borderRadius: BorderRadius.all(Radius.circular(8))
@@ -137,7 +141,7 @@ class _PantallaPerfilState extends State<PantallaPerfil> {
           Center(
             child: Container(
               width: 300,
-              height: 55,
+              height: 50,
               decoration: const BoxDecoration(
                 color: Color(0xFF009638),
                 borderRadius: BorderRadius.all(Radius.circular(8))
@@ -161,6 +165,30 @@ class _PantallaPerfilState extends State<PantallaPerfil> {
           // ESPACIO
           SizedBox(
             height: 20,
+          ),
+          // BOTON BORRAR CUENTA
+          Center(
+            child: Container(
+              width: 300,
+              height: 50,
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.all(Radius.circular(8))
+              ),
+              child: TextButton(
+                child: Text(
+                  "BORRAR CUENTA",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                onPressed: () async{
+                  // ALERTDIALOG CONFIRMACION, MODO REMOTO LOCAL
+                },
+              ),
+            ),
           ),
         ],
       ),

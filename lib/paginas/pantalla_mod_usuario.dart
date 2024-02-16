@@ -153,7 +153,7 @@ class _PantallaModUsuarioState extends State<PantallaModUsuario> {
                         if(await u.checkUsuario(correo, pass) == "no"){
                           showDialog<void>(
                             context: context,
-                            builder: (BuildContext context) => Dialogo(texto: "Usuario y/o contraseña incorrecto(s).")
+                            builder: (BuildContext context) => Dialogo(texto: "La contraseña actual introducida es incorrecta.")
                           );
                         }
                         else{
@@ -261,7 +261,7 @@ class _PantallaModUsuarioState extends State<PantallaModUsuario> {
               ),
               child: TextButton(
                 child: const Text(
-                  "MODIFICAR PEFIL",
+                  "MODIFICAR PERFIL",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 22,

@@ -731,3 +731,15 @@
 // for(int i=0;i<m.length;i++){
 //   print("MEDICAMENTO: ${m[i].nombre}");
 // }
+
+// AGENDA > INTENTO BOTON DE ATRAS > MINIMIZAR APLICACION
+// return WillPopScope(
+//   onWillPop: () async {
+//     SystemNavigator.pop(); // Cerrar la aplicación directamente
+//     return true;
+//
+//     // Invocar la plataforma Android para ir a la pantalla de inicio del dispositivo
+//     // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+//     // return false; // Evitar que la aplicación se cierre
+//   },
+//   child: Scaffold(

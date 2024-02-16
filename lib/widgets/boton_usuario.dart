@@ -53,6 +53,7 @@ class BotonUsuario extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black
                       ),
                     ),
                   ),
@@ -70,6 +71,7 @@ class BotonUsuario extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black
                       ),
                     ),
                   ),

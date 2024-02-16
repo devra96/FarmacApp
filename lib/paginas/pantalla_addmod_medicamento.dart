@@ -191,6 +191,9 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
               // mainAxisAlignment: MainAxisAlignment.start,
               // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                  height: 5,
+                ),
                 // TEXTO Y TEXTFIELD "INTRODUZCA EL NOMBRE DEL MEDICAMENTO"
                 Text(
                   "Introduzca el nombre del medicamento",
@@ -445,7 +448,7 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                       if(nombre == "" || stringDosis == "" || stringHoras == ""){
                         showDialog<void>(
                           context: context,
-                          builder: (BuildContext context) => Dialogo(texto: "Por favor, rellena todos los campos.")
+                          builder: (BuildContext context) => Dialogo(texto: 'Por favor, rellena todos los campos del apartado "Caracteristicas principales".')
                         );
                       }
                       else if(selectedDateString == "Dia" || selectedHourString == "Hora"){
@@ -610,6 +613,13 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                               });
                             }
                           }
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("MEDICAMENTO INSERTADO CON EXITO.")
+                            )
+                          );
+
                           Navigator.pop(context);
                         }
                         // MODO MODIFICAR MEDICAMENTO
@@ -676,6 +686,12 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                               });
                               print("MEDICAMENTO ACTUALIZADO EN BD LOCAL CON RESULTADO: $resultadoUpdate");
                             }
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("MEDICAMENTO MODIFICADO CORRECTAMENTE.")
+                              )
+                            );
 
                             Navigator.pop(context);
                             Navigator.pop(context);
