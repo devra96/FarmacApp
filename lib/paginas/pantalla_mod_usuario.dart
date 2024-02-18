@@ -7,6 +7,10 @@ import 'package:farmacapp/widgets/dialogo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Pantalla donde podremos modificar el perfil del usuario.
+/// Dependiendo de que opcion hayamos escogido, modificaremos
+/// nuestro nombre y/o correo electronico, o nuestra contraseña.
+///
 class PantallaModUsuario extends StatefulWidget {
   const PantallaModUsuario({super.key});
 
@@ -16,19 +20,29 @@ class PantallaModUsuario extends StatefulWidget {
 
 class _PantallaModUsuarioState extends State<PantallaModUsuario> {
 
+  // VARIABLES PARA GUARDAR LOS VALORES INTRODUCIDOS EN LOS CAMPOS
+  //
+  // MODIFICACION CONTRASEÑA
   String pass = "", nuevapass = "", confirmarpass = "";
+  // MODIFICACION PERFIL
   late int id;
   late String nombre, correo, correoactual;
 
+  // INSTANCIA A MODELO USUARIO PARA USAR SUS METODOS
   Usuario u = new Usuario();
+
+  // INSTANCIA A BASE DE DATOS LOCAL
   BDHelper bdHelper = BDHelper();
 
+  // TEXTEDITINGCONTROLLER´S PARA ESTABLECER LOS DATOS DEL USUARIO
+  // EN LOS CAMPOS DE TEXTO
   TextEditingController _textFieldNombre = TextEditingController();
   TextEditingController _textFieldCorreo = TextEditingController();
   
   @override
   Widget build(BuildContext context) {
-
+    
+    // PROVIDER
     var modoTrabajo = Provider.of<ModoTrabajo>(context);
     var modoEdicion = Provider.of<ModoEdicion>(context);
     var usuarioIniciado = Provider.of<Usuario>(context);
@@ -113,6 +127,7 @@ class _PantallaModUsuarioState extends State<PantallaModUsuario> {
               SizedBox(
                 height: 60,
               ),
+              // BOTON CAMBIAR CONTRASEÑA
               Container(
                 width: 350,
                 height: 55,
@@ -134,7 +149,7 @@ class _PantallaModUsuarioState extends State<PantallaModUsuario> {
                     if(pass == "" || nuevapass == "" || confirmarpass == ""){
                       showDialog<void>(
                         context: context,
-                        builder: (BuildContext context) => Dialogo(texto: 'Por favor, rellena todos los campos')
+                        builder: (BuildContext context) => Dialogo(texto: 'Por favor, rellena todos los campos.')
                       );
                     }
                     // SI LAS CONTRASEÑAS NO COINCIDEN
@@ -200,7 +215,8 @@ class _PantallaModUsuarioState extends State<PantallaModUsuario> {
     }
     // SI EL USUARIO VA A MODIFICAR SU PERFIL
     else{
-
+      // INTRODUCIMOS LOS DATOS DEL USUARIO EN LOS CAMPOS
+      // DE TEXTO
       _textFieldNombre.text = nombre;
       _textFieldCorreo.text = correo;
 
@@ -252,6 +268,7 @@ class _PantallaModUsuarioState extends State<PantallaModUsuario> {
             SizedBox(
               height: 60,
             ),
+            // BOTON MODIFICAR PERFIL
             Container(
               width: 350,
               height: 55,
@@ -273,7 +290,7 @@ class _PantallaModUsuarioState extends State<PantallaModUsuario> {
                   if(nombre == "" || correo == ""){
                     showDialog<void>(
                       context: context,
-                      builder: (BuildContext context) => Dialogo(texto: 'Por favor, rellena todos los campos')
+                      builder: (BuildContext context) => Dialogo(texto: 'Por favor, rellena todos los campos.')
                     );
                   }
                   // MODIFICACION
@@ -308,7 +325,7 @@ class _PantallaModUsuarioState extends State<PantallaModUsuario> {
                     // MODO LOCAL
                     else{
                       // COMPROBACION CORREO
-                      if(await bdHelper.comprobarCorreo("usuarios", correo) != 0){
+                      if(await bdHelper.comprobarCorreo("usuarios", correo) != 0 && correoactual != correo){
                         showDialog<void>(
                           context: context,
                           builder: (BuildContext context) => Dialogo(texto: 'Ya existe un usuario registrado con la cuenta de correo proporcionada.')

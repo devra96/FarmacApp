@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+/// PROVIDER QUE CONTIENE LAS VARIABLES RELACIONADAS
+/// CON EL MODO SUPERVISOR
+/// 
 class UsuarioSupervisor with ChangeNotifier{
-  late bool _supervisoriniciado = false;
-  late bool _modosupervisor = false;
+  late bool _supervisoriniciado = false;  // PARA INDICAR SI HA INICIADO SESION O NO UN SUPERVISOR
+  late bool _modosupervisor = false;      // PARA INDICAR SI UN SUPERVISOR VA A REALIZAR MODIFICACIONES EN LA AGENDA DE UN USUARIO
+  // DATOS DE UN USUARIO SUPERVISOR
   late int _id;
   late int _id_supervisor;
   late String _nombre;

@@ -9,14 +9,15 @@ import 'package:provider/provider.dart';
 
 import '../provider/modo_trabajo.dart';
 
+/// WIDGET DE DIALOGO QUE NOS PEDIRA CONFIRMAR SI AÑADIMOS O
+/// DEJAMOS DE SUPERVISAR A UN USUARIO.
+/// 
 class DialogoSupervisorConfirmarUsuario extends StatelessWidget {
-  final int id;
   final String nombre;
   final String texto;
   
   const DialogoSupervisorConfirmarUsuario({
     super.key,
-    required this.id,
     required this.nombre,
     required this.texto
   });
@@ -24,9 +25,7 @@ class DialogoSupervisorConfirmarUsuario extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // final modoTrabajo = Provider.of<ModoTrabajo>(context);
     var modoEdicion = Provider.of<ModoEdicion>(context);
-    // var usuarioSupervisor = Provider.of<UsuarioSupervisor>(context);
 
     return AlertDialog(
       title: Center(child: Text('Confirmación')),
@@ -81,28 +80,3 @@ class DialogoSupervisorConfirmarUsuario extends StatelessWidget {
     );
   }
 }
-
-// // MODIFICAR ID_SUPERVISOR USUARIO Y DIALOGO SE HA AÑADIDO SETSTATE
-
-// // MODO REMOTO
-// if(modoTrabajo.modoLocal){
-//   // MODIFICAMOS EL id_supervisor DEL USUARIO A SUPERVISAR
-//   Usuario u = new Usuario();
-//   await u.updateUsuario_idSupervisor(id, usuarioSupervisor.id);
-// }
-// // MODO LOCAL
-// else{
-//   BDHelper bdHelper = BDHelper();
-//   await bdHelper.actualizarBD("usuarios", {
-//     "id": id,
-//     "id_supervisor": usuarioSupervisor.id
-//   });
-// }
-// print("SUPERVISANDO A $nombre");
-// Navigator.of(context).pop();
-// Navigator.of(context).pop();
-
-// showDialog<void>(
-//   context: context,
-//   builder: (BuildContext context) => Dialogo(texto: 'Usuario añadido correctamente.')
-// );

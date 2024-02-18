@@ -4,6 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// WIDGET QUE SIMULA UNA VENTANA DE SOLICITUD DE
+/// CONFIRMACION DE UNA ACCION.
+/// 
 class DialogoConfirmacion extends StatelessWidget {
 
   final String title;

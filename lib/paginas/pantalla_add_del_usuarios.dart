@@ -5,11 +5,20 @@ import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/provider/usuario_supervisor.dart';
 import 'package:farmacapp/widgets/boton_usuario.dart';
 import 'package:farmacapp/widgets/dialogo.dart';
-import 'package:farmacapp/widgets/dialogo_supervisor_add_usuario.dart';
 import 'package:farmacapp/widgets/dialogo_supervisor_confirmar_usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Pantalla que mostrara:
+/// 
+/// - SI AÑADIMOS UN USUARIO: Formulario que solicitara el correo y la contraseña
+/// del usuario que vamos a añadir.
+/// 
+/// - SI ELIMINAMOS UN USUARIO: Lista de usuarios que administramos, al pulsar en
+/// uno nos pedira confirmacion de si eliminarlo o no.
+/// 
+/// Cuando realizamos con exito una de las dos acciones, volveremos al menu de
+/// usuarios de supervisor (pantalla_usuarios)
 class PantallaAddDelUsuarios extends StatefulWidget {
   const PantallaAddDelUsuarios({super.key});
 
@@ -27,20 +36,21 @@ class _PantallaAddDelUsuariosState extends State<PantallaAddDelUsuarios> {
 
   @override
   Widget build(BuildContext context) {
-
-    // VARIABLE QUE GUARDARA EL ID QUE USAREMOS PARA RECUPERAR LOS USUARIOS
-    // - SI VAMOS A AÑADIR UN USUARIO, EL ID SERA 0
-    // - SI VAMOS A ELIMINAR UN USUARIO, EL ID SERA EL DEL USUARIO SUPERVISOR INICIADO
-    // late int idAddDel;
-
+    
+    // TEXTO DE LA APPBAR EN FUNCION DE SI AÑADIMOS O ELIMINAMOS USUARIO
     late String textoAppBar;
 
+    // VARIABLES QUE GUARDARAN EL CORREO Y LA CONTRASEÑA QUE INTRODUZCAMOS
+    // PARA AÑADIR AL USUARIO
     late String correo = "", password = "";
 
+    // PROVIDERS
     var modoTrabajo = Provider.of<ModoTrabajo>(context);
     var modoEdicion = Provider.of<ModoEdicion>(context);
     var usuarioSupervisor = Provider.of<UsuarioSupervisor>(context);
 
+    // METODO QUE RECUPERARA LA LISTA DE USUARIOS QUE SUPERVISAMOS
+    // PARA SELECCIONAR AL QUE QUERAMOS ELIMINAR
     Future<List<Usuario>> recuperarUsuarios() async{
       // MODO REMOTO
       if(modoTrabajo.modoLocal){
@@ -53,9 +63,9 @@ class _PantallaAddDelUsuariosState extends State<PantallaAddDelUsuarios> {
     }
 
     // COMPROBACION DE SI VAMOS A AÑADIR O BORRAR UN USUARIO
+    //
     // SI AÑADIMOS USUARIO
     if(modoEdicion.addusuario){
-      // idAddDel = 0;
       textoAppBar = "AÑADIR UN USUARIO";
 
       return Scaffold(
@@ -64,13 +74,13 @@ class _PantallaAddDelUsuariosState extends State<PantallaAddDelUsuarios> {
         ),
         body: Container(
           child: Column(
-            // mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               // ESPACIO
               SizedBox(
                 height: 20,
               ),
+              // TEXTO "Ingrese el correo y la contraseña de la persona que quiere supervisar."
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
@@ -85,6 +95,7 @@ class _PantallaAddDelUsuariosState extends State<PantallaAddDelUsuarios> {
               SizedBox(
                 height: 20
               ),
+              // TEXTFIELD CORREO
               Center(
                 child: SizedBox(
                   width: 350,
@@ -100,9 +111,11 @@ class _PantallaAddDelUsuariosState extends State<PantallaAddDelUsuarios> {
                   ),
                 ),
               ),
+              // ESPACIO
               SizedBox(
                 height: 10
               ),
+              // TEXTFIELD CONTRASEÑA
               Center(
                 child: SizedBox(
                   width: 350,
@@ -123,6 +136,7 @@ class _PantallaAddDelUsuariosState extends State<PantallaAddDelUsuarios> {
               SizedBox(
                 height: 20
               ),
+              // BOTON AÑADIR USUARIO
               Center(
                 child: Container(
                   width: 300,
@@ -167,13 +181,11 @@ class _PantallaAddDelUsuariosState extends State<PantallaAddDelUsuarios> {
                               // MOSTRAR DIALOGO RECOGIENDO ID, NOMBRE Y CORREO DEL USUARIO A SUPERVISAR
                               await showDialog<void>(
                                 context: context,
-                                builder: (BuildContext context) => DialogoSupervisorConfirmarUsuario(id: u.id, nombre: u.nombre, texto: '¿Quiere supervisar a este usuario?')
+                                builder: (BuildContext context) => DialogoSupervisorConfirmarUsuario(nombre: u.nombre, texto: '¿Quiere supervisar a este usuario?')
                               );
 
                               // SI EL USUARIO AFIRMA SUPERVISAR AL USUARIO
                               if(modoEdicion.confirmacion){
-                                // MODIFICAR ID_SUPERVISOR USUARIO Y DIALOGO SE HA AÑADIDO SETSTATE
-
                                 // MODIFICAMOS EL id_supervisor DEL USUARIO A SUPERVISAR
                                 await u.updateUsuario_idSupervisor(u.id, usuarioSupervisor.id);
 
@@ -222,13 +234,12 @@ class _PantallaAddDelUsuariosState extends State<PantallaAddDelUsuarios> {
                               // MOSTRAR DIALOGO RECOGIENDO ID, NOMBRE Y CORREO DEL USUARIO A SUPERVISAR
                               await showDialog<void>(
                                 context: context,
-                                builder: (BuildContext context) => DialogoSupervisorConfirmarUsuario(id: u.id, nombre: u.nombre, texto: '¿Quiere supervisar a este usuario?')
+                                builder: (BuildContext context) => DialogoSupervisorConfirmarUsuario(nombre: u.nombre, texto: '¿Quiere supervisar a este usuario?')
                               );
 
                               // SI EL USUARIO AFIRMA SUPERVISAR AL USUARIO
                               if(modoEdicion.confirmacion){
-                                // MODIFICAR ID_SUPERVISOR USUARIO Y DIALOGO SE HA AÑADIDO SETSTATE
-
+                                // MODIFICAMOS EL id_supervisor DEL USUARIO A REVISAR 
                                 await bdHelper.actualizarBD("usuarios", {
                                   "id": u.id,
                                   "id_supervisor": usuarioSupervisor.id
@@ -263,7 +274,6 @@ class _PantallaAddDelUsuariosState extends State<PantallaAddDelUsuarios> {
     }
     // SI BORRAMOS USUARIO
     else{
-      // idAddDel = usuarioSupervisor.id;
       textoAppBar = "BORRAR UN USUARIO";
       
       return Scaffold(
@@ -291,7 +301,7 @@ class _PantallaAddDelUsuariosState extends State<PantallaAddDelUsuarios> {
                           // MOSTRAR DIALOGO DE CONFIRMACION PARA AÑADIR/BORRAR
                           await showDialog<void>(
                             context: context,
-                            builder: (BuildContext context) => DialogoSupervisorConfirmarUsuario(id: snapshot.data![index].id, nombre: snapshot.data![index].nombre, texto: '¿Dejar de supervisar a este usuario?')
+                            builder: (BuildContext context) => DialogoSupervisorConfirmarUsuario(nombre: snapshot.data![index].nombre, texto: '¿Dejar de supervisar a este usuario?')
                           );
 
                           // SI EL USUARIO CONFIRMA, ESTABLECEMOS EL id_supervisor DEL USUARIO SELECCIONADO A "0"

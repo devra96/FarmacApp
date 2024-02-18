@@ -4,9 +4,14 @@ import 'package:farmacapp/widgets/dialogo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:sqflite/sqflite.dart';
 import 'package:farmacapp/database/db.dart';
 
+/// Pantalla que contiene el formulario para crear un nuevo usuario, se
+/// accede desde la pantalla de inicio > Crear cuenta
+/// 
+/// Si creamos un usuario supervisor, "id_supervisor" = su id
+/// En caso contrario, "id_supervisor" = 0
+/// 
 class PantallaNuevoUsuario extends StatefulWidget {
   const PantallaNuevoUsuario({super.key});
 
@@ -16,14 +21,16 @@ class PantallaNuevoUsuario extends StatefulWidget {
 
 class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
   
+  // VARIABLES QUE GUARDAN LOS VALORES INTRODUCIDOS EN LOS CAMPOS
   late String nombre = "";
   late String correo = "";
   late String pass = "";
   late String confirmarpass = "";
 
-  // bool valorSwitchModoRemoto = true;
+  // VARIABLE QUE GUARDA EL VALOR DEL SWITCH "¿CREAR CUENTA EN MODO SUPERVISOR?"
   bool valorSwitchModoSupervisor = false;
 
+  // INSTANCIA A LA BASE DE DATOS LOCAL
   BDHelper bdHelper = BDHelper();
   
   @override
@@ -32,13 +39,6 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
     final modoTrabajo = Provider.of<ModoTrabajo>(context);
 
     return Scaffold(
-      // #################### APPBAR ####################
-      // appBar: AppBar(
-      //   automaticallyImplyLeading: false, // HACE QUE NO SALGA EL BOTON DE VOLVER
-      //   title: Center(
-      //     child: Text("CREAR USUARIO"),
-      //   ),
-      // ),
       // ####################  BODY  ####################
       body: Center(
         child: SingleChildScrollView(
@@ -247,6 +247,7 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                                 u = await u.createUsuario(0, nombre, correo, pass);
                                 // PATCH AL USUARIO CREADO CON id_supervisor = idUsuario
                                 idUsuario = await u.checkUsuarioExistente(correo); // Volvemos a llamar al metodo para recoger el ID del usuario creado
+                                // ESTABLECEMOS EL 'id_supervisor' DEL USUARIO COMO SU PROPIO ID
                                 u.updateUsuario_idSupervisor(idUsuario, idUsuario);
                               }
                               // SI CREAMOS CUENTA ESTANDAR (SIN id_supervisor)
@@ -273,10 +274,10 @@ class _PantallaNuevoUsuarioState extends State<PantallaNuevoUsuario> {
                           // SI SE CREA CUENTA EN MODO LOCAL
                           else{
                             // CONSULTAMOS A LA BASE DE DATOS LOCAL SI EXISTE ALGUN USUARIO CON EL CORREO INTRODUCIDO
-                            // SI EXISTE, GUARDARA 1, SI NO, GUARDARA 0
+                            // SI EXISTE, EL METODO DEVOLVERA 1, SI NO, DEVOLVERA 0
                             int c = await bdHelper.comprobarCorreo("usuarios", correo);
                             
-                            // SI EXISTE
+                            // SI EXISTE UN USUARIO CON LA MISMA CUENTA DE CORREO
                             if(c != 0){
                               showDialog<void>(
                                 context: context,

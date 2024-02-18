@@ -2,6 +2,10 @@ import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// WIDGET DEL MENU QUE SE MUESTRA AL PULSAR EN LA IMAGEN
+/// DE UN MEDICAMENTO PARA CAMBIARLA POR UNA FOTOGRAFIA O
+/// UNA IMAGEN DE LA GALERIA.
+/// 
 class BotonAddImagen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

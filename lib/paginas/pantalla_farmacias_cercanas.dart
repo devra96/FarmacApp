@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+/// Pantalla donde se ha intentado implementar un mapa
+/// que nos muestre las farmacias cercanas en base a la
+/// direccion que hemos introducido, pero no ha sido posible.
+/// 
+/// Se ha intentado usar una libreria de mapas de Google,
+/// pero es de pago.
+///
 class PantallaFarmaciasCercanas extends StatefulWidget {
   const PantallaFarmaciasCercanas({super.key});
 
@@ -30,7 +37,6 @@ class _PantallaFarmaciasCercanasState extends State<PantallaFarmaciasCercanas> {
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: "Introduce tu direccion",
-                      // border: OutlineInputBorder(),
                     ),
                     onChanged: (value){
                       direccion = value;
@@ -59,23 +65,6 @@ class _PantallaFarmaciasCercanasState extends State<PantallaFarmaciasCercanas> {
                 ),
               ],
             ),
-            // LISTVIEWBUILDER QUE GENERARIA AL BUSCAR, PERO DA ERROR
-            // ListView.builder(
-            //   itemBuilder: (context, index){
-            //     return Container(
-            //       height: 80,
-            //       margin: EdgeInsets.all(5),
-            //       child: ListView(
-            //         children: [
-            //           Text("Farmacia tal y cual"),
-            //           Text("Calle TalyCual, nº17, 47001, Valladolid"),
-            //           Text("A 500 metros de ti")
-            //         ],
-            //       ),
-            //     );
-            //   },
-            //   itemCount: 3,
-            // )
           ],
         ),
       ),

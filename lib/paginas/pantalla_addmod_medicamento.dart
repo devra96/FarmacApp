@@ -1,20 +1,24 @@
 import 'dart:io';
 
-// import 'package:camera/camera.dart';
 import 'package:farmacapp/database/db.dart';
 import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/provider/usuario_supervisor.dart';
-import 'package:farmacapp/widgets/boton_add_imagen.dart';
+import 'package:farmacapp/widgets/menu_click_add_imagen.dart';
 import 'package:farmacapp/widgets/dialogo.dart';
 import 'package:farmacapp/widgets/dialogo_dosis_consumidas.dart';
-import 'package:farmacapp/widgets/take_picture_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+/// Pantalla para crear o modificar un medicamento.
+/// 
+/// Si lo añadimos, saldran todos los campos sin rellenar.
+/// 
+/// En el caso de que lo modifiquemos, se mostraran sus datos
+/// en los campos
 class PantallaMedicamento extends StatefulWidget {
   const PantallaMedicamento({super.key});
 
@@ -39,6 +43,8 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
   // NAVIGATION BAR
   int currentPageIndex = 0;
 
+  // TEXTEDITINGCONTROLLER´S PARA PONER LOS DATOS DEL MEDICAMENTO
+  // EN LOS CAMPOS, PARA CUANDO VAMOS A MODIFICAR
   TextEditingController _textFieldNombre = TextEditingController();
   TextEditingController _textFieldDosis = TextEditingController();
   TextEditingController _textFieldHoras = TextEditingController();
@@ -52,14 +58,15 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
   String rutaFoto = "assets/images/image_add_photo.png";
 
   // VARIABLES QUE USAREMOS PARA CONTROLAR SI SE HA ESCRITO ALGO O NO
-  // CUANDO CREEMOS EL MEDICAMENTO
+  // CUANDO CREEMOS EL MEDICAMENTO (Y GUARDAR LO QUE INTRODUZCAMOS
+  // EN LOS CAMPOS)
   String nombre = "", normasconsumo = "", caracteristicas = "", stringDosis = "", stringHoras = "";
   int dosis = 0, horas = 0;
 
   DateTime selectedDate = DateTime.now();                 // GUARDA LA FECHA SELECCIONADA EN EL DATEPICKER. POR DEFECTO, FECHA ACTUAL
   String selectedDateString = "Dia";                      // STRING QUE MUESTRA LA FECHA SELECCIONADA EN EL DATEPICKER
 
-  // METODO QUE MUESTRA EL DATEPICKER AL PULSAR EN EL EDITTEXT "FECHA PRIMERA DOSIS"
+  // METODO QUE MUESTRA EL DATEPICKER AL PULSAR EN EL BOTON "FECHA PRIMERA DOSIS"
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -68,6 +75,7 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
       lastDate: DateTime(2101)
     );
     if(picked != null && picked != selectedDate){
+      // ESTABLECEMOS LA FECHA SELECCIONADA EN EL TEXTO DEL BOTON
       setState(() {
         selectedDate = picked;
         selectedDateString = "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
@@ -100,6 +108,7 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
       },
     );
     if(picked != null) {
+      // ESTABLECEMOS LA HORA SELECCIONADA EN EL TEXTO DEL BOTON
       setState(() {
         selectedHour = picked;
         selectedHourString = "${selectedHour.hour}:${selectedHour.minute}";
@@ -116,6 +125,26 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
     }
   }
 
+  // METODO QUE ABRE LA CAMARA O LA GALERIA SEGUN LA OPCION QUE HAYAMOS
+  // ESCOGIDO EN EL MENU TRAS PULSAR EN LA IMAGEN DEL MEDICAMENTO
+  Future _pickImage(int fromCamera) async{
+    final returnedImage;
+    
+    if(fromCamera == 1){
+      returnedImage = await ImagePicker().pickImage(source: ImageSource.camera);
+    }
+    else{
+      returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    }
+
+    if(returnedImage == null) return;
+
+    setState(() {
+      fotoModificada = true;
+      _selectedImage = File(returnedImage!.path);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -128,6 +157,7 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
 
     // SI ESTA ACTIVADO EL MODO EDICION, SE RELLENAN LOS CAMPOS CON LOS DATOS DEL MEDICAMENTO A EDITAR
     if(modoEdicion.modoedicion && primeraVez){
+      // PARA QUE SOLO ENTRE EN ESTE IF UNA VEZ
       primeraVez = false;
 
       textoAppBar = "MODIFICANDO MEDICAMENTO";
@@ -188,8 +218,6 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
         Center(
           child: SingleChildScrollView(
             child: Column(
-              // mainAxisAlignment: MainAxisAlignment.start,
-              // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
                   height: 5,
@@ -208,7 +236,6 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                 Center(
                   child: Container(
                     width: 350,
-                    // margin: EdgeInsets.only(bottom: 20),
                     child: TextField(
                       controller: _textFieldNombre,
                       decoration: InputDecoration(
@@ -444,7 +471,7 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                         selectedHour.minute
                       );
 
-                      // 1. COMPROBACION DE CAMPOS VACIOS (NOMBRE, DOSIS, HORAS, FECHA Y HORA)
+                      // COMPROBACION DE CAMPOS VACIOS (NOMBRE, DOSIS, HORAS, FECHA Y HORA)
                       if(nombre == "" || stringDosis == "" || stringHoras == ""){
                         showDialog<void>(
                           context: context,
@@ -457,95 +484,19 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                           builder: (BuildContext context) => Dialogo(texto: "Por favor, introduzca la fecha y hora en la que se ha tomado la ultima dosis.\n\nNOTA: Si aun no se ha tomado la dosis o no recuerda el momento en el que lo hizo, introduzca la fecha actual.")
                         );
                       }
-                      // 2. COMPROBACION DE MODO REMOTO
                       else{
-                        // // MODO REMOTO
-                        // if(modoTrabajo.modoLocal){
-                        //   Medicamento m = new Medicamento();
-                        //   // AÑADIR MEDICAMENTO REMOTO
-                        //   if(!modoEdicion.modoedicion){
-                        //     m = await m.createMedicamento(
-                        //       usuarioIniciado.id,
-                        //       nombre,
-                        //       dosis,
-                        //       horas,
-                        //       selectedDateTime,
-                        //       selectedDateTime.add(Duration(hours: horas)),
-                        //       usuarioIniciado.nombre,
-                        //       normasconsumo,
-                        //       caracteristicas
-                        //     );
-                        //     Navigator.pop(context);
-                        //   }
-                        //   // MODIFICAR MEDICAMENTO REMOTO
-                        //   else{
-                        //     // SI SE HAN MODIFICADO EL NUMERO DE DOSIS INCLUIDAS
-                        //     if(medicamentoSeleccionado.dosisincluidas != dosis){
-                        //       modoEdicion.dosisconsumidas = 0;
-                        //       await showDialog<void>(
-                        //         barrierDismissible: false,
-                        //         context: context,
-                        //         builder: (BuildContext context) => DialogoDosisConsumidas(dosisincluidas: dosis)
-                        //       );
-                        //     }
-
-                        //     // COMPROBACIONES DE SI NO SE HA MODIFICADO NADA???
-
-                        //     await m.updateMedicamento(
-                        //       medicamentoSeleccionado.id,
-                        //       nombre,
-                        //       dosis,
-                        //       modoEdicion.dosisconsumidas,
-                        //       horas,
-                        //       selectedDateTime,
-                        //       selectedDateTime.add(Duration(hours: horas)),
-                        //       normasconsumo,
-                        //       caracteristicas
-                        //     );
-                        //     Navigator.pop(context);
-                        //     Navigator.pop(context);
-                        //   }
-                        // }
-                        // // MODO LOCAL
-                        // else{
-                        //   // AÑADIR MEDICAMENTO LOCAL
-                        //   if(!modoEdicion.modoedicion){
-                        //     // FECHAS
-                        //     String fud = selectedDateTime.toIso8601String();
-                        //     String fpd = selectedDateTime.add(Duration(hours: horas)).toIso8601String();
-
-                        //     bdHelper.insertarBD("medicamentos", {
-                        //       "id_usuario": usuarioIniciado.id,
-                        //       "nombre": nombre,
-                        //       "dosisincluidas": dosis,
-                        //       "dosisrestantes": dosis,
-                        //       "tiempoconsumo": horas,
-                        //       "fechahoraultimadosis": fud,
-                        //       "fechahoraproximadosis": fpd,
-                        //       "gestionadopor": usuarioIniciado.nombre,
-                        //       "normasconsumo": normasconsumo,
-                        //       "caracteristicas": caracteristicas
-                        //     });
-
-                        //     Navigator.pop(context);
-                        //   }
-                        //   // MODIFICAR MEDICAMENTO LOCAL
-                        //   else{
-                            
-                        //   }
-                        // }
-
-                        
-                        // 2. COMPROBACION DE SI SE VA A CREAR O MODIFICAR
+                        // COMPROBACION DE SI SE VA A CREAR O MODIFICAR
 
                         Medicamento m = new Medicamento();
+
                         // FECHAS EN FORMATO SQLITE
+                        // fud (FECHA ULTIMA DOSIS) Y fpd (FECHA PROXIMA DOSIS)
                         String fud = selectedDateTime.toIso8601String();
                         String fpd = selectedDateTime.add(Duration(hours: horas)).toIso8601String();
 
                         // MODO AÑADIR MEDICAMENTO
                         if(!modoEdicion.modoedicion){
-                          // AÑADIR MODO REMOTO
+                          // AÑADIR - MODO REMOTO
                           if(modoTrabajo.modoLocal){
                             // MODO SUPERVISOR (UN SUPERVISOR LE AÑADE EL MEDICAMENTO A UN USUARIO)
                             if(usuarioSupervisor.modosupervisor){
@@ -576,12 +527,8 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                               );
                             }
                           }
-                          // AÑADIR MODO LOCAL
+                          // AÑADIR - MODO LOCAL
                           else{
-                            // FECHAS
-                            // String fud = selectedDateTime.toIso8601String();
-                            // String fpd = selectedDateTime.add(Duration(hours: horas)).toIso8601String();
-
                             // MODO SUPERVISOR (UN SUPERVISOR LE AÑADE EL MEDICAMENTO A UN USUARIO)
                             if(usuarioSupervisor.modosupervisor){
                               bdHelper.insertarBD("medicamentos", {
@@ -652,7 +599,9 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                           else{
                             dr = medicamentoSeleccionado.dosisrestantes;
                           }
-
+                          
+                          // POR SI EL USUARIO DA A "CANCELAR" EN EL DIALOGO DE LAS DOSIS CONSUMIDAS
+                          // (NO SE REALIZA LA MODIFICACION)
                           if(modoEdicion.confirmacion){
                             // MODIFICAR MODO REMOTO
                             if(modoTrabajo.modoLocal){
@@ -738,23 +687,9 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                       child: fotoModificada ? Image.file(_selectedImage!,fit: BoxFit.fill) : Image.asset(rutaFoto)
                     ),
                     onTap: () async{
-                      // EL MOVIL PEDIRA INCLUIR UNA FOTO
-                      print("EL MOVIL PEDIRA UNA FOTO");
-                      
-                      // // Obtain a list of the available cameras on the device.
-                      // final cameras = await availableCameras();
-                      // // Get a specific camera from the list of available cameras.
-                      // final firstCamera = cameras.first;
-                      // final destino = MaterialPageRoute(builder: (_) => TakePictureScreen(camera: firstCamera));
-                      // final datoDevuelto = await Navigator.push(context, destino);
-                      // setState(() {
-                      //   rutaFoto = "assets/images/medicamento-generico.jpg";
-                      // });
-
                       modoEdicion.fotocamara = 0;
                       
                       await showDialog<void>(
-                        // barrierDismissible: false,
                         context: context,
                         builder: (BuildContext context) => BotonAddImagen()
                       );
@@ -765,30 +700,6 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
                     },
                   )
                 ),
-                // Center(
-                //   child: InkWell(
-                //     onTap: (){
-                //       // EL MOVIL PEDIRA INCLUIR UNA FOTO
-                //       print("EL MOVIL PEDIRA UNA FOTO");
-                //     },
-                //     child: Container(
-                //       width: 300,
-                //       height: 150,
-                //       decoration: BoxDecoration(
-                //         color: Colors.grey,
-                //         border: Border.all()
-                //       ),
-                //       child: const Column(
-                //         mainAxisAlignment: MainAxisAlignment.center,
-                //         children: [
-                //           // Padding(padding: EdgeInsets.only(top: 50)),
-                //           Icon(Icons.photo_camera, size: 60, color: Colors.white,),
-                //           Text("Añadir una foto", style: TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold))
-                //         ]
-                //       ),
-                //     ),
-                //   )
-                // ),
                 // ESPACIO
                 SizedBox(
                   height: 20,
@@ -886,23 +797,5 @@ class _PantallaMedicamentoState extends State<PantallaMedicamento> {
         ],
       ),
     );
-  }
-
-  Future _pickImage(int fromCamera) async{
-    final returnedImage;
-    
-    if(fromCamera == 1){
-      returnedImage = await ImagePicker().pickImage(source: ImageSource.camera);
-    }
-    else{
-      returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-    }
-
-    if(returnedImage == null) return;
-
-    setState(() {
-      fotoModificada = true;
-      _selectedImage = File(returnedImage!.path);
-    });
   }
 }

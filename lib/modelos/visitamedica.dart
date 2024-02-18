@@ -115,7 +115,6 @@ class VisitaMedica with ChangeNotifier{
       },
       body: jsonEncode(<String, dynamic>{
         "id": id_visitamedica,
-        // "id_usuario": id_usuario,
         "gestionadopor": gestionadopor,
         "especialidad": especialidad,
         "doctor": doctor,
@@ -125,9 +124,6 @@ class VisitaMedica with ChangeNotifier{
     );
 
     if(response.statusCode == 200){
-      // VisitaMedica v = new VisitaMedica.fromMap(jsonDecode(response.body));
-      // return v;
-
       print("VISITA MEDICA MODIFICADA CORRECTAMENTE.");
     }
     else{

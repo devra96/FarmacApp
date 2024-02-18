@@ -7,10 +7,12 @@ import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/provider/usuario_supervisor.dart';
 import 'package:farmacapp/widgets/boton_usuario.dart';
-import 'package:farmacapp/widgets/dialogo_supervisor_add_usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Pantalla que muestra los usuarios bajo supervision de un supervisor
+/// junto con la opcion de añadir mas usuarios o dejar de supervisarlos.
+/// 
 class PantallaUsuarios extends StatefulWidget {
   const PantallaUsuarios({super.key});
 
@@ -26,6 +28,7 @@ class _PantallaUsuariosState extends State<PantallaUsuarios> {
   // INSTANCIA MODELO USUARIO
   Usuario u = new Usuario();
 
+  // METODOS
   _loadPantallaAgendaSupervisor () async{
     final destino = MaterialPageRoute(builder:(_)=>PantallaAgendaSupervisor());
     final datoDevuelto = await Navigator.push(context, destino);
@@ -40,19 +43,14 @@ class _PantallaUsuariosState extends State<PantallaUsuarios> {
   @override
   Widget build(BuildContext context) {
 
+    // PROVIDERS
     var modoTrabajo = Provider.of<ModoTrabajo>(context);
     var modoEdicion = Provider.of<ModoEdicion>(context);
     var usuarioIniciado = Provider.of<Usuario>(context);
     var usuarioSupervisor = Provider.of<UsuarioSupervisor>(context);
-
-    // usuarioSupervisor.modosupervisor = false;
-
-    // usuarioIniciado.id = usuarioSupervisor.id;
-    // usuarioIniciado.id_supervisor = usuarioSupervisor.id_supervisor;
-    // usuarioIniciado.nombre = usuarioSupervisor.nombre;
-    // usuarioIniciado.correo = usuarioSupervisor.correo;
-    // usuarioIniciado.password = usuarioSupervisor.password;
-
+    
+    // METODO PARA LLAMAR A LOS METODOS PARA RECUPERAR USUARIOS
+    // SEGUN ESTEMOS EN MODO REMOTO O LOCAL
     Future<List<Usuario>> recuperarUsuarios() async{
       // MODO REMOTO
       if(modoTrabajo.modoLocal){
@@ -113,9 +111,6 @@ class _PantallaUsuariosState extends State<PantallaUsuarios> {
                     ),
                     child: InkWell(
                       onTap: () {
-                        // MODO SUPERVISOR ACTIVADO
-                        // usuarioSupervisor.modosupervisor = true;
-
                         // RECOGER LOS DATOS DEL USUARIO SELECCIONADO
                         usuarioIniciado.id = snapshot.data![index].id;
                         usuarioIniciado.id_supervisor = snapshot.data![index].id_supervisor;
@@ -136,13 +131,12 @@ class _PantallaUsuariosState extends State<PantallaUsuarios> {
               );
             }
             else{
-              // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
-              print("ELSE SNAPSHOT SIN DATA");
+              // TEXTO NO HAY USUARIOS Y AÑADIR UNO
               return const Center(
                 child: Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
-                    'NO HAY MEDICAMENTOS REGISTRADOS. HAGA CLICK EN EL BOTON "+" DE ARRIBA PARA AÑADIR UN NUEVO MEDICAMENTO.',
+                    'NO HAY USUARIOS A SU CARGO. PULSE EN EL BOTON "+" SITUADO ARRIBA PARA AÑADIR A UN USUARIO.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20,

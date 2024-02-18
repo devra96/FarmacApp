@@ -1,6 +1,5 @@
 import 'package:farmacapp/database/db.dart';
 import 'package:farmacapp/modelos/medicamento.dart';
-// import 'package:farmacapp/paginas/pantalla_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_addmod_medicamento.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
@@ -9,6 +8,10 @@ import 'package:farmacapp/widgets/dialogo_confirmacion.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Pantalla donde podremos visualizar los detalles del medicamento
+/// que hayamos seleccionado, junto con las opciones de registrar una
+/// dosis, renovarlo, modificarlo o eliminarlo.
+///
 class PantallaDetalleMedicamento extends StatefulWidget {
   const PantallaDetalleMedicamento({super.key});
 
@@ -83,15 +86,8 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
                 width: 300,
                 height: 200,
                 decoration: BoxDecoration(
-                  // color: Colors.grey,
                   border: Border.all()
                 ),
-                // child: const Column(
-                //   children: [
-                //     Padding(padding: EdgeInsets.only(top: 65)),
-                //     Icon(Icons.photo_camera, size: 60, color: Colors.white,),
-                //   ]
-                // ),
                 child: Image.asset('assets/images/medicamento-generico.jpg'),
               ),
             ),
@@ -472,7 +468,7 @@ class _PantallaDetalleMedicamentoState extends State<PantallaDetalleMedicamento>
                     await showDialog<void>(
                       barrierDismissible: false,
                       context: context,
-                      builder: (BuildContext context) => DialogoConfirmacion(title: "ATENCIÓN", texto: '¿Esta seguro de borrar el medicamento? Una vez confirmada la operacion, no habra marcha atras.')
+                      builder: (BuildContext context) => DialogoConfirmacion(title: "ATENCIÓN", texto: '¿Esta seguro de borrar el medicamento? Una vez confirmada la operacion, no se podra revertir.')
                     );
 
                     if(modoEdicion.confirmacion){

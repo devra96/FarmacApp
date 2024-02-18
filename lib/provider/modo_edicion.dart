@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
+/// PROVIDER QUE CONTIENE DIFERENTES VARIABLES QUE SE
+/// USARAN PARA MODIFICAR DATOS.
 class ModoEdicion with ChangeNotifier{
-  late bool _modoedicion = false;
-  late int _dosisconsumidas = 0;
-  late bool _confirmacion = false;
-  // late String _rutaimagen;
-  late int _fotocamara = 0;
-  late bool _addusuario; // PANTALLA_USUARIO
-  late bool _cambiarpass;
+  late bool _modoedicion = false;   // PARA ENTRAR EN MODO AÑADIR O MODIFICAR
+  late int _dosisconsumidas = 0;    // SI MODIFICAMOS LAS DOSIS INCLUIDAS DE UN MEDICAMENTO, GUARDA LAS RESTANTES
+  late bool _confirmacion = false;  // PARA CONFIRMAR O NO UNA ACCION
+  late int _fotocamara = 0;         // PARA SI ACTIVAMOS LA CAMARA O LA GALERIA AL MODIFICAR LA IMAGEN DE UN MEDICAMENTO
+  late bool _addusuario;            // SE USA EN PANTALLA_USUARIO
+  late bool _cambiarpass;           // PARA SI CAMBIAMOS O NO LA CONTRASEÑA DEL USUARIO
 
   ModoEdicion();
 
@@ -15,7 +16,6 @@ class ModoEdicion with ChangeNotifier{
   bool get modoedicion => _modoedicion;
   int get dosisconsumidas => _dosisconsumidas;
   bool get confirmacion => _confirmacion;
-  // String get rutaimagen => _rutaimagen;
   int get fotocamara => _fotocamara;
   bool get addusuario => _addusuario;
   bool get cambiarpass => _cambiarpass;
@@ -35,11 +35,6 @@ class ModoEdicion with ChangeNotifier{
     _confirmacion = value;
     notifyListeners();
   }
-
-  // set rutaimagen(String value){
-  //   _rutaimagen = value;
-  //   notifyListeners();
-  // }
 
   set fotocamara(int value){
     _fotocamara = value;

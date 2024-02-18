@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Pantalla donde podriamos restablecer la contraseña de nuestra cuenta.
+/// No esta implementado por falta de un servidor de correo.
+///
 class PantallaPassOlvidada extends StatefulWidget {
   const PantallaPassOlvidada({super.key});
 
@@ -36,7 +39,6 @@ class _PantallaPassOlvidadaState extends State<PantallaPassOlvidada> {
           Center(
             child: Container(
               width: 350,
-              // margin: EdgeInsets.only(bottom: 20),
               child: TextField(
                 decoration: InputDecoration(
                   hintText: "Nombre de usuario",

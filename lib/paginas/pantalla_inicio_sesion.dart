@@ -3,7 +3,6 @@
 import 'package:farmacapp/database/db.dart';
 import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/paginas/pantalla_agenda.dart';
-import 'package:farmacapp/paginas/pantalla_add_usuario.dart';
 import 'package:farmacapp/paginas/pantalla_pass_olvidada.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/provider/usuario_supervisor.dart';
@@ -11,8 +10,14 @@ import 'package:farmacapp/widgets/dialogo.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+/// Pantalla donde podremos introducir nuestro correo y contraseña
+/// para iniciar sesion, e indicar si funcionaremos en el modo
+/// remoto o en local.
+/// 
+/// Tambien tiene un boton de contraseña olvidada, pero no esta
+/// implementado.
+///
 class PantallaInicioSesion extends StatefulWidget {
   const PantallaInicioSesion({super.key});
 
@@ -161,12 +166,6 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                     ),
                   ),
                   onPressed: ()async{
-                    // // INICIALIZAMOS SHARED PREFERENCES
-                    // final SharedPreferences prefs = await SharedPreferences.getInstance();
-                    // prefs.setBool("sesionIniciada", false);
-                    // prefs.setBool("supervisorIniciado", false);
-                    // prefs.setInt("id_supervisor", 0);
-
                     // SI EL CAMPO DEL CORREO Y/O CONTRASEÑA ESTA(N) VACIO(S)
                     if(correo == "" || password == ""){
                       showDialog<void>(
@@ -190,25 +189,11 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                         }
                         // SI LA AUTENTICACION ES CORRECTA
                         else{
-                          // // GUARDAMOS LA "SESION" EN LAS SHARED PREFERENCES
-                          // prefs.setBool("sesionIniciada", true);
-                          // prefs.setBool("recuperacionUsuario",false);
-                          // prefs.setBool("modoTrabajo", modoTrabajo.modoLocal);
-
                           // RECOGEMOS AL USUARIO QUE HA INICIADO SESION
                           u = await u.getUsuario(correo,password);
-
-                          // // GUARDAMOS AL USUARIO INICIADO EN LAS SHARED PREFERENCES
-                          // prefs.setInt("id",u.id);
-                          // prefs.setInt("id_supervisor",u.id_supervisor);
-                          // prefs.setString("nombre", u.nombre);
-                          // prefs.setString("correo", u.correo);
-                          // prefs.setString("password", u.password);
-
+                          
                           // SI EL USUARIO INICIADO ES SUPERVISOR
                           if(u.id == u.id_supervisor){
-                            // prefs.setBool("supervisorIniciado", true);
-                            
                             usuarioSupervisor.supervisoriniciado = true;
                             usuarioSupervisor.modosupervisor = false; // Por si acaso
 
@@ -238,26 +223,11 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                       else{
                         // SI LA AUTENTICACION ES CORRECTA
                         if(await bdHelper.comprobarLogin("usuarios", correo, password) != ""){
-
-                          // // GUARDAMOS LA "SESION" EN LAS SHARED PREFERENCES
-                          // prefs.setBool("sesionIniciada", true);
-                          // prefs.setBool("recuperacionUsuario",false);
-                          // prefs.setBool("modoTrabajo", modoTrabajo.modoLocal);
-
                           // RECOGEMOS AL USUARIO QUE HA INICIADO SESION
                           u = await bdHelper.getUsuario("usuarios",correo,password);
 
-                          // // GUARDAMOS AL USUARIO INICIADO EN LAS SHARED PREFERENCES
-                          // prefs.setInt("id",u.id);
-                          // prefs.setInt("id_supervisor",u.id_supervisor);
-                          // prefs.setString("nombre", u.nombre);
-                          // prefs.setString("correo", u.correo);
-                          // prefs.setString("password", u.password);
-
                           // SI EL USUARIO INICIADO ES SUPERVISOR
                           if(u.id == u.id_supervisor){
-                            // prefs.setBool("supervisorIniciado", true);
-
                             usuarioSupervisor.supervisoriniciado = true;
                             usuarioSupervisor.modosupervisor = false; // Por si acaso
                             usuarioSupervisor.id = u.id;
@@ -310,7 +280,6 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                   ),
                 ),
                 onTap: () {
-                  print("IR A PANTALLA CONTRASEÑA OLVIDADA");
                   _loadPantallaPassOlvidada();
                 },
               ),

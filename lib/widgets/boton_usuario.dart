@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// WIDGET QUE SIMULA UN BOTON PARA CADA USUARIO DE
+/// LA LISTA DE USUARIOS DE UN SUPERVISOR.
+/// 
 class BotonUsuario extends StatelessWidget {
   final String nombre;
   final String correo;
@@ -24,7 +27,7 @@ class BotonUsuario extends StatelessWidget {
         children: [
           Container(
             width: 120,
-            height: double.infinity, // Altura máxima
+            height: double.infinity,
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(color: Colors.black),
@@ -76,40 +79,6 @@ class BotonUsuario extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Container(
-                //   height: 30,
-                //   decoration: BoxDecoration(
-                //     color: Colors.white,
-                //     borderRadius: BorderRadius.circular(8),
-                //     border: Border.all(color: Colors.black),
-                //   ),
-                //   child: Center(
-                //     child: Text(
-                //       "Proxima dosis: $proximaDosis",
-                //       style: TextStyle(
-                //         fontSize: 14,
-                //         fontWeight: FontWeight.bold,
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // Container(
-                //   height: 30,
-                //   decoration: BoxDecoration(
-                //     color: Colors.white,
-                //     borderRadius: BorderRadius.circular(8),
-                //     border: Border.all(color: Colors.black),
-                //   ),
-                //   child: Center(
-                //     child: Text(
-                //       "Dosis restantes: $dosisRestantes",
-                //       style: TextStyle(
-                //         fontSize: 14,
-                //         fontWeight: FontWeight.bold,
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),

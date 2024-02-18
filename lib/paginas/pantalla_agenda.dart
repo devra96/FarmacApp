@@ -2,8 +2,6 @@ import 'package:farmacapp/database/db.dart';
 import 'package:farmacapp/modelos/medicamento.dart';
 import 'package:farmacapp/modelos/usuario.dart';
 import 'package:farmacapp/modelos/visitamedica.dart';
-// import 'package:farmacapp/paginas/pantalla_add_medicamento.dart';
-// import 'package:farmacapp/paginas/pantalla_add_visita_medica.dart';
 import 'package:farmacapp/paginas/pantalla_detalle_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_farmacias_cercanas.dart';
 import 'package:farmacapp/paginas/pantalla_inicio.dart';
@@ -11,14 +9,12 @@ import 'package:farmacapp/paginas/pantalla_inicio_sesion.dart';
 import 'package:farmacapp/paginas/pantalla_addmod_visita_medica.dart';
 import 'package:farmacapp/paginas/pantalla_addmod_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_perfil.dart';
-import 'package:farmacapp/paginas/pantalla_reponer_medicamento.dart';
 import 'package:farmacapp/paginas/pantalla_usuarios.dart';
-// import 'package:farmacapp/paginas/pantalla_visitas_medicas.dart';
 import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:farmacapp/provider/modo_trabajo.dart';
 import 'package:farmacapp/provider/usuario_supervisor.dart';
 import 'package:farmacapp/tema/tema.dart';
-import 'package:farmacapp/widgets/boton_click_visita_medica.dart';
+import 'package:farmacapp/widgets/menu_click_visita_medica.dart';
 import 'package:farmacapp/widgets/boton_medicamento.dart';
 import 'package:farmacapp/widgets/boton_visitamedica.dart';
 import 'package:farmacapp/widgets/dialogo.dart';
@@ -28,8 +24,9 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// import 'package:http/http.dart' as http;
-
+/// Pantalla donde gestionaremos nuestros medicamentos, visitas
+/// medicas, perfil y, si somos supervisores, nuestros usuarios
+/// 
 class PantallaAgenda extends StatefulWidget {
   const PantallaAgenda({super.key});
 
@@ -42,10 +39,11 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
   // INSTANCIA BASE DE DATOS LOCAL
   BDHelper bdHelper = BDHelper();
   
+  // INSTANCIAS MODELOS MEDICAMENTO Y VISITA MEDICA PARA USAR SUS METODOS
   final Medicamento m = new Medicamento();
   final VisitaMedica v = new VisitaMedica();
 
-  // NAVIGATION BAR
+  // INDICE NAVIGATION BAR
   int currentPageIndex = 0;
 
   // HORA ACTUAL
@@ -73,14 +71,6 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
     setState(() {});
   }
 
-  // BORRAR
-  // _loadPantallaAddMedicamento2() async {
-  //   final destino = MaterialPageRoute(builder: (_) => PantallaAddMedicamento());
-  //   final datoDevuelto = await Navigator.push(context, destino);
-
-  //   setState(() {});
-  // }
-
   _loadPantallaDetalleMedicamento() async {
     final destino =
         MaterialPageRoute(builder: (_) => PantallaDetalleMedicamento());
@@ -97,26 +87,12 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
     setState(() {});
   }
 
-  _loadPantallaReponerMedicamento() async {
-    final destino = MaterialPageRoute(builder: (_) => PantallaReponerMedicamento());
-    final datoDevuelto = await Navigator.push(context, destino);
-
-    setState(() {});
-  }
-
   _loadPantallaInicio() async {
     final destino = MaterialPageRoute(builder: (_) => PantallaInicio());
     final datoDevuelto = await Navigator.push(context, destino);
 
     setState(() {});
   }
-
-  // _loadPantallaVisitasMedicas() async {
-  //   final destino = MaterialPageRoute(builder: (_) => PantallaVisitasMedicas());
-  //   final datoDevuelto = await Navigator.push(context, destino);
-
-  //   setState(() {});
-  // }
 
   _loadPantallaVisitaMedica() async {
     final destino = MaterialPageRoute(builder: (_) => PantallaVisitaMedica());
@@ -132,10 +108,6 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
     setState(() {});
   }
 
-  // HABRIA QUE PROGRAMAR QUE LA FUNCION DEVUELVA UN VALOR U OTRO
-  // EN BASE AL BOTON QUE SE HAYA PULSADO
-
-  // SUSTITUIR POR BOTON CONFIRMACION??
   _cerrarSesion() {
     showDialog<String>(
       context: context,
@@ -150,9 +122,6 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
           ),
           TextButton(
             onPressed: () async{
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs.setBool("sesionIniciada", false);
-              
               Navigator.pop(context, 'OK');
               _loadPantallaInicio();
             },
@@ -173,39 +142,6 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
     var visitaMedicaSeleccionada = Provider.of<VisitaMedica>(context);
     var modoEdicion = Provider.of<ModoEdicion>(context);
     var usuarioSupervisor = Provider.of<UsuarioSupervisor>(context);
-
-    // _cargarSharedPreferences() async{
-    //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   if(prefs.getBool("recuperacionUsuario")!){
-    //     modoTrabajo.modoLocal = prefs.getBool("modoTrabajo")!;
-
-    //     // SI INICIAMOS SESION DE SUPERVISOR
-    //     if(prefs.getBool("supervisorIniciado")!){
-    //       usuarioSupervisor.supervisoriniciado = true;
-    //       usuarioSupervisor.modosupervisor = false;
-    //       usuarioSupervisor.id = prefs.getInt("id")!;
-    //       usuarioSupervisor.id_supervisor = prefs.getInt("id_supervisor")!;
-    //       usuarioSupervisor.nombre = prefs.getString("nombre")!;
-    //       usuarioSupervisor.correo = prefs.getString("correo")!;
-    //       usuarioSupervisor.password = prefs.getString("password")!;
-    //     }
-    //     // SI INICIAMOS SESION ESTANDAR
-    //     else{
-    //       usuarioSupervisor.supervisoriniciado = false;
-    //       usuarioSupervisor.modosupervisor = false;
-    //       usuarioIniciado.id = prefs.getInt("id")!;
-    //       usuarioIniciado.id_supervisor = prefs.getInt("id_supervisor")!;
-    //       usuarioIniciado.nombre = prefs.getString("nombre")!;
-    //       usuarioIniciado.correo = prefs.getString("correo")!;
-    //       usuarioIniciado.password = prefs.getString("password")!;
-    //     }
-    //   }
-    //   else{
-    //     prefs.setBool("recuperacionUsuario", true);
-    //   }
-    // }
-
-    // _cargarSharedPreferences();
 
     // METODO PARA LLAMAR AL METODO OPORTUNO PARA RECUPERAR LOS MEDICAMENTOS
     // SEGUN SI ESTAMOS EN "MODO REMOTO" O "MODO LOCAL"
@@ -228,7 +164,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
       }
     }
 
-    // METODO PARA LLAMAR AL METODO OPORTUNO PARA RECUPERAR LOS MEDICAMENTOS
+    // METODO PARA LLAMAR AL METODO OPORTUNO PARA RECUPERAR LAS VISITAS MEDICAS
     // SEGUN SI ESTAMOS EN "MODO REMOTO" O "MODO LOCAL"
     Future<List<VisitaMedica>> recuperarVisitasMedicas() async{
       // MODO REMOTO
@@ -253,6 +189,8 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
       // #################### APPBAR ####################
       appBar: AppBar(
         title: Center(
+          // SI EL NOMBRE DEL USUARIO ES POR EJEMPLO:
+          // "RAUL SASTRE MARTIN", MOSTRAMOS SOLO "RAUL"
           child: Text("Agenda de ${
             usuarioSupervisor.supervisoriniciado
             ? usuarioSupervisor.nombre.indexOf(" ") == -1
@@ -264,14 +202,6 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
           }")
         ),
         actions: [
-          // IconButton(
-          //   onPressed: (){
-          //     _cerrarSesion();
-          //     // HABRIA QUE CONTROLAR QUE EN BASE AL VALOR DEVUELTO
-          //     // POR LA FUNCION, VUELVA O NO A LA PANTALLA DE LOGIN
-          //   },
-          //   icon: Icon(Icons.logout)
-          // )
           PopupMenuButton(
             icon: Icon(Icons.add),
             itemBuilder: (BuildContext context) {
@@ -311,7 +241,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
             // IMPORTANTE ELIMINAR CUALQUIER PADDING DE LA LISTVIEW
             padding: EdgeInsets.zero,
             children: [
-              // SUSTITUIR ESTO POR LA IMAGEN DEL ABUELO
+              // FOTO AVATAR
               const DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.green,
@@ -322,14 +252,6 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                   backgroundImage: AssetImage("assets/images/abuelo.jpg")
                 ),
               ),
-              // Container(
-              //   margin: EdgeInsets.only(bottom: 12),
-              //   child: const Text(
-              //     "Nombre Apellido1 Apellido2", // AQUI IRIAN EL NOMBRE Y APELLIDOS SACADOS DEL USUARIO
-              //     textAlign: TextAlign.center,
-              //     style: TextStyle(fontSize: 20),
-              //   ),
-              // ),
               // BOTON PERFIL
               ListTile(
                 title: Row(
@@ -364,23 +286,8 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                   _loadPantallaFarmaciasCercanas();
                 },
               ),
-              // // BOTON 
-              // ListTile(
-              //   title: Row(
-              //     children: [
-              //       Icon(Icons.list),
-              //       Container(
-              //         margin: EdgeInsets.only(left: 10),
-              //         child: Text('Reponer medicamentos')
-              //       )
-              //     ],
-              //   ),
-              //   onTap: () {
-              //     _loadPantallaReponerMedicamento();
-              //   },
-              // ),
               // BOTON MIS USUARIOS
-              // (VISIBLE SOLO SI HA INICIADO SESION UN SUPERVISOR Y NO ESTAMOS EN MODO SUPERVISOR)
+              // (VISIBLE SOLO SI HA INICIADO SESION UN SUPERVISOR)
               usuarioSupervisor.supervisoriniciado
               ?
               ListTile(
@@ -398,24 +305,6 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                 },
               )
               : Container(),
-              // BOTON CONFIGURACION (SI ESTAMOS EN MODO SUPERVISOR, SE DESACTIVA)
-              // !usuarioSupervisor.modosupervisor
-              // ?
-              // ListTile(
-              //   title: Row(
-              //     children: [
-              //       Icon(Icons.settings),
-              //       Container(
-              //         margin: EdgeInsets.only(left: 10),
-              //         child: Text('Configuracion')
-              //       )
-              //     ],
-              //   ),
-              //   onTap: () {
-              //     // IR A CONFIGURACION
-              //   },
-              // ),
-              // : Container(),
               // SWITCH MODO OSCURO
               ListTile(
                 leading: Icon(Icons.light_mode), // Icono a la izquierda
@@ -427,9 +316,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                   },
                 ),
               ),
-              // BOTON CERRAR SESION (SI ESTAMOS EN MODO SUPERVISOR, SE DESACTIVA)
-              // !usuarioSupervisor.modosupervisor
-              // ?
+              // BOTON CERRAR SESION
               ListTile(
                 title: Row(
                   children: [
@@ -442,11 +329,8 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                 ),
                 onTap: (){
                   _cerrarSesion();
-                  // HABRIA QUE CONTROLAR QUE EN BASE AL VALOR DEVUELTO
-                  // POR LA FUNCION, VUELVA O NO A LA PANTALLA DE LOGIN
                 },
               ),
-              // : Container(),
             ],
           ),
         ),
@@ -458,17 +342,14 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
           child: FutureBuilder(
             future: recuperarMedicamentos(),
             builder: (context, AsyncSnapshot<List<Medicamento>> snapshot){
-              print("SNAPSHOT DATA: ${snapshot.data}");
               if(snapshot.hasData){
                 return ListView.builder(
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index){
-                    // PRUEBA PARA SUMAR HORAS A UNA FECHA
-                    // DateTime prueba = snapshot.data![index].fechahoraultimadosis.add(Duration(hours: 1));
-    
                     // COMPROBACION DE SI LA FECHA ACTUAL ES POSTERIOR A LA FECHA DE LA PROXIMA DOSIS
                     // SI ES POSTERIOR: COLOR DE FONDO DEL MEDICAMENTO EN ROJO, INDICANDO QUE HABRIA QUE TOMARLO
                     // EN CASO CONTRARIO: COLOR DE FONDO DEL MEDICAMENTO EN VERDE, INDICANDO QUE TODO CORRECTO
+                    // SI NO QUEDAN DOSIS DEL MEDICAMENTO, COLOR DEL MEDICAMENTO EN GRIS, FECHA DE PROXIMA DOSIS: "-"
                     if(snapshot.data![index].dosisrestantes == 0){
                       colorFondo = Colors.grey;
                       pd = "-";
@@ -512,7 +393,6 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                         child: BotonMedicamento(
                           nombre: snapshot.data![index].nombre,
                           ultimaDosis: "${snapshot.data![index].fechahoraultimadosis.day}/${snapshot.data![index].fechahoraultimadosis.month}/${snapshot.data![index].fechahoraultimadosis.year} - ${snapshot.data![index].fechahoraultimadosis.hour}:${snapshot.data![index].fechahoraultimadosis.minute}",
-                          // ultimaDosis: "${prueba.day}/${prueba.month}/${prueba.year} - ${prueba.hour}:${prueba.minute}",
                           proximaDosis: pd,
                           dosisRestantes: snapshot.data![index].dosisrestantes,
                           colorFondo: colorFondo
@@ -524,7 +404,6 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
               }
               else{
                 // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
-                print("ELSE SNAPSHOT SIN DATA");
                 return const Center(
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
@@ -593,7 +472,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                           else if(modoEdicion.confirmacion){
                             await showDialog<void>(
                               context: context,
-                              builder: (BuildContext context) => DialogoConfirmacion(title: "ATENCIÓN", texto: '¿Esta seguro de borrar la visita medica? Una vez confirmada la operacion, no habra marcha atras.')
+                              builder: (BuildContext context) => DialogoConfirmacion(title: "ATENCIÓN", texto: '¿Esta seguro de borrar la visita medica? Una vez confirmada la operacion, no se podra revertir.')
                             );
     
                             if(modoEdicion.confirmacion){
@@ -632,7 +511,7 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
                 );
               }
               else{
-                // TEXTO NO HAY MEDICAMENTOS Y AÑADIR UNO
+                // TEXTO NO HAY VISITAS MEDICAS Y AÑADIR UNO
                 return const Center(
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
@@ -651,15 +530,6 @@ class _PantallaAgendaState extends State<PantallaAgenda> {
           ),
         ),
       ][currentPageIndex],
-      // ############# FLOATINGACTIONBUTTON #############
-      // floatingActionButton: FloatingActionButton.extended(
-      //    onPressed: () {
-      //   // Acción a realizar cuando se presione el botón
-      //   },
-      //   label: Text('Nuevo medicamento'),
-      //   icon: Icon(Icons.add),
-      //   backgroundColor: Color(0xFF009638), // Color de fondo del botón
-      // ),
       // #############  BOTTOMNAVIGATIONBAR  ############
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index){

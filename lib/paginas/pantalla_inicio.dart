@@ -3,6 +3,9 @@ import 'package:farmacapp/paginas/pantalla_add_usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// Primera pantalla que se muestra en la aplicacion, donde
+/// podremos iniciar sesion o crear una cuenta.
+/// 
 class PantallaInicio extends StatefulWidget {
   const PantallaInicio({super.key});
 
@@ -28,9 +31,10 @@ class _PantallaInicioState extends State<PantallaInicio> {
 
   @override
   Widget build(BuildContext context) {
+    // CUANDO PULSEMOS EL BOTON DE ATRAS DEL DISPOSITIVO, SE NOS MOSTRARA
+    // UN DIALOGO PIDIENDO CONFIRMACION PARA SALIR O NO DE LA APLICACION.
     return WillPopScope(
       onWillPop: () async{
-        // Manejar el comportamiento al presionar el botón de retroceso del dispositivo
         return await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
@@ -64,7 +68,7 @@ class _PantallaInicioState extends State<PantallaInicio> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  // IMAGEN DEL CENTRO
+                  // IMAGEN DEL CENTRO (LOGO FARMACAPP)
                   Container(
                     padding: EdgeInsets.only(top: 100),
                     decoration: BoxDecoration(
@@ -85,12 +89,11 @@ class _PantallaInicioState extends State<PantallaInicio> {
                   // BOTON "INICIAR SESION"
                   ElevatedButton(
                     onPressed: () {
-                      // Acción al presionar el botón "Iniciar sesión"
                       _loadPantallaInicioSesion();
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      backgroundColor: Color(0xFF009638), // Letra de color blanco
+                      backgroundColor: Color(0xFF009638),
                     ),
                     child: Text(
                       'INICIAR SESIÓN',
@@ -107,7 +110,6 @@ class _PantallaInicioState extends State<PantallaInicio> {
                   // BOTON "CREAR CUENTA"
                   ElevatedButton(
                     onPressed: () {
-                      // Acción al presionar el botón "Crear cuenta"
                       _loadPantallaNuevoUsuario();
                     },
                     style: ElevatedButton.styleFrom(

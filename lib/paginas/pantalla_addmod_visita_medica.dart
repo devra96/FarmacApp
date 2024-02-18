@@ -7,6 +7,9 @@ import 'package:farmacapp/provider/usuario_supervisor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Pantalla para añadir o modificar una visita medica.
+/// 
+/// 
 class PantallaVisitaMedica extends StatefulWidget {
   const PantallaVisitaMedica({super.key});
 
@@ -20,7 +23,7 @@ class _PantallaVisitaMedicaState extends State<PantallaVisitaMedica> {
   // INSTANCIA A LA BASE DE DATOS LOCAL
   BDHelper bdHelper = BDHelper();
 
-  // VARIABLES QUE GUARDARAN EL VALOR INTRODUCIDO EN LOS CAMPOS
+  // VARIABLES QUE GUARDARAN LOS VALORES INTRODUCIDOS EN LOS CAMPOS
   late String especialidad, doctor, lugar, fecha, hora;
 
   // INSTANCIA DEL MODELO DE VISITAS MEDICAS PARA USAR SUS METODOS DE INSERCION Y MODIFICACION
@@ -223,22 +226,11 @@ class _PantallaVisitaMedicaState extends State<PantallaVisitaMedica> {
                   }
                 },
               ),
+              // ESPACIO
               SizedBox(
                 height: 30,
               ),
-              // BOTON GUARDAR
-              // ElevatedButton(
-              //   child: Text('Guardar'),
-              //   onPressed: (){
-                  // if(_formKey.currentState!.validate()) {
-                  //   _formKey.currentState!.save();
-
-                  //   // bdHelper.insertarBD('VisitaMedica', visitaMedica.toMap());
-                    
-                  //   Navigator.pop(context);
-                  // }
-              //   },
-              // ),
+              // BOTON GUARDAR VISITA
               Container(
                   width: 345,
                   height: 55,
@@ -320,8 +312,6 @@ class _PantallaVisitaMedicaState extends State<PantallaVisitaMedica> {
                               content: Text("VISITA MEDICA INSERTADA CORRECTAMENTE.")
                             )
                           );
-
-                          // Navigator.pop(context);
                         }
                         // MODO MODIFICAR VISITA
                         else{

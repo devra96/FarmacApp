@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+/// WIDGET QUE SIMULA UN BOTON PARA CADA MEDICAMENTO
+/// DE LA AGENDA.
+/// 
+/// REALIZADO CON AYUDA DE CHATGPT.
+/// 
 class BotonMedicamento extends StatelessWidget {
   final String nombre;
   final String ultimaDosis;
@@ -15,19 +20,6 @@ class BotonMedicamento extends StatelessWidget {
     required this.dosisRestantes,
     required this.colorFondo
   });
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Container(
-  //     padding: EdgeInsets.all(4),
-  //     child: Text(
-  //       "$nombre\nULTIMA DOSIS: $ultimaDosis\nPROXIMA DOSIS: $proximaDosis",
-  //       style: TextStyle(
-  //         fontSize: 16
-  //       ),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {

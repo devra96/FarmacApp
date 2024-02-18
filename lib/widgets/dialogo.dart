@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+/// WIDGET DE DIALOGO ESTANDAR CON EL TEXTO QUE NOSOTROS
+/// INTRODUZCAMOS.
+/// 
 class Dialogo extends StatelessWidget {
   final String texto;
   

@@ -4,6 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// WIDGET DE UN DIALOGO QUE SE MOSTRARA SI HEMOS MODIFICADO
+/// LAS DOSIS INCLUIDAS DE UN MEDICAMENTO.
+/// NOS PREGUNTARA LAS DOSIS QUE NOS HEMOS TOMADO, PARA QUE
+/// EL SISTEMA HAGA EL CALCULO DE LAS DOSIS RESTANTES.
+///
 class DialogoDosisConsumidas extends StatelessWidget {
 
   final int dosisincluidas;
@@ -62,12 +67,6 @@ class DialogoDosisConsumidas extends StatelessWidget {
                   builder: (BuildContext context) => Dialogo(texto: "Introduce una cantidad inferior (No puedes haber consumido ${modoEdicion.dosisconsumidas} dosis si la caja incluye ${dosisincluidas} dosis.)")
                 );
               }
-              // else if(dosisincluidas == modoEdicion.dosisconsumidas){
-              //   showDialog<void>(
-              //     context: context,
-              //     builder: (BuildContext context) => Dialogo(texto: "Si ya te has tomado todas las dosis, ¿por que estas modificando este medicamento?")
-              //   );
-              // }
               else{
                 modoEdicion.confirmacion = true;
                 Navigator.of(context).pop();

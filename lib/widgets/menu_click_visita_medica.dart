@@ -2,6 +2,9 @@ import 'package:farmacapp/provider/modo_edicion.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// WIDGET DE MENU QUE SE MUESTRA CUANDO PULSAMOS EN UNA
+/// VISITA MEDICA PARA MODIFICARLA O BORRARLA.
+/// 
 class BotonClickVisitaMedica extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,7 @@ class BotonClickVisitaMedica extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
-          SizedBox(height: 8), // Espacio entre los botones
+          SizedBox(height: 8),
           ElevatedButton(
             child: SizedBox(
               width: double.infinity,
@@ -42,7 +45,7 @@ class BotonClickVisitaMedica extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
-          SizedBox(height: 8), // Espacio entre los botones
+          SizedBox(height: 8),
           ElevatedButton(
             child: SizedBox(
               width: double.infinity,

@@ -41,7 +41,7 @@ class BDHelper{
 
   // -------------------------------------------------- METODOS USUARIOS --------------------------------------------------
 
-  // SELECT * FROM tabla WHERE correo = correo
+  // SELECT count(*) FROM tabla WHERE correo = ?
   Future<int> comprobarCorreo(String tabla, String correo) async{
     Database? bd = await baseDatos;
     var resultado = await bd!.query(tabla, where: "correo = ?", whereArgs: [correo]);
@@ -49,7 +49,7 @@ class BDHelper{
     return res;
   }
 
-  // SELECT id FROM tabla WHERE correo = correo AND password = password
+  // SELECT id FROM tabla WHERE correo = ? AND password = ?
   Future<String> comprobarLogin(String tabla, String correo, String password) async{
     String id = "";
     Database? bd = await baseDatos;
@@ -61,7 +61,7 @@ class BDHelper{
     return id;
   }
 
-  // SELECT Usuario FROM tabla
+  // SELECT Usuario FROM tabla where correo = ? AND password = ?
   Future<Usuario> getUsuario(String tabla, String correo, String password) async{
     Database? bd = await baseDatos;
     var resultado = await bd!.query(tabla, where: "correo = ? AND password = ?", whereArgs: [correo,password]);
@@ -86,7 +86,6 @@ class BDHelper{
       }
     }
     return usuarios;
-    // return List.generate(resultado.length, (index) => Usuario.fromMap(resultado[index]));
   }
 
   // -------------------------------------------------- METODOS MEDICAMENTOS --------------------------------------------------
@@ -94,12 +93,6 @@ class BDHelper{
   Future<List<Medicamento>> getMedicamentosUsuario(int id_usuario) async{
     Database? bd = await baseDatos;
     var resultado = await bd!.query("medicamentos", where: "id_usuario = ?", whereArgs: [id_usuario]);
-    // Medicamento m = new Medicamento();
-    // List<Medicamento> medicamentos;
-    // for(int i=0;i<resultado.length;i++){
-    //   m = Medicamento.fromMap(resultado[i]);
-    //   medicamentos.add(m);
-    // }
     return List.generate(resultado.length, (index) => Medicamento.fromMap(resultado[index]));
   }
 
@@ -108,12 +101,6 @@ class BDHelper{
   Future<List<VisitaMedica>> getVisitasMedicasUsuario(int id_usuario) async{
     Database? bd = await baseDatos;
     var resultado = await bd!.query("visitasmedicas", where: "id_usuario = ?", whereArgs: [id_usuario]);
-    // Medicamento m = new Medicamento();
-    // List<Medicamento> medicamentos;
-    // for(int i=0;i<resultado.length;i++){
-    //   m = Medicamento.fromMap(resultado[i]);
-    //   medicamentos.add(m);
-    // }
     return List.generate(resultado.length, (index) => VisitaMedica.fromMap(resultado[index]));
   }
 
